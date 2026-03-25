@@ -5,9 +5,10 @@
 ## 路由规则
 
 ### 项目与代码
-- 写代码 / 跑脚本 / 一次性项目：`adhoc_jobs/<project>/`
+- 一次性项目 / 临时脚本代码：`adhoc_jobs/<project>/`
 - 工具脚本（邮件、语义搜索、分享报告等）：`tools/`
 - 定时任务：`periodic_jobs/`
+- 正式项目：`formal_projects/<project>/`
 
 ### 知识与记录
 - 通用调研报告：`contexts/survey_sessions/`
@@ -25,9 +26,10 @@
 
 ## Python 环境
 - 根目录 `.venv/` 为工作区级环境，用 `uv pip install` 管理依赖
-- 需要隔离时在 `adhoc_jobs/<project>/.venv/` 建独立环境
+- 临时工作且需要隔离时在 `adhoc_jobs/<project>/.venv/` 建独立环境
+- 正式项目使用的环境以项目目录下文档中实际要求的为准
 
 ## 快速查询
 
 <!-- 随着你的项目增长，在这里添加活跃项目的快捷路由 -->
-<!-- 格式：- `project-name` → `adhoc_jobs/project_name/` (说明) -->
+<!-- 格式参考：- `project-name` → `adhoc_jobs/project_name/` (说明) -->
