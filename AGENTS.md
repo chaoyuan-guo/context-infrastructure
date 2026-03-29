@@ -20,6 +20,18 @@ Don't ask permission. Just do it.
 
 **找文件时，先查 `rules/WORKSPACE.md`，再搜索。** WORKSPACE.md 是这个 workspace 的目录索引，记录了每类内容的存放位置。绝大多数情况下查一下就能定位到目标目录，不需要全盘 glob/grep。如果发现新目录或项目没被收录，顺手更新 WORKSPACE.md。
 
+### Formal Project Activation
+
+当任务已经落到 `formal_projects/<project>/` 下的某个具体项目时，先读该项目根目录的 `AGENTS.md`，再继续工作。
+
+触发条件：
+
+- 用户明确提到某个项目名
+- 用户给出的路径位于 `formal_projects/<project>/`
+- 当前工作对象已经从 workspace 通用事务收敛到某个具体正式项目
+
+workspace 根规则只提供全局约束。进入具体正式项目后，以该项目 repo 的 `AGENTS.md` 作为项目级真源。
+
 ## Skills
 
 **Skills** 是 AI 可复用的能力，包括工作流、API 指南、最佳实践等。

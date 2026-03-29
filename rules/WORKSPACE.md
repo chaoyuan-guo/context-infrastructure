@@ -31,8 +31,10 @@
 
 ## 快速查询
 
+正式项目路由补充：进入 `formal_projects/<project>/` 下的具体项目之前，先读该项目根 `AGENTS.md`。
+
 <!-- 随着你的项目增长，在这里添加活跃项目的快捷路由 -->
 <!-- 格式参考：- `project-name` → `adhoc_jobs/project_name/` (说明) -->
-- `ontology-coding-agent` → `formal_projects/ontology-coding-agent/` (本体建模与文档解析主项目，含 ontology extract/render/evaluate 主链路)
-- `second_brain` → `formal_projects/second_brain/` (第二大脑项目，FastAPI + Next.js，一体化 Docker 部署)
-- `tudou-digitaltwin` → `formal_projects/tudou-digitaltwin/` (本体工程系统，含配置编辑、映射、版本管理与知识图谱相关能力)
+- `ontology-coding-agent` → `formal_projects/ontology-coding-agent/` (本体建模与文档解析主项目)
+- `second_brain` → `formal_projects/second_brain/` (第二大脑项目，FastAPI + Next.js)
+- `tudou-digitaltwin` → `formal_projects/tudou-digitaltwin/` (本体工程系统)
