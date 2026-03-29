@@ -35,6 +35,6 @@
 
 <!-- 随着你的项目增长，在这里添加活跃项目的快捷路由 -->
 <!-- 格式参考：- `project-name` → `adhoc_jobs/project_name/` (说明) -->
-- `ontology-coding-agent` → `formal_projects/ontology-coding-agent/` (本体建模与文档解析主项目)
-- `second_brain` → `formal_projects/second_brain/` (第二大脑项目，FastAPI + Next.js)
-- `tudou-digitaltwin` → `formal_projects/tudou-digitaltwin/` (本体工程系统)
+- `ontology-coding-agent` → `formal_projects/ontology-coding-agent/` (面向本体建模与文档解析的 agent 主项目)
+- `second_brain` → `formal_projects/second_brain/` (第二大脑系统，FastAPI + Next.js)
+- `tudou-digitaltwin` → `formal_projects/tudou-digitaltwin/` (土豆数字孪生的本体工程与业务系统)
