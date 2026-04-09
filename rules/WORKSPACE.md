@@ -38,3 +38,4 @@
 - `ontology-coding-agent` → `formal_projects/ontology-coding-agent/` (面向本体建模与文档解析的 agent 主项目)
 - `second_brain` → `formal_projects/second_brain/` (第二大脑系统，FastAPI + Next.js)
 - `tudou-digitaltwin` → `formal_projects/tudou-digitaltwin/` (土豆数字孪生的本体工程与业务系统)
+- `opencode` → `formal_projects/opencode/` (开源 AI coding agent，TUI + Desktop，TypeScript monorepo)
