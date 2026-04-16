@@ -285,11 +285,12 @@ url = f"https://{domain}/internal_api/spaces/{space_id}/posts?page={pg}&per_page
 | 正文是空的 | curl 返回 JS 骨架 | Circle.so 是 React SPA，必须用 headless browser 渲染 |
 | 私有 space 无帖子 API | 无登录态时帖子详情 API 不触发，页面渲染为首页/营销页 | 检查 captured API 是否包含帖子详情 + space 的 `is_private` 字段，确认后向用户索取 Cookie（见阶段 2.1） |
 | 多轮试错才确认需登录 | 第一轮 body 为空，第二轮检查 API 才发现是私有 space | 阶段 2 完成后立即执行诊断（阶段 2.1），不要先尝试解析空数据 |
-| `tiptap_body` 多嵌套一层 | 直接解析报错或取不到内容 | 实际结构是 `{"body": {"type": "doc", ...}}`，需要 `tiptap.get('body', tiptap)` |
+| `tiptap_body` 多嵌套一层 | 直接解析报错或取不到内容 | 实际结构是 `{"body": {"type": "doc", ...}}`，需要 `tiptap.get('body', tiptap)`；**评论的 `tiptap_body` 结构与帖子完全相同**，同样需要取 `.body` |
 | 作者字段为 null | `user_name` 字段为空 | 作者信息在 `community_member.name`，不在 `user_name` |
 | 内部链接无 href | entity 用 React state 管理 URL | 从 sgid Base64 解码拿 post ID，再查 space 列表匹配 slug |
 | 部分 entity 找不到 | 帖子在私有 space | 降级为加粗文本，备注"需登录" |
 | 评论没有加载 | DOM 未滚动到评论区 | 页面加载后等待 3-5 秒，Circle 通常会自动加载评论 |
+| 嵌套回复（replies）丢失 | 评论列表只有顶层，子回复消失 | 回复不会单独触发 API，嵌套在顶层评论对象的 `replies` 字段中；处理评论时需递归遍历 `comment.get('replies', [])` |
 | markdownify 丢格式 | HTML 中有 React 容器 div | 用 tiptap JSON 直接递归转换，绕过 HTML |
 
 ## 适用范围与局限
