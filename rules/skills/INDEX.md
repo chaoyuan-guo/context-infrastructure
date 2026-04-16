@@ -9,6 +9,10 @@
 
 ## 分类索引
 
+### Workflow（工作流）
+
+- [Web Article Scraper](./workflow_web_article_scraper.md) ✅ — Circle.so 等 SPA 社区帖子抓取，保存为 Markdown（含图片/链接/视频/评论）
+
 ### BestPractice（最佳实践）
 
 通用的最佳实践和经验教训。
