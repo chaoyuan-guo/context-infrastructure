@@ -58,16 +58,130 @@ def on_response(res):
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
-    page = browser.new_page()
+    # 如果有 Cookie，在创建 context 时注入（见阶段 2.1）
+    ctx = browser.new_context(ignore_https_errors=True)
+    page = ctx.new_page()
     page.on("response", on_response)
-    page.goto(URL, wait_until="networkidle", timeout=30000)
-    time.sleep(3)
+    page.goto(URL, wait_until="networkidle", timeout=60000)
+    time.sleep(5)
     # captured_api 现在包含所有 API 响应
 ```
+
+### 阶段 2.1：诊断是否需要登录
+
+抓取完成后，**立即检查是否拿到了帖子详情 API**：
+
+```python
+post_api = [u for u in captured_api if '/posts/' in u and 'post_details' not in u]
+has_tiptap = any('tiptap_body' in json.dumps(captured_api[u]) for u in post_api)
+```
+
+**判断逻辑：**
+
+| 信号 | 含义 | 下一步 |
+|------|------|--------|
+| `has_tiptap == True` | 帖子 API 已返回正文 | 继续阶段 3 |
+| `post_api` 为空 | 帖子详情 API 未被触发 | 很可能是私有 space，需要登录 |
+| space API 中 `is_private: true` | 确认为私有 space | 需要登录 |
+| 页面文本不含帖子标题，而是显示首页/营销页内容 | 被重定向了 | 需要登录 |
+
+**需要登录时，向用户索取 Cookie：**
+
+引导用户在浏览器中操作：
+1. 打开目标帖子页面（确保已登录且能看到内容）
+2. F12 → Network 面板 → 随便点一个请求 → 复制请求头中的 `Cookie` 字段值
+3. 或者：F12 → Application → Cookies → 复制 `user_session_identifier` 和 `remember_user_token` 的值
+
+**Cookie 存储与读取：**
+
+Cookie 存放在 `~/.config/circle-so/cookies.json`（权限 600），格式如下：
+
+```json
+{
+  "domain": "www.superlinear.academy",
+  "cookies": {
+    "user_session_identifier": "<值>",
+    "remember_user_token": "<值>"
+  },
+  "expires_at": "2027-03-07",
+  "notes": "..."
+}
+```
+
+**读取 Cookie 并检查过期的代码：**
+
+```python
+import json, os
+from datetime import datetime, timezone
+
+def load_circle_cookies():
+    """从本地配置文件读取 Circle.so Cookie，并检查过期时间。"""
+    path = os.path.expanduser("~/.config/circle-so/cookies.json")
+    if not os.path.exists(path):
+        return None, "Cookie 文件不存在，需要用户提供 Cookie"
+    
+    with open(path) as f:
+        data = json.load(f)
+    
+    # 检查过期时间
+    expires_at = data.get("expires_at", "")
+    if expires_at:
+        exp_date = datetime.strptime(expires_at, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+        now = datetime.now(timezone.utc)
+        remaining = (exp_date - now).days
+        if remaining <= 0:
+            return None, f"⚠️ Cookie 已过期（{expires_at}），请用户重新提供"
+        elif remaining <= 30:
+            print(f"⚠️ Cookie 将在 {remaining} 天后过期（{expires_at}），建议尽快更新")
+    
+    domain = data.get("domain", "")
+    cookies = []
+    for name, value in data.get("cookies", {}).items():
+        cookies.append({"name": name, "value": value, "domain": domain, "path": "/"})
+    
+    return cookies, None
+
+# 使用
+cookies, error = load_circle_cookies()
+if error:
+    print(error)  # 向用户索取新 Cookie
+else:
+    ctx = browser.new_context(ignore_https_errors=True)
+    ctx.add_cookies(cookies)
+```
+
+**首次获取 Cookie 时**，引导用户在浏览器中操作：
+1. 打开目标帖子页面（确保已登录且能看到内容）
+2. F12 → Network 面板 → 随便点一个请求 → 复制请求头中的 `Cookie` 字段值
+3. 或者：F12 → Application → Cookies → 复制 `user_session_identifier` 和 `remember_user_token` 的值
+
+获取后保存到 `~/.config/circle-so/cookies.json`，权限设为 600。
+
+**注意**：两个 Cookie 都必须提供，缺一不可。`remember_user_token` 单独使用无法通过认证。
+
+拿到 Cookie 后重新执行阶段 2。
+
+> 未来安装 1Password CLI 后，建议迁移到 `op://dev/circle-so-cookies/` 管理，与其他 API Key 保持一致。
 
 ### 阶段 3：从 API JSON 构建 Markdown（推荐路径）
 
 **优先使用 `tiptap_body` JSON** 而非 HTML → Markdown 转换，因为 tiptap JSON 是结构化数据，能精确还原标题层级、加粗/斜体、列表等格式。
+
+**注意 `tiptap_body` 的数据结构**：API 返回的 `tiptap_body` 可能是字符串（需 `json.loads`），且实际 doc 结构嵌套在 `.body` 字段内：
+
+```python
+tiptap = json.loads(data['tiptap_body']) if isinstance(data['tiptap_body'], str) else data['tiptap_body']
+body = tiptap.get('body', tiptap)  # 实际 doc 在 .body 下
+```
+
+**帖子元数据字段映射：**
+
+| 需要的信息 | 字段路径 | 备注 |
+|-----------|---------|------|
+| 标题 | `name` | |
+| 作者 | `community_member.name` | 不是 `user_name`（该字段通常为 null） |
+| 发布日期 | `published_at` 或 `created_at` | ISO 8601 格式，取前 10 位即日期 |
+| slug | `slug` | 用于拼接原始 URL |
 
 **tiptap 节点类型映射：**
 
@@ -167,8 +281,12 @@ url = f"https://{domain}/internal_api/spaces/{space_id}/posts?page={pg}&per_page
 
 | 问题 | 现象 | 解决方案 |
 |------|------|----------|
-| TLS 握手失败 | `SSL_ERROR_SYSCALL`，IP 是 `198.18.x.x` | 本地代理拦截，Playwright 用自己的网络栈可绕过 |
+| TLS 握手失败 | `SSL_ERROR_SYSCALL`，IP 是 `198.18.x.x` | 本地代理拦截，Playwright 加 `ignore_https_errors=True` 可绕过 |
 | 正文是空的 | curl 返回 JS 骨架 | Circle.so 是 React SPA，必须用 headless browser 渲染 |
+| 私有 space 无帖子 API | 无登录态时帖子详情 API 不触发，页面渲染为首页/营销页 | 检查 captured API 是否包含帖子详情 + space 的 `is_private` 字段，确认后向用户索取 Cookie（见阶段 2.1） |
+| 多轮试错才确认需登录 | 第一轮 body 为空，第二轮检查 API 才发现是私有 space | 阶段 2 完成后立即执行诊断（阶段 2.1），不要先尝试解析空数据 |
+| `tiptap_body` 多嵌套一层 | 直接解析报错或取不到内容 | 实际结构是 `{"body": {"type": "doc", ...}}`，需要 `tiptap.get('body', tiptap)` |
+| 作者字段为 null | `user_name` 字段为空 | 作者信息在 `community_member.name`，不在 `user_name` |
 | 内部链接无 href | entity 用 React state 管理 URL | 从 sgid Base64 解码拿 post ID，再查 space 列表匹配 slug |
 | 部分 entity 找不到 | 帖子在私有 space | 降级为加粗文本，备注"需登录" |
 | 评论没有加载 | DOM 未滚动到评论区 | 页面加载后等待 3-5 秒，Circle 通常会自动加载评论 |
@@ -177,6 +295,6 @@ url = f"https://{domain}/internal_api/spaces/{space_id}/posts?page={pg}&per_page
 ## 适用范围与局限
 
 - **适用**：Circle.so 公开帖子（无需登录即可查看的内容）
-- **部分适用**：需要登录的帖子（正文可能抓到，内部链接可能不全）
-- **不适用**：纯静态博客（用 curl + markdownify 更简单）、需要登录才能看到的完全私有内容
+- **适用（需 Cookie）**：私有 space 的帖子——向用户索取 `user_session_identifier` + `remember_user_token` Cookie 后注入 Playwright context 即可正常抓取
+- **不适用**：纯静态博客（用 curl + markdownify 更简单）
 - **可扩展**：其他 TipTap 编辑器的 SPA 平台理论上可复用 tiptap → markdown 的转换逻辑
