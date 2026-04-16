@@ -40,6 +40,7 @@
 - `tudou-digitaltwin` → `formal_projects/tudou-digitaltwin/` (土豆数字孪生的本体工程与业务系统)
 - `interview` → `formal_projects/interview/` (近期面试准备材料)
 - `curated_reads` → `formal_projects/curated_reads/` (值得收藏与精读的文章，原名 memo)
+- `leetcode` → `formal_projects/leetcode/` (LeetCode 刷题数据与记录，原名 knowledge_data)
 
 <!-- 归档项目（不再活跃维护） -->
 - `cortex` → `formal_projects/archived/cortex/` (已归档；个人知识库系统，基于 OpenCode fork，AI agent 驱动的知识问答平台)
