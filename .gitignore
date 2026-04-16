@@ -1,7 +1,7 @@
 formal_projects/*
 !formal_projects/curated_reads/
 !formal_projects/interview/
-!formal_projects/leetcode/
+
 .claude/
 .vscode/
 .DS_Store
