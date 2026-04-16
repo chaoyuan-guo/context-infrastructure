@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
-import { writeFile, readFile } from "node:fs/promises";
+import { writeFile, readFile, mkdir } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { join, dirname } from "node:path";
 import process from "node:process";
 
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
+const CACHE_DIR = join(SCRIPT_DIR, "../cache");
 const DEFAULT_OUTPUT = "./leetcode-cn-submitted-problems.md";
-const CACHE_FILE = "./leetcode-fetch-cache.json";
+const CACHE_FILE = join(CACHE_DIR, "leetcode-fetch-cache.json");
 const LEETCODE_GRAPHQL_URL = "https://leetcode.cn/graphql/";
 const LEETCODE_API_URL = "https://leetcode.cn/api/problems/all/";
 const PAGE_SIZE = 100;
@@ -515,6 +519,7 @@ function renderMarkdown(problemsData, stats) {
 
 // 保存缓存
 async function saveCache(cache) {
+  await mkdir(CACHE_DIR, { recursive: true });
   await writeFile(CACHE_FILE, JSON.stringify(cache, null, 2), "utf8");
 }
 
