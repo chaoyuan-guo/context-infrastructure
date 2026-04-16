@@ -6,7 +6,7 @@
 
 ### 项目与代码
 - 一次性项目 / 临时脚本代码：`adhoc_jobs/<project>/`
-- 工具脚本（邮件、语义搜索、分享报告等）：`tools/`
+- 工具脚本（邮件、语义搜索、分享报告、力扣导出等）：`tools/`
 - 定时任务：`periodic_jobs/`
 - 正式项目：`formal_projects/<project>/`
 - 已归档正式项目：`formal_projects/archived/<project>/`

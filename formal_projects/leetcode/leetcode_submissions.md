@@ -1,8 +1,8 @@
 # LeetCode 提交汇总
 
-- 生成时间：2026/04/13 14:58:07 CST
-- AC 题目数：442
-- 总提交数：2304
+- 生成时间：2026/04/16 14:22:39 CST
+- AC 题目数：446
+- 总提交数：2331
 
 ## 1. 两数之和 (`two-sum`)
 
@@ -307,11 +307,11 @@ class Solution:
         return max_area
 ```
 
-## 14. 最长公共前缀 (`longest-common-prefix`)
+## 14. Longest Common Prefix (`longest-common-prefix`)
 
 - 题目链接：https://leetcode.cn/problems/longest-common-prefix/
 - 难度：Easy
-- 标签：Trie, Array, String
+- 标签：无
 - 总提交次数：2
 - 最近提交时间：2026/03/23 13:58:37 CST
 
@@ -336,11 +336,11 @@ class Solution:
         return first_str
 ```
 
-## 15. 三数之和 (`3sum`)
+## 15. 3Sum (`3sum`)
 
 - 题目链接：https://leetcode.cn/problems/3sum/
 - 难度：Medium
-- 标签：Array, Two Pointers, Sorting
+- 标签：无
 - 总提交次数：11
 - 最近提交时间：2026/03/23 10:47:34 CST
 
@@ -390,11 +390,11 @@ class Solution:
         return res
 ```
 
-## 17. 电话号码的字母组合 (`letter-combinations-of-a-phone-number`)
+## 17. Letter Combinations of a Phone Number (`letter-combinations-of-a-phone-number`)
 
 - 题目链接：https://leetcode.cn/problems/letter-combinations-of-a-phone-number/
 - 难度：Medium
-- 标签：Hash Table, String, Backtracking
+- 标签：无
 - 总提交次数：5
 - 最近提交时间：2026/04/09 11:24:29 CST
 
@@ -438,11 +438,11 @@ class Solution:
         return res
 ```
 
-## 18. 四数之和 (`4sum`)
+## 18. 4Sum (`4sum`)
 
 - 题目链接：https://leetcode.cn/problems/4sum/
 - 难度：Medium
-- 标签：Array, Two Pointers, Sorting
+- 标签：无
 - 总提交次数：4
 - 最近提交时间：2026/03/23 11:01:02 CST
 
@@ -500,11 +500,11 @@ class Solution:
         return res
 ```
 
-## 19. 删除链表的倒数第 N 个结点 (`remove-nth-node-from-end-of-list`)
+## 19. Remove Nth Node From End of List (`remove-nth-node-from-end-of-list`)
 
 - 题目链接：https://leetcode.cn/problems/remove-nth-node-from-end-of-list/
 - 难度：Medium
-- 标签：Linked List, Two Pointers
+- 标签：无
 - 总提交次数：5
 - 最近提交时间：2026/03/31 10:43:09 CST
 
@@ -538,11 +538,11 @@ class Solution:
         return dummy.next
 ```
 
-## 20. 有效的括号 (`valid-parentheses`)
+## 20. Valid Parentheses (`valid-parentheses`)
 
 - 题目链接：https://leetcode.cn/problems/valid-parentheses/
 - 难度：Easy
-- 标签：Stack, String
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/03/26 10:05:54 CST
 
@@ -574,11 +574,11 @@ class Solution:
         return not stack
 ```
 
-## 21. 合并两个有序链表 (`merge-two-sorted-lists`)
+## 21. Merge Two Sorted Lists (`merge-two-sorted-lists`)
 
 - 题目链接：https://leetcode.cn/problems/merge-two-sorted-lists/
 - 难度：Easy
-- 标签：Recursion, Linked List
+- 标签：无
 - 总提交次数：2
 - 最近提交时间：2025/12/09 09:01:23 CST
 
@@ -612,11 +612,11 @@ class Solution:
         return dummy.next
 ```
 
-## 22. 括号生成 (`generate-parentheses`)
+## 22. Generate Parentheses (`generate-parentheses`)
 
 - 题目链接：https://leetcode.cn/problems/generate-parentheses/
 - 难度：Medium
-- 标签：String, Dynamic Programming, Backtracking
+- 标签：无
 - 总提交次数：8
 - 最近提交时间：2026/04/09 08:30:32 CST
 
@@ -655,11 +655,11 @@ class Solution:
         return res
 ```
 
-## 23. 合并 K 个升序链表 (`merge-k-sorted-lists`)
+## 23. Merge k Sorted Lists (`merge-k-sorted-lists`)
 
 - 题目链接：https://leetcode.cn/problems/merge-k-sorted-lists/
 - 难度：Hard
-- 标签：Linked List, Divide and Conquer, Heap (Priority Queue), Merge Sort
+- 标签：无
 - 总提交次数：14
 - 最近提交时间：2026/04/10 19:06:10 CST
 
@@ -706,11 +706,11 @@ class Solution:
         return dummy.next
 ```
 
-## 24. 两两交换链表中的节点 (`swap-nodes-in-pairs`)
+## 24. Swap Nodes in Pairs (`swap-nodes-in-pairs`)
 
 - 题目链接：https://leetcode.cn/problems/swap-nodes-in-pairs/
 - 难度：Medium
-- 标签：Recursion, Linked List
+- 标签：无
 - 总提交次数：7
 - 最近提交时间：2026/04/02 10:53:12 CST
 
@@ -749,11 +749,11 @@ class Solution:
         return dummy.next
 ```
 
-## 25. K 个一组翻转链表 (`reverse-nodes-in-k-group`)
+## 25. Reverse Nodes in k-Group (`reverse-nodes-in-k-group`)
 
 - 题目链接：https://leetcode.cn/problems/reverse-nodes-in-k-group/
 - 难度：Hard
-- 标签：Recursion, Linked List
+- 标签：无
 - 总提交次数：4
 - 最近提交时间：2026/04/02 10:46:55 CST
 
@@ -794,11 +794,11 @@ class Solution:
         return pre
 ```
 
-## 26. 删除有序数组中的重复项 (`remove-duplicates-from-sorted-array`)
+## 26. Remove Duplicates from Sorted Array (`remove-duplicates-from-sorted-array`)
 
 - 题目链接：https://leetcode.cn/problems/remove-duplicates-from-sorted-array/
 - 难度：Easy
-- 标签：Array, Two Pointers
+- 标签：无
 - 总提交次数：9
 - 最近提交时间：2026/03/17 15:24:16 CST
 
@@ -830,11 +830,11 @@ class Solution:
         return slow
 ```
 
-## 27. 移除元素 (`remove-element`)
+## 27. Remove Element (`remove-element`)
 
 - 题目链接：https://leetcode.cn/problems/remove-element/
 - 难度：Easy
-- 标签：Array, Two Pointers
+- 标签：无
 - 总提交次数：5
 - 最近提交时间：2026/03/23 10:08:20 CST
 
@@ -862,11 +862,44 @@ class Solution:
         return slow
 ```
 
-## 33. 搜索旋转排序数组 (`search-in-rotated-sorted-array`)
+## 32. Longest Valid Parentheses (`longest-valid-parentheses`)
+
+- 题目链接：https://leetcode.cn/problems/longest-valid-parentheses/
+- 难度：Hard
+- 标签：无
+- 总提交次数：2
+- 最近提交时间：2026/04/14 13:49:02 CST
+
+### 提交记录
+| 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
+| --- | --- | --- | --- | --- | --- |
+| 718022080 | 2026/04/14 13:49:02 CST | python | Accepted | 7 ms | 20.4 MB |
+| 718022006 | 2026/04/14 13:48:46 CST | python | Runtime Error | N/A | N/A |
+
+### 最近一次 AC 代码
+
+```python
+class Solution:
+    def longestValidParentheses(self, s: str) -> int:
+        stack = [-1]
+        max_len = 0
+        for i, ch in enumerate(s):
+            if ch == '(':
+                stack.append(i)
+            else:
+                stack.pop()
+                if not stack:
+                    stack.append(i)
+                else:
+                    max_len = max(max_len, i - stack[-1])
+        return max_len
+```
+
+## 33. Search in Rotated Sorted Array (`search-in-rotated-sorted-array`)
 
 - 题目链接：https://leetcode.cn/problems/search-in-rotated-sorted-array/
 - 难度：Medium
-- 标签：Array, Binary Search
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/03/20 18:16:50 CST
 
@@ -900,11 +933,11 @@ class Solution:
         return -1
 ```
 
-## 34. 在排序数组中查找元素的第一个和最后一个位置 (`find-first-and-last-position-of-element-in-sorted-array`)
+## 34. Find First and Last Position of Element in Sorted Array (`find-first-and-last-position-of-element-in-sorted-array`)
 
 - 题目链接：https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/
 - 难度：Medium
-- 标签：Array, Binary Search
+- 标签：无
 - 总提交次数：5
 - 最近提交时间：2026/03/18 15:49:01 CST
 
@@ -929,11 +962,11 @@ class Solution:
         return [left_bound, right_bound]
 ```
 
-## 35. 搜索插入位置 (`search-insert-position`)
+## 35. Search Insert Position (`search-insert-position`)
 
 - 题目链接：https://leetcode.cn/problems/search-insert-position/
 - 难度：Easy
-- 标签：Array, Binary Search
+- 标签：无
 - 总提交次数：4
 - 最近提交时间：2026/03/24 10:28:26 CST
 
@@ -953,11 +986,11 @@ class Solution:
         return bisect.bisect_left(nums, target)
 ```
 
-## 37. 解数独 (`sudoku-solver`)
+## 37. Sudoku Solver (`sudoku-solver`)
 
 - 题目链接：https://leetcode.cn/problems/sudoku-solver/
 - 难度：Hard
-- 标签：Array, Hash Table, Backtracking, Matrix
+- 标签：无
 - 总提交次数：15
 - 最近提交时间：2026/04/09 13:11:34 CST
 
@@ -1022,51 +1055,44 @@ class Solution:
         backtrack(0)
 ```
 
-## 39. 组合总和 (`combination-sum`)
+## 39. Combination Sum (`combination-sum`)
 
 - 题目链接：https://leetcode.cn/problems/combination-sum/
 - 难度：Medium
-- 标签：Array, Backtracking
+- 标签：无
 - 总提交次数：3
-- 最近提交时间：2026/04/08 21:36:58 CST
+- 最近提交时间：2026/04/06 21:35:55 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
-| 716390610 | 2026/04/08 21:36:58 CST | python | Accepted | 12 ms | 19.4 MB |
-| 699070162 | 2026/02/17 21:01:30 CST | python | Accepted | 11 ms | 19.6 MB |
-| 687484075 | 2025/12/27 16:03:15 CST | python | Accepted | 11 ms | 17.4 MB |
+| 715725091 | 2026/04/06 21:35:55 CST | python | Accepted | 47 ms | 30.2 MB |
+| 682574160 | 2025/12/04 10:50:23 CST | python | Accepted | 47 ms | 28.3 MB |
+| 682573839 | 2025/12/04 10:49:20 CST | python | Runtime Error | N/A | N/A |
 
 ### 最近一次 AC 代码
 
 ```python
 class Solution:
-    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
-        path = []
-        res = []
-        self.path_sum = 0
-        n = len(candidates)
-        def backtrack(start_idx):
-            if self.path_sum == target:
-                res.append(list(path))
-                return
-            if self.path_sum > target:
-                return
-            for i in range(start_idx, n):
-                path.append(candidates[i])
-                self.path_sum += candidates[i]
-                backtrack(i)
-                self.path_sum -= candidates[i]
-                path.pop()
-        backtrack(0)
-        return res
+    def firstMissingPositive(self, nums: List[int]) -> int:
+        n = len(nums)
+        for i in range(n):
+            while 1 <= nums[i] <= n and nums[nums[i] - 1] != nums[i]:
+                target_idx = nums[i] - 1
+                nums[i], nums[target_idx] = nums[target_idx], nums[i]
+        
+        for i in range(n):
+            if nums[i] != i + 1:
+                return i + 1
+        
+        return n + 1
 ```
 
-## 40. 组合总和 II (`combination-sum-ii`)
+## 40. Combination Sum II (`combination-sum-ii`)
 
 - 题目链接：https://leetcode.cn/problems/combination-sum-ii/
 - 难度：Medium
-- 标签：Array, Backtracking
+- 标签：无
 - 总提交次数：9
 - 最近提交时间：2026/04/08 21:08:41 CST
 
@@ -1111,44 +1137,51 @@ class Solution:
         return res
 ```
 
-## 41. 缺失的第一个正数 (`first-missing-positive`)
+## 41. First Missing Positive (`first-missing-positive`)
 
 - 题目链接：https://leetcode.cn/problems/first-missing-positive/
 - 难度：Hard
-- 标签：Array, Hash Table
+- 标签：无
 - 总提交次数：3
-- 最近提交时间：2026/04/06 21:35:55 CST
+- 最近提交时间：2026/04/08 21:36:58 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
-| 715725091 | 2026/04/06 21:35:55 CST | python | Accepted | 47 ms | 30.2 MB |
-| 682574160 | 2025/12/04 10:50:23 CST | python | Accepted | 47 ms | 28.3 MB |
-| 682573839 | 2025/12/04 10:49:20 CST | python | Runtime Error | N/A | N/A |
+| 716390610 | 2026/04/08 21:36:58 CST | python | Accepted | 12 ms | 19.4 MB |
+| 699070162 | 2026/02/17 21:01:30 CST | python | Accepted | 11 ms | 19.6 MB |
+| 687484075 | 2025/12/27 16:03:15 CST | python | Accepted | 11 ms | 17.4 MB |
 
 ### 最近一次 AC 代码
 
 ```python
 class Solution:
-    def firstMissingPositive(self, nums: List[int]) -> int:
-        n = len(nums)
-        for i in range(n):
-            while 1 <= nums[i] <= n and nums[nums[i] - 1] != nums[i]:
-                target_idx = nums[i] - 1
-                nums[i], nums[target_idx] = nums[target_idx], nums[i]
-        
-        for i in range(n):
-            if nums[i] != i + 1:
-                return i + 1
-        
-        return n + 1
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        path = []
+        res = []
+        self.path_sum = 0
+        n = len(candidates)
+        def backtrack(start_idx):
+            if self.path_sum == target:
+                res.append(list(path))
+                return
+            if self.path_sum > target:
+                return
+            for i in range(start_idx, n):
+                path.append(candidates[i])
+                self.path_sum += candidates[i]
+                backtrack(i)
+                self.path_sum -= candidates[i]
+                path.pop()
+        backtrack(0)
+        return res
 ```
 
-## 42. 接雨水 (`trapping-rain-water`)
+## 42. Trapping Rain Water (`trapping-rain-water`)
 
 - 题目链接：https://leetcode.cn/problems/trapping-rain-water/
 - 难度：Hard
-- 标签：Stack, Array, Two Pointers, Dynamic Programming, Monotonic Stack
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/03/17 18:12:47 CST
 
@@ -1183,11 +1216,11 @@ class Solution:
         return res
 ```
 
-## 44. 通配符匹配 (`wildcard-matching`)
+## 44. Wildcard Matching (`wildcard-matching`)
 
 - 题目链接：https://leetcode.cn/problems/wildcard-matching/
 - 难度：Hard
-- 标签：Greedy, Recursion, String, Dynamic Programming
+- 标签：无
 - 总提交次数：5
 - 最近提交时间：2026/02/14 10:16:16 CST
 
@@ -1222,17 +1255,20 @@ class Solution:
         return dp[m][n]
 ```
 
-## 45. 跳跃游戏 II (`jump-game-ii`)
+## 45. Jump Game II (`jump-game-ii`)
 
 - 题目链接：https://leetcode.cn/problems/jump-game-ii/
 - 难度：Medium
-- 标签：Greedy, Array, Dynamic Programming
-- 总提交次数：8
-- 最近提交时间：2026/02/05 10:24:46 CST
+- 标签：无
+- 总提交次数：11
+- 最近提交时间：2026/04/15 10:04:34 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
+| 718280351 | 2026/04/15 10:04:34 CST | python | Accepted | 3 ms | 19.8 MB |
+| 718280188 | 2026/04/15 10:04:01 CST | python | Wrong Answer | N/A | N/A |
+| 718280128 | 2026/04/15 10:03:51 CST | python | Runtime Error | N/A | N/A |
 | 696553162 | 2026/02/05 10:24:46 CST | python | Accepted | 7 ms | 20.1 MB |
 | 696311166 | 2026/02/04 10:24:55 CST | python | Accepted | 3 ms | 19.8 MB |
 | 696311111 | 2026/02/04 10:24:42 CST | python | Runtime Error | N/A | N/A |
@@ -1261,11 +1297,11 @@ class Solution:
         return steps
 ```
 
-## 46. 全排列 (`permutations`)
+## 46. Permutations (`permutations`)
 
 - 题目链接：https://leetcode.cn/problems/permutations/
 - 难度：Medium
-- 标签：Array, Backtracking
+- 标签：无
 - 总提交次数：15
 - 最近提交时间：2026/04/08 09:31:05 CST
 
@@ -1313,11 +1349,11 @@ class Solution:
         return res
 ```
 
-## 47. 全排列 II (`permutations-ii`)
+## 47. Permutations II (`permutations-ii`)
 
 - 题目链接：https://leetcode.cn/problems/permutations-ii/
 - 难度：Medium
-- 标签：Array, Backtracking, Sorting
+- 标签：无
 - 总提交次数：14
 - 最近提交时间：2026/04/08 21:25:54 CST
 
@@ -1367,11 +1403,11 @@ class Solution:
         return res
 ```
 
-## 48. 旋转图像 (`rotate-image`)
+## 48. Rotate Image (`rotate-image`)
 
 - 题目链接：https://leetcode.cn/problems/rotate-image/
 - 难度：Medium
-- 标签：Array, Math, Matrix
+- 标签：无
 - 总提交次数：4
 - 最近提交时间：2026/03/23 09:32:42 CST
 
@@ -1404,11 +1440,11 @@ class Solution:
                 j -= 1
 ```
 
-## 49. 字母异位词分组 (`group-anagrams`)
+## 49. Group Anagrams (`group-anagrams`)
 
 - 题目链接：https://leetcode.cn/problems/group-anagrams/
 - 难度：Medium
-- 标签：Array, Hash Table, String, Sorting
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/03/29 17:59:01 CST
 
@@ -1433,11 +1469,11 @@ class Solution:
         return list(groups.values())
 ```
 
-## 51. N 皇后 (`n-queens`)
+## 51. N-Queens (`n-queens`)
 
 - 题目链接：https://leetcode.cn/problems/n-queens/
 - 难度：Hard
-- 标签：Array, Backtracking
+- 标签：无
 - 总提交次数：8
 - 最近提交时间：2026/04/08 10:41:51 CST
 
@@ -1485,11 +1521,11 @@ class Solution:
         return res
 ```
 
-## 52. N 皇后 II (`n-queens-ii`)
+## 52. N-Queens II (`n-queens-ii`)
 
 - 题目链接：https://leetcode.cn/problems/n-queens-ii/
 - 难度：Hard
-- 标签：Backtracking
+- 标签：无
 - 总提交次数：4
 - 最近提交时间：2026/04/08 10:56:11 CST
 
@@ -1528,11 +1564,11 @@ class Solution:
         return self.res
 ```
 
-## 53. 最大子数组和 (`maximum-subarray`)
+## 53. Maximum Subarray (`maximum-subarray`)
 
 - 题目链接：https://leetcode.cn/problems/maximum-subarray/
 - 难度：Medium
-- 标签：Array, Divide and Conquer, Dynamic Programming
+- 标签：无
 - 总提交次数：10
 - 最近提交时间：2026/04/13 12:19:04 CST
 
@@ -1565,11 +1601,11 @@ class Solution:
         return max_sum
 ```
 
-## 54. 螺旋矩阵 (`spiral-matrix`)
+## 54. Spiral Matrix (`spiral-matrix`)
 
 - 题目链接：https://leetcode.cn/problems/spiral-matrix/
 - 难度：Medium
-- 标签：Array, Matrix, Simulation
+- 标签：无
 - 总提交次数：2
 - 最近提交时间：2026/03/16 16:12:08 CST
 
@@ -1606,17 +1642,18 @@ class Solution:
         return res
 ```
 
-## 55. 跳跃游戏 (`jump-game`)
+## 55. Jump Game (`jump-game`)
 
 - 题目链接：https://leetcode.cn/problems/jump-game/
 - 难度：Medium
-- 标签：Greedy, Array, Dynamic Programming
-- 总提交次数：6
-- 最近提交时间：2026/02/05 10:14:23 CST
+- 标签：无
+- 总提交次数：7
+- 最近提交时间：2026/04/15 09:43:32 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
+| 718274868 | 2026/04/15 09:43:32 CST | python | Accepted | 15 ms | 19.9 MB |
 | 696550412 | 2026/02/05 10:14:23 CST | python | Accepted | 24 ms | 19.8 MB |
 | 696550363 | 2026/02/05 10:14:11 CST | python | Wrong Answer | N/A | N/A |
 | 696331336 | 2026/02/04 11:29:28 CST | python | Accepted | 7 ms | 20 MB |
@@ -1629,8 +1666,8 @@ class Solution:
 ```python
 class Solution:
     def canJump(self, nums: List[int]) -> bool:
-        n = len(nums)
         max_reach = 0
+        n = len(nums)
         for i in range(n):
             if i > max_reach:
                 return False
@@ -1640,17 +1677,22 @@ class Solution:
         return True
 ```
 
-## 56. 合并区间 (`merge-intervals`)
+## 56. Merge Intervals (`merge-intervals`)
 
 - 题目链接：https://leetcode.cn/problems/merge-intervals/
 - 难度：Medium
-- 标签：Array, Sorting
-- 总提交次数：5
-- 最近提交时间：2026/02/26 10:27:11 CST
+- 标签：无
+- 总提交次数：10
+- 最近提交时间：2026/04/15 14:08:11 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
+| 718350011 | 2026/04/15 14:08:11 CST | python | Accepted | 7 ms | 23 MB |
+| 718349983 | 2026/04/15 14:08:04 CST | python | Runtime Error | N/A | N/A |
+| 718349855 | 2026/04/15 14:07:35 CST | python | Runtime Error | N/A | N/A |
+| 718348933 | 2026/04/15 14:03:50 CST | python | Accepted | 10 ms | 22.7 MB |
+| 718348883 | 2026/04/15 14:03:38 CST | python | Wrong Answer | N/A | N/A |
 | 700603378 | 2026/02/26 10:27:11 CST | python | Accepted | 7 ms | 23.1 MB |
 | 696548642 | 2026/02/05 10:07:05 CST | python | Accepted | 11 ms | 22.8 MB |
 | 677527497 | 2025/11/12 09:46:27 CST | python | Accepted | 8 ms | 21.3 MB |
@@ -1662,8 +1704,9 @@ class Solution:
 ```python
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        merged = []
         intervals.sort()
+        del_cnt = 0
+        merged = []
         for start, end in intervals:
             if not merged or start > merged[-1][1]:
                 merged.append([start, end])
@@ -1672,11 +1715,11 @@ class Solution:
         return merged
 ```
 
-## 57. 插入区间 (`insert-interval`)
+## 57. Insert Interval (`insert-interval`)
 
 - 题目链接：https://leetcode.cn/problems/insert-interval/
 - 难度：Medium
-- 标签：Array
+- 标签：无
 - 总提交次数：6
 - 最近提交时间：2026/02/26 10:44:15 CST
 
@@ -1713,11 +1756,11 @@ class Solution:
         return res
 ```
 
-## 59. 螺旋矩阵 II (`spiral-matrix-ii`)
+## 59. Spiral Matrix II (`spiral-matrix-ii`)
 
 - 题目链接：https://leetcode.cn/problems/spiral-matrix-ii/
 - 难度：Medium
-- 标签：Array, Matrix, Simulation
+- 标签：无
 - 总提交次数：2
 - 最近提交时间：2026/03/23 09:51:19 CST
 
@@ -1760,11 +1803,11 @@ class Solution:
         return res
 ```
 
-## 61. 旋转链表 (`rotate-list`)
+## 61. Rotate List (`rotate-list`)
 
 - 题目链接：https://leetcode.cn/problems/rotate-list/
 - 难度：Medium
-- 标签：Linked List, Two Pointers
+- 标签：无
 - 总提交次数：2
 - 最近提交时间：2025/09/24 08:03:11 CST
 
@@ -1811,11 +1854,41 @@ class Solution:
         return new_head
 ```
 
-## 63. 不同路径 II (`unique-paths-ii`)
+## 62. Unique Paths (`unique-paths`)
+
+- 题目链接：https://leetcode.cn/problems/unique-paths/
+- 难度：Medium
+- 标签：无
+- 总提交次数：1
+- 最近提交时间：2026/04/14 11:07:57 CST
+
+### 提交记录
+| 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
+| --- | --- | --- | --- | --- | --- |
+| 717981654 | 2026/04/14 11:07:57 CST | python | Accepted | 0 ms | 19.2 MB |
+
+### 最近一次 AC 代码
+
+```python
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        dp = [[0] * n for _ in range(m)]
+        dp[0][0] = 1
+        for i in range(1, m):
+            dp[i][0] = dp[i - 1][0]
+        for j in range(1, n):
+            dp[0][j] = dp[0][j - 1]
+        for i in range(1, m):
+            for j in range(1, n):
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+        return dp[m - 1][n - 1]
+```
+
+## 63. Unique Paths II (`unique-paths-ii`)
 
 - 题目链接：https://leetcode.cn/problems/unique-paths-ii/
 - 难度：Medium
-- 标签：Array, Dynamic Programming, Matrix
+- 标签：无
 - 总提交次数：5
 - 最近提交时间：2026/01/30 11:06:04 CST
 
@@ -1854,11 +1927,11 @@ class Solution:
         return dp[m - 1][n - 1]
 ```
 
-## 64. 最小路径和 (`minimum-path-sum`)
+## 64. Minimum Path Sum (`minimum-path-sum`)
 
 - 题目链接：https://leetcode.cn/problems/minimum-path-sum/
 - 难度：Medium
-- 标签：Array, Dynamic Programming, Matrix
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2025/12/31 10:15:37 CST
 
@@ -1889,11 +1962,11 @@ class Solution:
         return dp[m - 1][n - 1]
 ```
 
-## 70. 爬楼梯 (`climbing-stairs`)
+## 70. Climbing Stairs (`climbing-stairs`)
 
 - 题目链接：https://leetcode.cn/problems/climbing-stairs/
 - 难度：Easy
-- 标签：Memoization, Math, Dynamic Programming
+- 标签：无
 - 总提交次数：2
 - 最近提交时间：2026/04/12 11:21:51 CST
 
@@ -1916,11 +1989,11 @@ class Solution:
         return prev_1
 ```
 
-## 71. 简化路径 (`simplify-path`)
+## 71. Simplify Path (`simplify-path`)
 
 - 题目链接：https://leetcode.cn/problems/simplify-path/
 - 难度：Medium
-- 标签：Stack, String
+- 标签：无
 - 总提交次数：5
 - 最近提交时间：2026/03/27 07:59:05 CST
 
@@ -1950,11 +2023,11 @@ class Solution:
         return '/' + '/'.join(stack)
 ```
 
-## 72. 编辑距离 (`edit-distance`)
+## 72. Edit Distance (`edit-distance`)
 
 - 题目链接：https://leetcode.cn/problems/edit-distance/
 - 难度：Medium
-- 标签：String, Dynamic Programming
+- 标签：无
 - 总提交次数：10
 - 最近提交时间：2026/04/13 12:12:53 CST
 
@@ -1994,11 +2067,11 @@ class Solution:
         return dp[m][n]
 ```
 
-## 74. 搜索二维矩阵 (`search-a-2d-matrix`)
+## 74. Search a 2D Matrix (`search-a-2d-matrix`)
 
 - 题目链接：https://leetcode.cn/problems/search-a-2d-matrix/
 - 难度：Medium
-- 标签：Array, Binary Search, Matrix
+- 标签：无
 - 总提交次数：5
 - 最近提交时间：2026/03/19 13:50:33 CST
 
@@ -2030,11 +2103,11 @@ class Solution:
         return False
 ```
 
-## 75. 颜色分类 (`sort-colors`)
+## 75. Sort Colors (`sort-colors`)
 
 - 题目链接：https://leetcode.cn/problems/sort-colors/
 - 难度：Medium
-- 标签：Array, Two Pointers, Sorting
+- 标签：无
 - 总提交次数：5
 - 最近提交时间：2026/03/23 13:44:24 CST
 
@@ -2073,11 +2146,11 @@ class Solution:
                 right -= 1
 ```
 
-## 76. 最小覆盖子串 (`minimum-window-substring`)
+## 76. Minimum Window Substring (`minimum-window-substring`)
 
 - 题目链接：https://leetcode.cn/problems/minimum-window-substring/
 - 难度：Hard
-- 标签：Hash Table, String, Sliding Window
+- 标签：无
 - 总提交次数：20
 - 最近提交时间：2026/03/18 09:52:54 CST
 
@@ -2135,11 +2208,11 @@ class Solution:
         return s[start : start + min_len] if min_len != float(inf) else ''
 ```
 
-## 77. 组合 (`combinations`)
+## 77. Combinations (`combinations`)
 
 - 题目链接：https://leetcode.cn/problems/combinations/
 - 难度：Medium
-- 标签：Backtracking
+- 标签：无
 - 总提交次数：6
 - 最近提交时间：2026/04/08 18:50:01 CST
 
@@ -2172,11 +2245,11 @@ class Solution:
         return res
 ```
 
-## 78. 子集 (`subsets`)
+## 78. Subsets (`subsets`)
 
 - 题目链接：https://leetcode.cn/problems/subsets/
 - 难度：Medium
-- 标签：Bit Manipulation, Array, Backtracking
+- 标签：无
 - 总提交次数：7
 - 最近提交时间：2026/04/08 18:46:20 CST
 
@@ -2209,11 +2282,11 @@ class Solution:
         return res
 ```
 
-## 79. 单词搜索 (`word-search`)
+## 79. Word Search (`word-search`)
 
 - 题目链接：https://leetcode.cn/problems/word-search/
 - 难度：Medium
-- 标签：Depth-First Search, Array, String, Backtracking, Matrix
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/04/09 12:30:35 CST
 
@@ -2251,11 +2324,11 @@ class Solution:
         return False
 ```
 
-## 80. 删除有序数组中的重复项 II (`remove-duplicates-from-sorted-array-ii`)
+## 80. Remove Duplicates from Sorted Array II (`remove-duplicates-from-sorted-array-ii`)
 
 - 题目链接：https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/
 - 难度：Medium
-- 标签：Array, Two Pointers
+- 标签：无
 - 总提交次数：5
 - 最近提交时间：2026/03/17 15:27:04 CST
 
@@ -2284,11 +2357,11 @@ class Solution:
         return slow
 ```
 
-## 81. 搜索旋转排序数组 II (`search-in-rotated-sorted-array-ii`)
+## 81. Search in Rotated Sorted Array II (`search-in-rotated-sorted-array-ii`)
 
 - 题目链接：https://leetcode.cn/problems/search-in-rotated-sorted-array-ii/
 - 难度：Medium
-- 标签：Array, Binary Search
+- 标签：无
 - 总提交次数：2
 - 最近提交时间：2026/03/24 10:52:41 CST
 
@@ -2325,11 +2398,11 @@ class Solution:
         return False
 ```
 
-## 82. 删除排序链表中的重复元素 II (`remove-duplicates-from-sorted-list-ii`)
+## 82. Remove Duplicates from Sorted List II (`remove-duplicates-from-sorted-list-ii`)
 
 - 题目链接：https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii/
 - 难度：Medium
-- 标签：Linked List, Two Pointers
+- 标签：无
 - 总提交次数：4
 - 最近提交时间：2026/04/01 08:26:24 CST
 
@@ -2366,11 +2439,11 @@ class Solution:
         return dummy.next
 ```
 
-## 83. 删除排序链表中的重复元素 (`remove-duplicates-from-sorted-list`)
+## 83. Remove Duplicates from Sorted List (`remove-duplicates-from-sorted-list`)
 
 - 题目链接：https://leetcode.cn/problems/remove-duplicates-from-sorted-list/
 - 难度：Easy
-- 标签：Linked List
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/03/17 11:41:26 CST
 
@@ -2402,11 +2475,11 @@ class Solution:
         return head
 ```
 
-## 84. 柱状图中最大的矩形 (`largest-rectangle-in-histogram`)
+## 84. Largest Rectangle in Histogram (`largest-rectangle-in-histogram`)
 
 - 题目链接：https://leetcode.cn/problems/largest-rectangle-in-histogram/
 - 难度：Hard
-- 标签：Stack, Array, Monotonic Stack
+- 标签：无
 - 总提交次数：4
 - 最近提交时间：2026/03/28 09:21:54 CST
 
@@ -2437,11 +2510,11 @@ class Solution:
         return max_area
 ```
 
-## 86. 分隔链表 (`partition-list`)
+## 86. Partition List (`partition-list`)
 
 - 题目链接：https://leetcode.cn/problems/partition-list/
 - 难度：Medium
-- 标签：Linked List, Two Pointers
+- 标签：无
 - 总提交次数：4
 - 最近提交时间：2026/03/31 10:11:37 CST
 
@@ -2482,11 +2555,11 @@ class Solution:
         return small_dummy.next
 ```
 
-## 88. 合并两个有序数组 (`merge-sorted-array`)
+## 88. Merge Sorted Array (`merge-sorted-array`)
 
 - 题目链接：https://leetcode.cn/problems/merge-sorted-array/
 - 难度：Easy
-- 标签：Array, Two Pointers, Sorting
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/03/17 16:05:29 CST
 
@@ -2521,11 +2594,11 @@ class Solution:
             nums1[:p2+1] = nums2[:p2+1]
 ```
 
-## 89. 格雷编码 (`gray-code`)
+## 89. Gray Code (`gray-code`)
 
 - 题目链接：https://leetcode.cn/problems/gray-code/
 - 难度：Medium
-- 标签：Bit Manipulation, Math, Backtracking
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/02/22 17:24:58 CST
 
@@ -2544,11 +2617,11 @@ class Solution:
         return [i ^ (i >> 1) for i in range(1 << n)]
 ```
 
-## 90. 子集 II (`subsets-ii`)
+## 90. Subsets II (`subsets-ii`)
 
 - 题目链接：https://leetcode.cn/problems/subsets-ii/
 - 难度：Medium
-- 标签：Bit Manipulation, Array, Backtracking
+- 标签：无
 - 总提交次数：8
 - 最近提交时间：2026/04/08 21:01:49 CST
 
@@ -2585,11 +2658,11 @@ class Solution:
         return res
 ```
 
-## 92. 反转链表 II (`reverse-linked-list-ii`)
+## 92. Reverse Linked List II (`reverse-linked-list-ii`)
 
 - 题目链接：https://leetcode.cn/problems/reverse-linked-list-ii/
 - 难度：Medium
-- 标签：Linked List
+- 标签：无
 - 总提交次数：7
 - 最近提交时间：2026/04/02 10:34:34 CST
 
@@ -2628,11 +2701,11 @@ class Solution:
         return dummy.next
 ```
 
-## 93. 复原 IP 地址 (`restore-ip-addresses`)
+## 93. Restore IP Addresses (`restore-ip-addresses`)
 
 - 题目链接：https://leetcode.cn/problems/restore-ip-addresses/
 - 难度：Medium
-- 标签：String, Backtracking
+- 标签：无
 - 总提交次数：24
 - 最近提交时间：2026/04/09 10:56:32 CST
 
@@ -2700,11 +2773,11 @@ class Solution:
         return res
 ```
 
-## 94. 二叉树的中序遍历 (`binary-tree-inorder-traversal`)
+## 94. Binary Tree Inorder Traversal (`binary-tree-inorder-traversal`)
 
 - 题目链接：https://leetcode.cn/problems/binary-tree-inorder-traversal/
 - 难度：Easy
-- 标签：Stack, Tree, Depth-First Search, Binary Tree
+- 标签：无
 - 总提交次数：9
 - 最近提交时间：2026/04/03 08:28:23 CST
 
@@ -2745,11 +2818,11 @@ class Solution:
         return res
 ```
 
-## 95. 不同的二叉搜索树 II (`unique-binary-search-trees-ii`)
+## 95. Unique Binary Search Trees II (`unique-binary-search-trees-ii`)
 
 - 题目链接：https://leetcode.cn/problems/unique-binary-search-trees-ii/
 - 难度：Medium
-- 标签：Tree, Binary Search Tree, Dynamic Programming, Backtracking, Binary Tree
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/04/04 11:19:03 CST
 
@@ -2788,11 +2861,11 @@ class Solution:
         return _build(1, n)
 ```
 
-## 96. 不同的二叉搜索树 (`unique-binary-search-trees`)
+## 96. Unique Binary Search Trees (`unique-binary-search-trees`)
 
 - 题目链接：https://leetcode.cn/problems/unique-binary-search-trees/
 - 难度：Medium
-- 标签：Tree, Binary Search Tree, Math, Dynamic Programming, Binary Tree
+- 标签：无
 - 总提交次数：2
 - 最近提交时间：2026/04/04 11:09:06 CST
 
@@ -2819,11 +2892,11 @@ class Solution:
         return dp[n]
 ```
 
-## 97. 交错字符串 (`interleaving-string`)
+## 97. Interleaving String (`interleaving-string`)
 
 - 题目链接：https://leetcode.cn/problems/interleaving-string/
 - 难度：Medium
-- 标签：String, Dynamic Programming
+- 标签：无
 - 总提交次数：8
 - 最近提交时间：2026/02/14 11:47:19 CST
 
@@ -2865,11 +2938,11 @@ class Solution:
         return dp[m][n]
 ```
 
-## 98. 验证二叉搜索树 (`validate-binary-search-tree`)
+## 98. Validate Binary Search Tree (`validate-binary-search-tree`)
 
 - 题目链接：https://leetcode.cn/problems/validate-binary-search-tree/
 - 难度：Medium
-- 标签：Tree, Depth-First Search, Binary Search Tree, Binary Tree
+- 标签：无
 - 总提交次数：2
 - 最近提交时间：2026/04/04 10:38:24 CST
 
@@ -2899,11 +2972,11 @@ class Solution:
         return dfs(root, float('-inf'), float('inf'))
 ```
 
-## 102. 二叉树的层序遍历 (`binary-tree-level-order-traversal`)
+## 102. Binary Tree Level Order Traversal (`binary-tree-level-order-traversal`)
 
 - 题目链接：https://leetcode.cn/problems/binary-tree-level-order-traversal/
 - 难度：Medium
-- 标签：Tree, Breadth-First Search, Binary Tree
+- 标签：无
 - 总提交次数：5
 - 最近提交时间：2026/04/02 12:53:57 CST
 
@@ -2945,11 +3018,11 @@ class Solution:
         return res
 ```
 
-## 103. 二叉树的锯齿形层序遍历 (`binary-tree-zigzag-level-order-traversal`)
+## 103. Binary Tree Zigzag Level Order Traversal (`binary-tree-zigzag-level-order-traversal`)
 
 - 题目链接：https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal/
 - 难度：Medium
-- 标签：Tree, Breadth-First Search, Binary Tree
+- 标签：无
 - 总提交次数：4
 - 最近提交时间：2026/02/27 09:56:20 CST
 
@@ -2994,11 +3067,11 @@ class Solution:
         return res
 ```
 
-## 104. 二叉树的最大深度 (`maximum-depth-of-binary-tree`)
+## 104. Maximum Depth of Binary Tree (`maximum-depth-of-binary-tree`)
 
 - 题目链接：https://leetcode.cn/problems/maximum-depth-of-binary-tree/
 - 难度：Easy
-- 标签：Tree, Depth-First Search, Breadth-First Search, Binary Tree
+- 标签：无
 - 总提交次数：6
 - 最近提交时间：2026/04/03 10:03:41 CST
 
@@ -3030,23 +3103,23 @@ class Solution:
         return max(left_height, right_height) + 1
 ```
 
-## 105. 从前序与中序遍历序列构造二叉树 (`construct-binary-tree-from-preorder-and-inorder-traversal`)
+## 105. Construct Binary Tree from Preorder and Inorder Traversal (`construct-binary-tree-from-preorder-and-inorder-traversal`)
 
 - 题目链接：https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
 - 难度：Medium
-- 标签：Tree, Array, Hash Table, Divide and Conquer, Binary Tree
+- 标签：无
 - 总提交次数：6
-- 最近提交时间：2026/04/07 08:42:10 CST
+- 最近提交时间：2026/04/03 10:03:41 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
-| 715790532 | 2026/04/07 08:42:10 CST | python | Accepted | 0 ms | 20.9 MB |
-| 715790501 | 2026/04/07 08:41:53 CST | python | Runtime Error | N/A | N/A |
-| 701662482 | 2026/03/02 09:51:45 CST | python | Accepted | 3 ms | 20.9 MB |
-| 701662233 | 2026/03/02 09:50:47 CST | python | Runtime Error | N/A | N/A |
-| 701662166 | 2026/03/02 09:50:29 CST | python | Runtime Error | N/A | N/A |
-| 687075251 | 2025/12/25 15:20:51 CST | python | Accepted | 3 ms | 18.5 MB |
+| 714766866 | 2026/04/03 10:03:41 CST | python | Accepted | 0 ms | 20.1 MB |
+| 714542931 | 2026/04/02 15:10:12 CST | python | Accepted | 7 ms | 20.1 MB |
+| 701451646 | 2026/03/01 15:04:50 CST | python | Accepted | 0 ms | 19.9 MB |
+| 701111308 | 2026/02/28 08:41:07 CST | python | Accepted | 0 ms | 20.2 MB |
+| 684857278 | 2025/12/15 12:40:39 CST | python | Accepted | 0 ms | 18.7 MB |
+| 680118503 | 2025/11/23 17:56:35 CST | python | Accepted | 0 ms | 18.7 MB |
 
 ### 最近一次 AC 代码
 
@@ -3058,27 +3131,19 @@ class Solution:
 #         self.left = left
 #         self.right = right
 class Solution:
-    def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
-        inorder_map = {val : idx for idx, val in enumerate(inorder)}
-        n = len(preorder)
-        def _build(pre_start, pre_end, in_start, in_end):
-            if pre_start >= pre_end or in_start >= in_end:
-                return None
-            root_val = preorder[pre_start]
-            root = TreeNode(root_val)
-            root_idx = inorder_map.get(root_val)
-            size = root_idx - in_start
-            root.left = _build(pre_start + 1, pre_start + 1 + size, in_start, root_idx)
-            root.right = _build(pre_start + 1 + size, pre_end, root_idx + 1, in_end)
-            return root
-        return _build(0, n, 0, n)
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        if not root:
+            return 0
+        left_height = self.maxDepth(root.left)
+        right_height = self.maxDepth(root.right)
+        return max(left_height, right_height) + 1
 ```
 
-## 106. 从中序与后序遍历序列构造二叉树 (`construct-binary-tree-from-inorder-and-postorder-traversal`)
+## 106. Construct Binary Tree from Inorder and Postorder Traversal (`construct-binary-tree-from-inorder-and-postorder-traversal`)
 
 - 题目链接：https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
 - 难度：Medium
-- 标签：Tree, Array, Hash Table, Divide and Conquer, Binary Tree
+- 标签：无
 - 总提交次数：8
 - 最近提交时间：2026/04/07 09:19:04 CST
 
@@ -3120,11 +3185,11 @@ class Solution:
         return _build(0, n, 0, n)
 ```
 
-## 107. 二叉树的层序遍历 II (`binary-tree-level-order-traversal-ii`)
+## 107. Binary Tree Level Order Traversal II (`binary-tree-level-order-traversal-ii`)
 
 - 题目链接：https://leetcode.cn/problems/binary-tree-level-order-traversal-ii/
 - 难度：Medium
-- 标签：Tree, Breadth-First Search, Binary Tree
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/02/27 08:49:37 CST
 
@@ -3164,11 +3229,11 @@ class Solution:
         return list(res)
 ```
 
-## 108. 将有序数组转换为二叉搜索树 (`convert-sorted-array-to-binary-search-tree`)
+## 108. Convert Sorted Array to Binary Search Tree (`convert-sorted-array-to-binary-search-tree`)
 
 - 题目链接：https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/
 - 难度：Easy
-- 标签：Tree, Binary Search Tree, Array, Divide and Conquer, Binary Tree
+- 标签：无
 - 总提交次数：1
 - 最近提交时间：2026/03/02 10:46:22 CST
 
@@ -3199,11 +3264,11 @@ class Solution:
         return build(0, len(nums))
 ```
 
-## 110. 平衡二叉树 (`balanced-binary-tree`)
+## 110. Balanced Binary Tree (`balanced-binary-tree`)
 
 - 题目链接：https://leetcode.cn/problems/balanced-binary-tree/
 - 难度：Easy
-- 标签：Tree, Depth-First Search, Binary Tree
+- 标签：无
 - 总提交次数：9
 - 最近提交时间：2026/02/28 08:46:39 CST
 
@@ -3252,11 +3317,11 @@ class Solution:
         return True, max(left_height, right_height) + 1
 ```
 
-## 111. 二叉树的最小深度 (`minimum-depth-of-binary-tree`)
+## 111. Minimum Depth of Binary Tree (`minimum-depth-of-binary-tree`)
 
 - 题目链接：https://leetcode.cn/problems/minimum-depth-of-binary-tree/
 - 难度：Easy
-- 标签：Tree, Depth-First Search, Breadth-First Search, Binary Tree
+- 标签：无
 - 总提交次数：4
 - 最近提交时间：2026/04/02 14:53:10 CST
 
@@ -3296,11 +3361,11 @@ class Solution:
             depth += 1
 ```
 
-## 114. 二叉树展开为链表 (`flatten-binary-tree-to-linked-list`)
+## 114. Flatten Binary Tree to Linked List (`flatten-binary-tree-to-linked-list`)
 
 - 题目链接：https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/
 - 难度：Medium
-- 标签：Stack, Tree, Depth-First Search, Linked List, Binary Tree
+- 标签：无
 - 总提交次数：6
 - 最近提交时间：2026/04/06 10:03:12 CST
 
@@ -3340,11 +3405,11 @@ class Solution:
             curr = curr.right
 ```
 
-## 115. 不同的子序列 (`distinct-subsequences`)
+## 115. Distinct Subsequences (`distinct-subsequences`)
 
 - 题目链接：https://leetcode.cn/problems/distinct-subsequences/
 - 难度：Hard
-- 标签：String, Dynamic Programming
+- 标签：无
 - 总提交次数：9
 - 最近提交时间：2026/02/14 13:52:14 CST
 
@@ -3379,11 +3444,11 @@ class Solution:
         return dp[m][n]
 ```
 
-## 116. 填充每个节点的下一个右侧节点指针 (`populating-next-right-pointers-in-each-node`)
+## 116. Populating Next Right Pointers in Each Node (`populating-next-right-pointers-in-each-node`)
 
 - 题目链接：https://leetcode.cn/problems/populating-next-right-pointers-in-each-node/
 - 难度：Medium
-- 标签：Tree, Depth-First Search, Breadth-First Search, Linked List, Binary Tree
+- 标签：无
 - 总提交次数：10
 - 最近提交时间：2026/04/06 09:32:59 CST
 
@@ -3432,11 +3497,11 @@ class Solution:
         return root
 ```
 
-## 117. 填充每个节点的下一个右侧节点指针 II (`populating-next-right-pointers-in-each-node-ii`)
+## 117. Populating Next Right Pointers in Each Node II (`populating-next-right-pointers-in-each-node-ii`)
 
 - 题目链接：https://leetcode.cn/problems/populating-next-right-pointers-in-each-node-ii/
 - 难度：Medium
-- 标签：Tree, Depth-First Search, Breadth-First Search, Linked List, Binary Tree
+- 标签：无
 - 总提交次数：10
 - 最近提交时间：2026/04/06 09:36:30 CST
 
@@ -3488,11 +3553,11 @@ class Solution:
         return root
 ```
 
-## 118. 杨辉三角 (`pascals-triangle`)
+## 118. Pascal's Triangle (`pascals-triangle`)
 
 - 题目链接：https://leetcode.cn/problems/pascals-triangle/
 - 难度：Easy
-- 标签：Array, Dynamic Programming
+- 标签：无
 - 总提交次数：1
 - 最近提交时间：2026/04/06 21:41:56 CST
 
@@ -3515,11 +3580,11 @@ class Solution:
         return res
 ```
 
-## 120. 三角形最小路径和 (`triangle`)
+## 120. Triangle (`triangle`)
 
 - 题目链接：https://leetcode.cn/problems/triangle/
 - 难度：Medium
-- 标签：Array, Dynamic Programming
+- 标签：无
 - 总提交次数：7
 - 最近提交时间：2026/02/13 13:52:41 CST
 
@@ -3547,11 +3612,37 @@ class Solution:
         return dp[0]
 ```
 
-## 124. 二叉树中的最大路径和 (`binary-tree-maximum-path-sum`)
+## 121. Best Time to Buy and Sell Stock (`best-time-to-buy-and-sell-stock`)
+
+- 题目链接：https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/
+- 难度：Easy
+- 标签：无
+- 总提交次数：1
+- 最近提交时间：2026/04/14 13:57:55 CST
+
+### 提交记录
+| 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
+| --- | --- | --- | --- | --- | --- |
+| 718024380 | 2026/04/14 13:57:55 CST | python | Accepted | 59 ms | 28.3 MB |
+
+### 最近一次 AC 代码
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        min_price = float('inf')
+        max_profit = 0
+        for price in prices:
+            min_price = min(min_price, price)
+            max_profit = max(max_profit, price - min_price)
+        return max_profit
+```
+
+## 124. Binary Tree Maximum Path Sum (`binary-tree-maximum-path-sum`)
 
 - 题目链接：https://leetcode.cn/problems/binary-tree-maximum-path-sum/
 - 难度：Hard
-- 标签：Tree, Depth-First Search, Dynamic Programming, Binary Tree
+- 标签：无
 - 总提交次数：1
 - 最近提交时间：2026/02/28 14:31:21 CST
 
@@ -3584,11 +3675,11 @@ class Solution:
         return self.max_path_sum
 ```
 
-## 125. 验证回文串 (`valid-palindrome`)
+## 125. Valid Palindrome (`valid-palindrome`)
 
 - 题目链接：https://leetcode.cn/problems/valid-palindrome/
 - 难度：Easy
-- 标签：Two Pointers, String
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/03/17 15:35:49 CST
 
@@ -3618,11 +3709,11 @@ class Solution:
         return True
 ```
 
-## 127. 单词接龙 (`word-ladder`)
+## 127. Word Ladder (`word-ladder`)
 
 - 题目链接：https://leetcode.cn/problems/word-ladder/
 - 难度：Hard
-- 标签：Breadth-First Search, Hash Table, String
+- 标签：无
 - 总提交次数：7
 - 最近提交时间：2025/12/24 11:36:06 CST
 
@@ -3661,11 +3752,11 @@ class Solution:
         return 0
 ```
 
-## 128. 最长连续序列 (`longest-consecutive-sequence`)
+## 128. Longest Consecutive Sequence (`longest-consecutive-sequence`)
 
 - 题目链接：https://leetcode.cn/problems/longest-consecutive-sequence/
 - 难度：Medium
-- 标签：Union Find, Array, Hash Table
+- 标签：无
 - 总提交次数：11
 - 最近提交时间：2026/03/28 09:13:17 CST
 
@@ -3703,11 +3794,11 @@ class Solution:
         return max_len
 ```
 
-## 129. 求根节点到叶节点数字之和 (`sum-root-to-leaf-numbers`)
+## 129. Sum Root to Leaf Numbers (`sum-root-to-leaf-numbers`)
 
 - 题目链接：https://leetcode.cn/problems/sum-root-to-leaf-numbers/
 - 难度：Medium
-- 标签：Tree, Depth-First Search, Binary Tree
+- 标签：无
 - 总提交次数：4
 - 最近提交时间：2026/04/07 12:30:02 CST
 
@@ -3747,11 +3838,11 @@ class Solution:
         return total
 ```
 
-## 131. 分割回文串 (`palindrome-partitioning`)
+## 131. Palindrome Partitioning (`palindrome-partitioning`)
 
 - 题目链接：https://leetcode.cn/problems/palindrome-partitioning/
 - 难度：Medium
-- 标签：String, Dynamic Programming, Backtracking
+- 标签：无
 - 总提交次数：16
 - 最近提交时间：2026/04/09 11:11:44 CST
 
@@ -3798,11 +3889,11 @@ class Solution:
         return res
 ```
 
-## 133. 克隆图 (`clone-graph`)
+## 133. Clone Graph (`clone-graph`)
 
 - 题目链接：https://leetcode.cn/problems/clone-graph/
 - 难度：Medium
-- 标签：Depth-First Search, Breadth-First Search, Graph, Hash Table
+- 标签：无
 - 总提交次数：1
 - 最近提交时间：2026/04/05 16:01:01 CST
 
@@ -3839,17 +3930,18 @@ class Solution:
         return dfs(node)
 ```
 
-## 134. 加油站 (`gas-station`)
+## 134. Gas Station (`gas-station`)
 
 - 题目链接：https://leetcode.cn/problems/gas-station/
 - 难度：Medium
-- 标签：Greedy, Array
-- 总提交次数：7
-- 最近提交时间：2026/02/05 10:51:37 CST
+- 标签：无
+- 总提交次数：8
+- 最近提交时间：2026/04/15 12:32:47 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
+| 718330717 | 2026/04/15 12:32:47 CST | python | Accepted | 19 ms | 25.7 MB |
 | 696560999 | 2026/02/05 10:51:37 CST | python | Accepted | 24 ms | 25.8 MB |
 | 696328060 | 2026/02/04 11:19:31 CST | python | Accepted | 16 ms | 25.7 MB |
 | 696327991 | 2026/02/04 11:19:19 CST | python | Wrong Answer | N/A | N/A |
@@ -3865,9 +3957,9 @@ class Solution:
     def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
         if sum(gas) < sum(cost):
             return -1
-        curr = 0
         n = len(gas)
         start = 0
+        curr = 0
         for i in range(n):
             curr += (gas[i] - cost[i])
             if curr < 0:
@@ -3876,11 +3968,11 @@ class Solution:
         return start
 ```
 
-## 136. 只出现一次的数字 (`single-number`)
+## 136. Single Number (`single-number`)
 
 - 题目链接：https://leetcode.cn/problems/single-number/
 - 难度：Easy
-- 标签：Bit Manipulation, Array
+- 标签：无
 - 总提交次数：1
 - 最近提交时间：2026/04/06 17:37:40 CST
 
@@ -3900,11 +3992,11 @@ class Solution:
         return res
 ```
 
-## 138. 随机链表的复制 (`copy-list-with-random-pointer`)
+## 138. Copy List with Random Pointer (`copy-list-with-random-pointer`)
 
 - 题目链接：https://leetcode.cn/problems/copy-list-with-random-pointer/
 - 难度：Medium
-- 标签：Hash Table, Linked List
+- 标签：无
 - 总提交次数：1
 - 最近提交时间：2026/03/29 17:20:35 CST
 
@@ -3945,17 +4037,18 @@ class Solution:
         return old_to_new[head]
 ```
 
-## 139. 单词拆分 (`word-break`)
+## 139. Word Break (`word-break`)
 
 - 题目链接：https://leetcode.cn/problems/word-break/
 - 难度：Medium
-- 标签：Trie, Memoization, Array, Hash Table, String, Dynamic Programming
-- 总提交次数：12
-- 最近提交时间：2026/02/14 16:00:26 CST
+- 标签：无
+- 总提交次数：13
+- 最近提交时间：2026/04/14 09:46:42 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
+| 717927230 | 2026/04/14 09:46:42 CST | python | Accepted | 7 ms | 19.2 MB |
 | 698597489 | 2026/02/14 16:00:26 CST | python | Accepted | 8 ms | 19.2 MB |
 | 698595918 | 2026/02/14 15:58:39 CST | python | Runtime Error | N/A | N/A |
 | 693278625 | 2026/01/22 16:42:08 CST | python | Accepted | 3 ms | 19 MB |
@@ -3976,8 +4069,8 @@ class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
         n = len(s)
         dp = [False] * (n + 1)
-        word_set = set(wordDict)
         dp[0] = True
+        word_set = set(wordDict)
         for i in range(1, n + 1):
             for j in range(i):
                 if dp[j] and s[j:i] in word_set:
@@ -3986,11 +4079,11 @@ class Solution:
         return dp[n]
 ```
 
-## 141. 环形链表 (`linked-list-cycle`)
+## 141. Linked List Cycle (`linked-list-cycle`)
 
 - 题目链接：https://leetcode.cn/problems/linked-list-cycle/
 - 难度：Easy
-- 标签：Hash Table, Linked List, Two Pointers
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/03/31 11:15:59 CST
 
@@ -4021,11 +4114,11 @@ class Solution:
         return False
 ```
 
-## 142. 环形链表 II (`linked-list-cycle-ii`)
+## 142. Linked List Cycle II (`linked-list-cycle-ii`)
 
 - 题目链接：https://leetcode.cn/problems/linked-list-cycle-ii/
 - 难度：Medium
-- 标签：Hash Table, Linked List, Two Pointers
+- 标签：无
 - 总提交次数：3
 - 最近提交时间：2026/03/31 12:27:39 CST
 
@@ -4062,11 +4155,11 @@ class Solution:
         return slow
 ```
 
-## 144. 二叉树的前序遍历 (`binary-tree-preorder-traversal`)
+## 144. Binary Tree Preorder Traversal (`binary-tree-preorder-traversal`)
 
 - 题目链接：https://leetcode.cn/problems/binary-tree-preorder-traversal/
 - 难度：Easy
-- 标签：Stack, Tree, Depth-First Search, Binary Tree
+- 标签：无
 - 总提交次数：9
 - 最近提交时间：2026/04/02 11:24:35 CST
 
@@ -4108,11 +4201,11 @@ class Solution:
         return res
 ```
 
-## 145. 二叉树的后序遍历 (`binary-tree-postorder-traversal`)
+## 145. Binary Tree Postorder Traversal (`binary-tree-postorder-traversal`)
 
 - 题目链接：https://leetcode.cn/problems/binary-tree-postorder-traversal/
 - 难度：Easy
-- 标签：Stack, Tree, Depth-First Search, Binary Tree
+- 标签：无
 - 总提交次数：8
 - 最近提交时间：2026/04/02 12:13:28 CST
 
@@ -4235,47 +4328,7 @@ class LRUCache:
 
 ### 最近一次 AC 代码
 
-```python
-# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, val=0, next=None):
-#         self.val = val
-#         self.next = next
-class Solution:
-    def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        if not head or not head.next:
-            return head
-        mid = self.find_mid_divide(head)
-        left_head = self.sortList(head)
-        right_head = self.sortList(mid)
-        return self.merge_sort(left_head, right_head)
-
-    def find_mid_divide(self, head):
-        slow, fast = head, head.next
-        while fast and fast.next:
-            slow = slow.next
-            fast = fast.next.next
-        mid = slow.next
-        slow.next = None
-        return mid
-    
-    def merge_sort(self, l1, l2):
-        dummy = ListNode(0)
-        tail = dummy
-        while l1 and l2:
-            if l1.val <= l2.val:
-                tail.next = l1
-                l1 = l1.next
-            else:
-                tail.next = l2
-                l2 = l2.next
-            tail = tail.next
-        if l1:
-            tail.next = l1
-        if l2:
-            tail.next = l2
-        return dummy.next
-```
+（暂无 AC 代码）
 
 ## 150. 逆波兰表达式求值 (`evaluate-reverse-polish-notation`)
 
@@ -4809,12 +4862,13 @@ class Solution:
 - 题目链接：https://leetcode.cn/problems/house-robber/
 - 难度：Medium
 - 标签：Array, Dynamic Programming
-- 总提交次数：7
-- 最近提交时间：2026/02/10 10:47:10 CST
+- 总提交次数：8
+- 最近提交时间：2026/04/14 10:19:55 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
+| 717935808 | 2026/04/14 10:19:55 CST | python | Accepted | 0 ms | 19.3 MB |
 | 697672986 | 2026/02/10 10:47:10 CST | python | Accepted | 0 ms | 19 MB |
 | 697672680 | 2026/02/10 10:45:58 CST | python | Wrong Answer | N/A | N/A |
 | 692497294 | 2026/01/19 18:29:21 CST | python | Accepted | 0 ms | 19.1 MB |
@@ -5333,12 +5387,15 @@ class TrieNode:
 - 题目链接：https://leetcode.cn/problems/house-robber-ii/
 - 难度：Medium
 - 标签：Array, Dynamic Programming
-- 总提交次数：4
-- 最近提交时间：2026/02/10 10:56:51 CST
+- 总提交次数：7
+- 最近提交时间：2026/04/14 10:40:28 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
+| 717970979 | 2026/04/14 10:40:28 CST | python | Accepted | 0 ms | 19.1 MB |
+| 717941053 | 2026/04/14 10:35:53 CST | python | Wrong Answer | N/A | N/A |
+| 717940699 | 2026/04/14 10:34:56 CST | python | Wrong Answer | N/A | N/A |
 | 697675577 | 2026/02/10 10:56:51 CST | python | Accepted | 0 ms | 19.2 MB |
 | 692500882 | 2026/01/19 18:47:46 CST | python | Accepted | 0 ms | 19.1 MB |
 | 688690654 | 2026/01/03 11:11:12 CST | python | Accepted | 0 ms | 16.9 MB |
@@ -5349,13 +5406,13 @@ class TrieNode:
 ```python
 class Solution:
     def rob(self, nums: List[int]) -> int:
-        def rob_linear(nums, left, right):
-            n = right - left + 1
-            if n == 1:
+        def rob_linear(left, right):
+            length = right - left + 1
+            if length == 1:
                 return nums[left]
             prev_2, prev_1 = nums[left], max(nums[left], nums[left + 1])
-            for i in range(left + 2, right + 1):
-                curr = max(prev_1, prev_2 + nums[i])
+            for num in nums[left + 2:right + 1]:
+                curr = max(prev_1, prev_2 + num)
                 prev_2, prev_1 = prev_1, curr
             return prev_1
 
@@ -5364,8 +5421,8 @@ class Solution:
             return 0
         if n == 1:
             return nums[0]
-        best_1 = rob_linear(nums, 0, n - 2)
-        best_2 = rob_linear(nums, 1, n - 1)
+        best_1 = rob_linear(0, n - 2)
+        best_2 = rob_linear(1, n - 1)
         return max(best_1, best_2)
 ```
 
@@ -6394,12 +6451,14 @@ class Solution:
 - 题目链接：https://leetcode.cn/problems/meeting-rooms-ii/
 - 难度：Medium
 - 标签：Greedy, Array, Two Pointers, Prefix Sum, Sorting, Heap (Priority Queue)
-- 总提交次数：5
-- 最近提交时间：2026/02/26 10:14:47 CST
+- 总提交次数：7
+- 最近提交时间：2026/04/15 10:15:39 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
+| 718288422 | 2026/04/15 10:15:39 CST | python | Accepted | 7 ms | 21 MB |
+| 718288358 | 2026/04/15 10:15:27 CST | python | Runtime Error | N/A | N/A |
 | 700600217 | 2026/02/26 10:14:47 CST | python | Accepted | 4 ms | 21.1 MB |
 | 696544175 | 2026/02/05 09:46:52 CST | python | Accepted | 7 ms | 21 MB |
 | 696313299 | 2026/02/04 10:32:12 CST | python | Accepted | 0 ms | 21.3 MB |
@@ -7977,12 +8036,13 @@ class Solution:
 - 题目链接：https://leetcode.cn/problems/house-robber-iii/
 - 难度：Medium
 - 标签：Tree, Depth-First Search, Dynamic Programming, Binary Tree
-- 总提交次数：5
-- 最近提交时间：2026/02/12 14:07:27 CST
+- 总提交次数：6
+- 最近提交时间：2026/04/14 10:47:18 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
+| 717973552 | 2026/04/14 10:47:18 CST | python | Accepted | 3 ms | 20.6 MB |
 | 698170935 | 2026/02/12 14:07:27 CST | python | Accepted | 0 ms | 20.6 MB |
 | 698170727 | 2026/02/12 14:06:30 CST | python | Wrong Answer | N/A | N/A |
 | 692558318 | 2026/01/19 22:12:09 CST | python | Accepted | 3 ms | 20.7 MB |
@@ -8000,16 +8060,15 @@ class Solution:
 #         self.right = right
 class Solution:
     def rob(self, root: Optional[TreeNode]) -> int:
-        def dfs(node):
+        def rob_or_skip(node):
             if not node:
                 return 0, 0
-            left_rob, left_skip = dfs(node.left)
-            right_rob, right_skip = dfs(node.right)
-
-            curr_rob = left_skip + right_skip + node.val
-            curr_skip = max(left_rob, left_skip) + max(right_rob, right_skip)
-            return curr_rob, curr_skip
-        root_rob, root_skip = dfs(root)
+            left_rob, left_skip = rob_or_skip(node.left)
+            right_rob, right_skip = rob_or_skip(node.right)
+            node_rob = left_skip + right_skip + node.val
+            node_skip = max(left_rob, left_skip) + max(right_rob, right_skip)
+            return node_rob, node_skip
+        root_rob, root_skip = rob_or_skip(root)
         return max(root_rob, root_skip)
 ```
 
@@ -9688,12 +9747,13 @@ class Solution:
 - 题目链接：https://leetcode.cn/problems/non-overlapping-intervals/
 - 难度：Medium
 - 标签：Greedy, Array, Dynamic Programming, Sorting
-- 总提交次数：3
-- 最近提交时间：2026/02/05 08:44:39 CST
+- 总提交次数：4
+- 最近提交时间：2026/04/15 13:56:29 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
+| 718347133 | 2026/04/15 13:56:29 CST | python | Accepted | 103 ms | 48.2 MB |
 | 696536684 | 2026/02/05 08:44:39 CST | python | Accepted | 87 ms | 47.9 MB |
 | 696325977 | 2026/02/04 11:13:14 CST | python | Accepted | 119 ms | 48.3 MB |
 | 696120517 | 2026/02/03 15:09:44 CST | python | Accepted | 75 ms | 48.2 MB |
@@ -13811,6 +13871,48 @@ class Solution:
         return max_len
 ```
 
+## 912. 排序数组 (`sort-an-array`)
+
+- 题目链接：https://leetcode.cn/problems/sort-an-array/
+- 难度：Medium
+- 标签：Array, Divide and Conquer, Bucket Sort, Counting Sort, Radix Sort, Sorting, Heap (Priority Queue), Merge Sort
+- 总提交次数：3
+- 最近提交时间：2026/04/16 14:20:48 CST
+
+### 提交记录
+| 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
+| --- | --- | --- | --- | --- | --- |
+| 718649559 | 2026/04/16 14:20:48 CST | python | Accepted | 729 ms | 28.1 MB |
+| 681357980 | 2025/11/28 18:37:27 CST | python | Time Limit Exceeded | N/A | N/A |
+| 681357945 | 2025/11/28 18:37:04 CST | python | Runtime Error | N/A | N/A |
+
+### 最近一次 AC 代码
+
+```python
+class Solution:
+    def sortArray(self, nums: List[int]) -> List[int]:
+        if len(nums) <= 1:
+            return nums
+        mid = len(nums) // 2
+        left = self.sortArray(nums[:mid])
+        right = self.sortArray(nums[mid:])
+        return self.merge(left, right)
+    
+    def merge(self, left, right):
+        res = []
+        i = j = 0
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                res.append(left[i])
+                i += 1
+            else:
+                res.append(right[j])
+                j += 1
+        res.extend(left[i:])
+        res.extend(right[j:])
+        return res
+```
+
 ## 918. 环形子数组的最大和 (`maximum-sum-circular-subarray`)
 
 - 题目链接：https://leetcode.cn/problems/maximum-sum-circular-subarray/
@@ -16178,12 +16280,13 @@ class Solution:
 - 题目链接：https://leetcode.cn/problems/maximum-profit-in-job-scheduling/
 - 难度：Hard
 - 标签：Array, Binary Search, Dynamic Programming, Sorting
-- 总提交次数：7
-- 最近提交时间：2026/03/05 09:56:36 CST
+- 总提交次数：8
+- 最近提交时间：2026/04/15 11:17:33 CST
 
 ### 提交记录
 | 提交ID | 提交时间 (UTC+08) | 语言 | 结果 | 耗时 | 内存 |
 | --- | --- | --- | --- | --- | --- |
+| 718310950 | 2026/04/15 11:17:33 CST | python | Accepted | 111 ms | 32.3 MB |
 | 702871909 | 2026/03/05 09:56:36 CST | python | Accepted | 107 ms | 32.2 MB |
 | 697332374 | 2026/02/08 18:40:38 CST | python | Accepted | 108 ms | 32.1 MB |
 | 697332101 | 2026/02/08 18:39:14 CST | python | Wrong Answer | N/A | N/A |
@@ -16199,7 +16302,7 @@ class Solution:
     def jobScheduling(self, startTime: List[int], endTime: List[int], profit: List[int]) -> int:
         jobs = sorted(zip(endTime, startTime, profit))
         end_times = [job[0] for job in jobs]
-        n = len(end_times)
+        n = len(jobs)
         dp = [0] * (n + 1)
         for i in range(1, n + 1):
             end, start, pro = jobs[i - 1]

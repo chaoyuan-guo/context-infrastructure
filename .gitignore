@@ -5,3 +5,4 @@ formal_projects/
 .claude/
 .vscode/
 .DS_Store
+leetcode-fetch-cache.json
