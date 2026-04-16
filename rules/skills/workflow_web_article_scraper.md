@@ -161,7 +161,7 @@ url = f"https://{domain}/internal_api/spaces/{space_id}/posts?page={pg}&per_page
 | 图片 URL | 从渲染后 DOM 获取 | tiptap JSON 中 URL 通常为 null |
 | 内部链接 | Base64 解码 sgid + 遍历 space 匹配 | 无登录态无法调 entity 解析 API |
 | 评论作者 | DOM 上下文文本解析 | 评论 API 可能有、可能没有 |
-| 保存位置 | 当前工作目录，文件名用文章标题 | 用户偏好 |
+| 保存位置 | `formal_projects/curated_reads/`，文件名用文章标题 | 用户偏好 |
 
 ## 踩坑记录
 
