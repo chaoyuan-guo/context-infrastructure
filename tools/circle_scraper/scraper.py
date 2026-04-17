@@ -52,26 +52,39 @@ def _expand_all_comments(page) -> None:
     """
     max_rounds = 20  # 安全上限，防止无限循环
     for i in range(max_rounds):
-        # 查找并点击所有 "Show more comments/replies" 按钮，返回点击数
-        clicked = page.evaluate("""() => {
+        # 逐步滚动页面，触发可能的懒加载
+        page.evaluate("""() => {
+            const step = window.innerHeight;
+            const max = document.body.scrollHeight;
+            for (let y = 0; y <= max; y += step) {
+                window.scrollTo(0, y);
+            }
+        }""")
+        time.sleep(1)
+
+        # 查找并点击所有 "Show more comments/replies" 按钮，返回点击数和文本
+        result = page.evaluate("""() => {
             let count = 0;
+            const clicked_texts = [];
             const allClickable = document.querySelectorAll('button, a, [role="button"]');
             for (const el of allClickable) {
                 const text = (el.textContent || '').trim().toLowerCase();
                 if ((text.includes('more comment') || text.includes('more repl') ||
                      text.includes('更多评论') || text.includes('更多回复')) &&
                     el.offsetParent !== null) {
+                    el.scrollIntoView({block: 'center'});
                     el.click();
+                    clicked_texts.push((el.textContent || '').trim().substring(0, 50));
                     count++;
                 }
             }
-            return count;
+            return {count, clicked_texts};
         }""")
 
-        if clicked == 0:
+        if result["count"] == 0:
             break
 
-        print(f"  展开评论/回复 (round {i+1}, 点击 {clicked} 个按钮)...")
+        print(f"  展开评论/回复 (round {i+1}, 点击 {result['count']} 个: {result['clicked_texts']})...")
         # 等待新的 API 响应返回并渲染
         try:
             page.wait_for_load_state("networkidle", timeout=10000)
@@ -202,12 +215,20 @@ def diagnose(captured_api: dict) -> dict:
     extra_replies = {}  # parent_comment_id → [reply, ...]
 
     for u, d in captured_api.items():
-        # 单独的 replies 端点
-        if "/replies" in u:
+        # 子回复端点：/replies 或带 parent_comment_id 参数的 comments
+        if "/replies" in u or "parent_comment_id" in u:
             items = d if isinstance(d, list) else d.get("comments", d.get("records", []))
             if isinstance(items, list):
                 for item in items:
+                    # parent_comment_id 可能在 item 字段里，也可能在 URL 参数里
                     parent_id = item.get("parent_comment_id") or item.get("reply_to_comment_id")
+                    if not parent_id:
+                        # 从 URL 中提取
+                        from urllib.parse import urlparse, parse_qs
+                        qs = parse_qs(urlparse(u).query)
+                        parent_id = (qs.get("parent_comment_id") or [None])[0]
+                        if parent_id:
+                            parent_id = int(parent_id)
                     if parent_id:
                         extra_replies.setdefault(parent_id, []).append(item)
             continue
