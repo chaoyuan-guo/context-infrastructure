@@ -137,8 +137,20 @@ def fetch_page(url: str, cookies: list[dict] | None = None) -> dict:
         page.on("response", on_response)
 
         print(f"  加载页面: {url}")
-        page.goto(url, wait_until="networkidle", timeout=60000)
-        time.sleep(3)
+        try:
+            page.goto(url, wait_until="networkidle", timeout=60000)
+        except Exception as e:
+            if "Timeout" in type(e).__name__ or "timeout" in str(e).lower():
+                # Circle.so 有持久连接/轮询，networkidle 可能永远不触发
+                # 降级为等待 domcontentloaded，再 sleep 给 API 拦截时间
+                print(f"  networkidle 超时，降级为 domcontentloaded 继续处理")
+                try:
+                    page.wait_for_load_state("domcontentloaded", timeout=15000)
+                except Exception:
+                    pass
+            else:
+                raise
+        time.sleep(5)
 
         # 展开所有评论和回复（点击 "Show more" 按钮直到没有更多）
         _expand_all_comments(page)
