@@ -92,6 +92,11 @@ def tiptap_to_md(node: dict | None, indent: int = 0) -> str:
         # 无 src 的 oembed（链接预览卡片），用 sgid 占位，由 main.py 从 DOM 数据替换
         return f"[OEMBED:{sgid}]"
 
+    if t == "mention":
+        # mention 节点标记被回复者（@Name），由 main.py extract_reply_to_name 处理
+        # 正文中不重复渲染，返回空字符串
+        return ""
+
     if t == "entity":
         sgid = attrs.get("sgid", "")
         # circle_ios_fallback_text 可能在 attrs 内，也可能在节点顶层

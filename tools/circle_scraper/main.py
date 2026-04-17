@@ -31,6 +31,28 @@ def extract_domain(url: str) -> str:
     return urlparse(url).netloc
 
 
+def extract_reply_to_name(tiptap_body) -> str | None:
+    """从 reply 的 tiptap_body 中提取被回复者的名字。
+
+    Circle.so 在每条 reply 的正文开头插入一个 mention 节点，
+    其 circle_ios_fallback_text 字段值为 "@被回复者"。
+    提取该名字（去掉 @ 前缀）作为 "回复谁" 的信息来源。
+    """
+    if not tiptap_body:
+        return None
+    tb = json.loads(tiptap_body) if isinstance(tiptap_body, str) else tiptap_body
+    body = tb.get("body", tb)
+    for node in (body.get("content") or []):
+        if node.get("type") == "paragraph":
+            for child in (node.get("content") or []):
+                if child.get("type") == "mention":
+                    fallback = child.get("circle_ios_fallback_text", "")
+                    if fallback.startswith("@"):
+                        return fallback[1:]
+            break  # 只看第一个 paragraph
+    return None
+
+
 def build_markdown(post_data: dict, body_md: str, comments: list, url: str, domain: str,
                    oembed_links: list | None = None, post_id_map: dict | None = None,
                    comment_img_srcs: list | None = None) -> str:
@@ -65,7 +87,15 @@ def build_markdown(post_data: dict, body_md: str, comments: list, url: str, doma
                 rb = replace_media(rb, comment_img_srcs, [],
                                    oembed_links=oembed_links,
                                    post_id_map=post_id_map, domain=domain)
-                lines += ["", f"**↳ {ra}** *{rt}*", "", rb.strip()]
+
+                # 从 mention 节点提取被回复者名字（"谁对谁说"）
+                reply_to_name = extract_reply_to_name(r.get("tiptap_body"))
+                if reply_to_name:
+                    reply_header = f"**↳ {ra} → {reply_to_name}** *{rt}*"
+                else:
+                    reply_header = f"**↳ {ra}** *{rt}*"
+
+                lines += ["", reply_header, "", rb.strip()]
 
             parts.append("\n".join(lines))
         comments_section = "\n\n---\n\n## 评论区\n\n" + "\n\n---\n\n".join(parts)
@@ -211,7 +241,10 @@ def main():
     os.makedirs(output_dir, exist_ok=True)
     title = post_data.get("name", "untitled")
     safe_title = re.sub(r'[/\\:*?"<>|]', "", title).strip()
-    out_path = os.path.join(output_dir, f"{safe_title}.md")
+    # 生成 YYMMDD_ 前缀（从 published_at 或 created_at 中提取）
+    published = (post_data.get("published_at") or post_data.get("created_at") or "")[:10]
+    date_prefix = published.replace("-", "")[2:] + "_" if published else ""
+    out_path = os.path.join(output_dir, f"{date_prefix}{safe_title}.md")
     with open(out_path, "w") as f:
         f.write(md)
     print(f"  ✓ {out_path}")
