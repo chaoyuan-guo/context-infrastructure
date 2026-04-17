@@ -3,7 +3,7 @@
 > 来源：<https://www.superlinear.academy/c/news/coding-agent-grep>
 > 作者：Superlinear Academy
 > 发布日期：2026-03-27
-> 平台：Superlinear Academy (Circle.so)
+> 平台：Superlinear Academy
 
 ---
 
@@ -126,13 +126,21 @@ Agent 的每一次搜索结果都要被序列化成文本，送进 LLM 的 conte
 Claude Code 的 lsp-tools 插件提供了一个清晰的决策矩阵：
 
 | 需求 | 工具 |
+
 |------|------|
+
 | 函数定义在哪里 | LSP: goToDefinition |
+
 | 谁调用了这个函数 | LSP: findReferences |
+
 | 这个类型的签名是什么 | LSP: hover |
+
 | 找 TODO/FIXME 注释 | Grep |
+
 | 搜索配置值 | Grep |
+
 | 按文件名模式查找文件 | Glob |
+
 ([zircote.com: LSP Tools Plugin for Claude Code](https://zircote.com/blog/2025/12/lsp-tools-plugin-for-claude-code/))
 
 这个矩阵的核心逻辑是：LSP 用于语义操作（理解代码结构、类型、关系），grep 用于文本操作（搜索字面内容）。两者不是同一维度上的竞品。
@@ -252,3 +260,4 @@ Anthropic 在 agent 设计指南中的表述也印证了这一点：
 - ast-grep: [GitHub](https://github.com/ast-grep/ast-grep), [Core Concepts](https://ast-grep.github.io/advanced/core-concepts.html)
 
 - OpenCode LSP Setup: [amirteymoori.com](https://amirteymoori.com/lsp-language-server-protocol-ai-coding-tools/)
+
