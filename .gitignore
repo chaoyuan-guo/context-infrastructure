@@ -6,3 +6,4 @@ formal_projects/*
 .vscode/
 .DS_Store
 tools/fetch-leetcode/cache/
+__pycache__/
