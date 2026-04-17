@@ -18,17 +18,22 @@ def detect_proxy(domain: str) -> str | None:
     """检测本地是否存在 Surge/Clash 等透明代理。
 
     判断逻辑：
-    1. 用 socket 解析目标域名，如果 IP 在 198.18.0.0/16 则为 Surge 虚拟 IP
-    2. 依次尝试常见代理端口，curl 能通就返回
+    1. 用 socket 解析目标域名，如果 IP 在 198.18.0.0/16 则为 Surge 虚拟 IP（透明代理）
+       → Surge 已在 OS 层接管流量，Playwright 无需设置显式代理，直连即可
+    2. 域名无法解析或非虚拟 IP → 依次尝试常见代理端口，curl 能通就返回
     """
     import socket
 
     try:
         ip = socket.gethostbyname(domain)
-        if not ip.startswith("198.18."):
-            return None  # 没被劫持，直连即可
+        if ip.startswith("198.18."):
+            # Surge 透明代理：OS 层已接管，Playwright 不设显式代理
+            print(f"  检测到 Surge 透明代理（虚拟 IP {ip}），OS 层已接管，无需显式代理")
+            return None
+        else:
+            return None  # 直连即可
     except Exception:
-        pass  # DNS 解析失败也尝试代理
+        pass  # DNS 解析失败，尝试显式代理
 
     for proxy in PROXY_CANDIDATES:
         try:
