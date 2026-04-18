@@ -12,7 +12,7 @@
 ### Workflow（工作流）
 
 - [Web Article Scraper](./workflow_web_article_scraper.md) ✅ — Circle.so 等 SPA 社区帖子抓取，保存为 Markdown（含图片/链接/视频/评论）
-- [Fetch LeetCode](./workflow_fetch_leetcode.md) ✅ — 从力扣中文站导出所有已通过题目（题目信息、提交记录、最近一次 AC 代码），输出为 Markdown
+- [Fetch LeetCode](./workflow_fetch_leetcode.md) ✅ — 从力扣中文站导出或增量同步已通过题目（题目信息、提交记录、最近一次 AC 代码），输出为 Markdown
 
 ### BestPractice（最佳实践）
 

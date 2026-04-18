@@ -26,7 +26,7 @@ const INITIAL_BACKOFF_MS = 600;
 const CONCURRENCY = 3;
 
 function parseArgs(argv) {
-  const args = { output: DEFAULT_OUTPUT, skipCode: false, resume: false, verify: false };
+  const args = { output: DEFAULT_OUTPUT, skipCode: false, resume: false, verify: false, incremental: false };
 
   for (let index = 0; index < argv.length; index += 1) {
     const current = argv[index];
@@ -51,7 +51,16 @@ function parseArgs(argv) {
       args.verify = true;
       continue;
     }
+    if (current === "--incremental" || current === "-i") {
+      args.incremental = true;
+      continue;
+    }
     throw new Error(`Unknown argument: ${current}`);
+  }
+
+  const enabledModes = [args.resume, args.verify, args.incremental].filter(Boolean).length;
+  if (enabledModes > 1) {
+    throw new Error("--resume, --verify, and --incremental cannot be used together");
   }
 
   return args;
@@ -85,6 +94,25 @@ function formatDateTime(timestamp) {
     minute: "2-digit",
     second: "2-digit",
   }) + " CST";
+}
+
+function parseExportedDateTime(value) {
+  if (!value || value === "N/A") return null;
+
+  const match = value.trim().match(/^(\d{4})[/-](\d{2})[/-](\d{2})\s+(\d{2}):(\d{2}):(\d{2})\s+CST$/);
+  if (!match) {
+    throw new Error(`Unsupported date format: ${value}`);
+  }
+
+  const [, year, month, day, hour, minute, second] = match;
+  return Math.floor(Date.UTC(
+    Number(year),
+    Number(month) - 1,
+    Number(day),
+    Number(hour) - 8,
+    Number(minute),
+    Number(second)
+  ) / 1000);
 }
 
 async function callWithRetry(fn, label) {
@@ -356,6 +384,155 @@ function getLanguageDisplayName(lang) {
   return langMap[lang?.toLowerCase()] || lang || "text";
 }
 
+function parseSubmissionRow(line) {
+  const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
+  if (cells.length !== 6) {
+    throw new Error(`Invalid submission row: ${line}`);
+  }
+
+  const [id, submittedAt, lang, status, runtime, memory] = cells;
+  return {
+    id,
+    timestamp: parseExportedDateTime(submittedAt),
+    lang,
+    status,
+    runtime: runtime === "N/A" ? null : runtime,
+    memory: memory === "N/A" ? null : memory,
+    url: null,
+  };
+}
+
+function parseProblemSection(section) {
+  const lines = section.trim().split(/\r?\n/);
+  const headerMatch = lines[0]?.match(/^## (.+) \(`([^`]+)`\)$/);
+  if (!headerMatch) {
+    throw new Error(`Invalid problem header: ${lines[0] || "(empty)"}`);
+  }
+
+  const [, idAndTitle, slug] = headerMatch;
+  const separatorIndex = idAndTitle.lastIndexOf(". ");
+  if (separatorIndex === -1) {
+    throw new Error(`Invalid problem header body: ${lines[0]}`);
+  }
+
+  const id = idAndTitle.slice(0, separatorIndex).trim();
+  const title = idAndTitle.slice(separatorIndex + 2).trim();
+  const metadata = new Map();
+
+  let index = 1;
+  while (index < lines.length && lines[index] !== "### 提交记录") {
+    const line = lines[index];
+    if (line.startsWith("- ")) {
+      const separator = line.indexOf("：");
+      if (separator !== -1) {
+        metadata.set(line.slice(2, separator), line.slice(separator + 1).trim());
+      }
+    }
+    index += 1;
+  }
+
+  if (lines[index] !== "### 提交记录") {
+    throw new Error(`Missing submission section for ${slug}`);
+  }
+
+  index += 1;
+  while (index < lines.length && lines[index] === "") {
+    index += 1;
+  }
+
+  let submissions = [];
+  if (lines[index] === "暂无提交记录") {
+    index += 1;
+  } else {
+    if (!lines[index]?.startsWith("| 提交ID |") || !lines[index + 1]?.startsWith("| --- |")) {
+      throw new Error(`Invalid submission table for ${slug}`);
+    }
+    index += 2;
+    const rows = [];
+    while (index < lines.length && lines[index].startsWith("|")) {
+      rows.push(lines[index]);
+      index += 1;
+    }
+    submissions = rows.map(parseSubmissionRow);
+  }
+
+  const codeHeadingIndex = lines.indexOf("### 最近一次 AC 代码", index);
+  if (codeHeadingIndex === -1) {
+    throw new Error(`Missing latest AC code section for ${slug}`);
+  }
+
+  index = codeHeadingIndex + 1;
+  while (index < lines.length && lines[index] === "") {
+    index += 1;
+  }
+
+  let code = null;
+  if (lines[index] !== "（暂无 AC 代码）") {
+    if (!lines[index]?.startsWith("```")) {
+      throw new Error(`Invalid code block for ${slug}`);
+    }
+    index += 1;
+    const codeLines = [];
+    while (index < lines.length && lines[index] !== "```") {
+      codeLines.push(lines[index]);
+      index += 1;
+    }
+    if (lines[index] !== "```") {
+      throw new Error(`Unclosed code block for ${slug}`);
+    }
+    code = codeLines.join("\n").trim() || null;
+  }
+
+  const latestAc = getLatestAcSubmission(submissions);
+  const latestSubmissionTime = submissions.length > 0
+    ? Math.max(...submissions.map((submission) => submission.timestamp).filter(Boolean))
+    : null;
+  const tagsValue = metadata.get("标签") || "无";
+  const totalSubmissions = toNumber(metadata.get("总提交次数")) ?? submissions.length;
+
+  return {
+    id,
+    title,
+    slug,
+    difficulty: metadata.get("难度") || "Unknown",
+    tags: tagsValue === "无" ? [] : tagsValue.split(", ").filter(Boolean),
+    submissions,
+    latestAc,
+    code,
+    totalSubmissions,
+    latestSubmissionTime: parseExportedDateTime(metadata.get("最近提交时间")) ?? latestSubmissionTime,
+  };
+}
+
+function parseMarkdownExport(content) {
+  const generatedAtMatch = content.match(/^- 生成时间：(.*)$/m);
+  if (!generatedAtMatch) {
+    throw new Error("Missing generated time in markdown export");
+  }
+
+  const generatedAt = parseExportedDateTime(generatedAtMatch[1].trim());
+  const sections = content
+    .split(/(?=^## )/m)
+    .slice(1)
+    .map((section) => section.trim())
+    .filter(Boolean);
+
+  return {
+    generatedAt,
+    problemsData: sections.map(parseProblemSection),
+  };
+}
+
+function buildCachePayload({ acProblems, problemsData, generatedAt = null, output = null, source = null }) {
+  return {
+    acProblems,
+    problemsData,
+    generatedAt,
+    output,
+    source,
+  };
+}
+
 async function fetchProblemData(session, problemInfo, skipCode = false) {
   // 题目详情和提交记录获取独立，避免一个失败导致整个题目失败
   let detail = null;
@@ -474,8 +651,7 @@ function renderProblemSection(problem) {
   return lines.join("\n");
 }
 
-function renderMarkdown(problemsData, stats) {
-  const now = new Date();
+function renderMarkdown(problemsData, stats, generatedAt = new Date()) {
   const formatStatsDate = (d) => d.toLocaleString("zh-CN", {
     timeZone: "Asia/Shanghai",
     year: "numeric",
@@ -491,7 +667,7 @@ function renderMarkdown(problemsData, stats) {
   const sections = [
     "# LeetCode 提交汇总",
     "",
-    `- 生成时间：${formatStatsDate(now)}`,
+    `- 生成时间：${formatStatsDate(generatedAt)}`,
     `- AC 题目数：${problemsData.length}`,
     `- 总提交数：${totalSubmissions}`,
     "",
@@ -541,13 +717,133 @@ async function loadCache() {
 }
 
 async function main() {
-  const { output, skipCode, resume, verify } = parseArgs(process.argv.slice(2));
+  const { output, skipCode, resume, verify, incremental } = parseArgs(process.argv.slice(2));
 
   if (!process.env.LEETCODE_SESSION) {
     throw new Error("LEETCODE_SESSION is not set");
   }
 
   const session = process.env.LEETCODE_SESSION;
+
+  if (incremental) {
+    console.log("=== Incremental mode ===\n");
+
+    const cache = await loadCache();
+    let baseline;
+    try {
+      const previousExport = await readFile(output, "utf8");
+      const parsedExport = parseMarkdownExport(previousExport);
+      const cacheMatchesOutput = cache?.output === output && toNumber(cache.generatedAt) === parsedExport.generatedAt;
+      baseline = cacheMatchesOutput && Array.isArray(cache?.problemsData)
+        ? { generatedAt: parsedExport.generatedAt, problemsData: cache.problemsData }
+        : parsedExport;
+    } catch (error) {
+      if (error?.code === "ENOENT") {
+        throw new Error(`Output file not found: ${output}. Run a full export first.`);
+      }
+      throw new Error(`Failed to parse existing export ${output}: ${error.message}`);
+    }
+
+    console.log(`Loaded baseline export from ${output}`);
+    console.log(`  Generated at: ${formatDateTime(baseline.generatedAt)}`);
+    console.log(`  Baseline problems: ${baseline.problemsData.length}\n`);
+
+    const baselineBySlug = new Map(baseline.problemsData.map((problem) => [problem.slug, problem]));
+
+    const currentAcProblems = await fetchAllAcProblemsFromApi(session);
+    const currentProblemBySlug = new Map(currentAcProblems.map((problem) => [problem.slug, problem]));
+
+    console.log("Fetching server-side submission counts...");
+    const serverQuestions = await fetchServerSubmitCounts(session);
+    const serverCountBySlug = new Map(serverQuestions.map((question) => [question.titleSlug, question.numSubmitted]));
+
+    const problemsToRefresh = [];
+    let newAcProblems = 0;
+    let countMismatches = 0;
+    let serverCountMissing = 0;
+
+    for (const problemInfo of currentAcProblems) {
+      const localProblem = baselineBySlug.get(problemInfo.slug);
+      const serverCount = serverCountBySlug.get(problemInfo.slug);
+
+      if (!localProblem) {
+        problemsToRefresh.push(problemInfo);
+        newAcProblems += 1;
+        continue;
+      }
+
+      if (serverCount === undefined) {
+        problemsToRefresh.push(problemInfo);
+        serverCountMissing += 1;
+        continue;
+      }
+
+      if ((localProblem.totalSubmissions || 0) !== serverCount) {
+        problemsToRefresh.push(problemInfo);
+        countMismatches += 1;
+      }
+    }
+
+    const removedProblems = baseline.problemsData.filter((problem) => !currentProblemBySlug.has(problem.slug)).length;
+    console.log(`Current AC problems: ${currentAcProblems.length}`);
+    console.log(`  New AC problems: ${newAcProblems}`);
+    console.log(`  Submission count changed: ${countMismatches}`);
+    console.log(`  Missing server counts: ${serverCountMissing}`);
+    console.log(`  Removed from current AC list: ${removedProblems}`);
+    console.log(`  Problems to refresh: ${problemsToRefresh.length}\n`);
+
+    const refreshedBySlug = new Map();
+    const failedRefreshes = [];
+
+    if (problemsToRefresh.length > 0) {
+      console.log(`Refreshing changed problems with concurrency ${CONCURRENCY}...\n`);
+      for (let i = 0; i < problemsToRefresh.length; i += CONCURRENCY) {
+        const chunk = problemsToRefresh.slice(i, i + CONCURRENCY);
+        const refreshedChunk = await Promise.all(chunk.map(async (problemInfo, chunkIndex) => {
+          const progress = i + chunkIndex + 1;
+          console.log(`[${progress}/${problemsToRefresh.length}] Refreshing: ${problemInfo.title}...`);
+          try {
+            return await fetchProblemData(session, problemInfo, skipCode);
+          } catch (error) {
+            failedRefreshes.push(problemInfo.slug);
+            console.log(`  -> Failed: ${error.message}`);
+            return null;
+          }
+        }));
+
+        for (const problem of refreshedChunk.filter(Boolean)) {
+          refreshedBySlug.set(problem.slug, problem);
+        }
+        await sleep(REQUEST_DELAY_MS * 2);
+      }
+    }
+
+    if (failedRefreshes.length > 0) {
+      throw new Error(`Incremental refresh failed for ${failedRefreshes.length} problems: ${failedRefreshes.join(", ")}`);
+    }
+
+    const problemsData = currentAcProblems
+      .map((problemInfo) => refreshedBySlug.get(problemInfo.slug) || baselineBySlug.get(problemInfo.slug))
+      .filter(Boolean);
+
+    const exportedAt = new Date();
+    const generatedAt = Math.floor(exportedAt.getTime() / 1000);
+    await saveCache(buildCachePayload({
+      acProblems: currentAcProblems,
+      problemsData,
+      generatedAt,
+      output,
+      source: "incremental",
+    }));
+
+    const totalSubmissions = problemsData.reduce((sum, problem) => sum + (problem.totalSubmissions || 0), 0);
+    const markdown = renderMarkdown(problemsData, { totalSubmissions }, exportedAt);
+    await writeFile(output, markdown, "utf8");
+
+    console.log(`\nExported to ${output}`);
+    console.log(`Total submissions: ${totalSubmissions}`);
+    return;
+  }
 
   // ── verify 模式 ─────────────────────────────────────────────────────────────
   // 用 userProfileQuestions API 拿服务端每题的 numSubmitted，
@@ -620,7 +916,16 @@ async function main() {
     // 统计并生成 markdown
     const total = problems.reduce((s, p) => s + (p.totalSubmissions || 0), 0);
     console.log(`\nTotal submissions: ${total}`);
-    const markdown = renderMarkdown(problems, { totalSubmissions: total });
+    const exportedAt = new Date();
+    const generatedAt = Math.floor(exportedAt.getTime() / 1000);
+    await saveCache(buildCachePayload({
+      acProblems: cache.acProblems,
+      problemsData: problems,
+      generatedAt,
+      output,
+      source: "verify",
+    }));
+    const markdown = renderMarkdown(problems, { totalSubmissions: total }, exportedAt);
     await writeFile(output, markdown, "utf8");
     console.log(`Exported to ${output}`);
     return;
@@ -687,7 +992,7 @@ async function main() {
         // 极端情况下（进程崩溃），已完成但因 null 空位被截断的题目不会写入缓存，需重抓
         if (completed % 10 === 0) {
           const currentData = [...problemsData, ...fetchedData.filter(Boolean)];
-          await saveCache({ acProblems, problemsData: currentData });
+          await saveCache(buildCachePayload({ acProblems, problemsData: currentData, source: "partial" }));
           console.log(`  -> Saved cache (${currentData.length}/${acProblems.length})`);
         }
 
@@ -711,7 +1016,15 @@ async function main() {
   }
 
   // 保存最终缓存
-  await saveCache({ acProblems, problemsData });
+  const exportedAt = new Date();
+  const generatedAt = Math.floor(exportedAt.getTime() / 1000);
+  await saveCache(buildCachePayload({
+    acProblems,
+    problemsData,
+    generatedAt,
+    output,
+    source: resume ? "resume" : "full",
+  }));
 
   console.log(`\nSuccessfully fetched ${problemsData.length}/${acProblems.length} problems`);
 
@@ -724,7 +1037,7 @@ async function main() {
   }
 
   const stats = { totalSubmissions };
-  const markdown = renderMarkdown(problemsData, stats);
+  const markdown = renderMarkdown(problemsData, stats, exportedAt);
 
   await writeFile(output, markdown, "utf8");
   console.log(`\nExported to ${output}`);
