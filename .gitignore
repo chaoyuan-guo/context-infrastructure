@@ -2,6 +2,7 @@ formal_projects/*
 !formal_projects/curated_reads/
 !formal_projects/interview/
 
+.opencode/
 .claude/
 .vscode/
 .DS_Store
