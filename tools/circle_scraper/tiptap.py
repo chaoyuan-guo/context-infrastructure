@@ -1,8 +1,16 @@
-"""tiptap JSON → Markdown 确定性转换器。"""
+"""Circle 帖子正文 → Markdown 转换器。"""
 
 import base64
+import html
 import json
 import re
+
+try:
+    from bs4 import BeautifulSoup, NavigableString, Tag
+except ImportError:  # pragma: no cover - optional dependency
+    BeautifulSoup = None
+    NavigableString = None
+    Tag = None
 
 
 def marks_wrap(text: str, marks: list | None) -> str:
@@ -135,3 +143,114 @@ def parse_tiptap_body(raw) -> str:
     tb = json.loads(raw) if isinstance(raw, str) else raw
     body = tb.get("body", tb)
     return tiptap_to_md(body)
+
+
+def _normalize_inline_text(text: str) -> str:
+    if not text:
+        return ""
+    return re.sub(r"\s+", " ", html.unescape(text))
+
+
+def _render_trix_node(node, indent: int = 0) -> str:
+    if NavigableString is not None and isinstance(node, NavigableString):
+        return _normalize_inline_text(str(node))
+
+    if Tag is None or not isinstance(node, Tag):
+        return ""
+
+    name = node.name.lower()
+
+    if name in {"strong", "b"}:
+        inner = "".join(_render_trix_node(child, indent) for child in node.children).strip()
+        return f"**{inner}**" if inner else ""
+
+    if name in {"em", "i"}:
+        inner = "".join(_render_trix_node(child, indent) for child in node.children).strip()
+        return f"*{inner}*" if inner else ""
+
+    if name == "code":
+        inner = "".join(_render_trix_node(child, indent) for child in node.children).strip()
+        return f"`{inner}`" if inner else ""
+
+    if name == "br":
+        return "\n"
+
+    if name == "a":
+        href = (node.get("href") or "").strip()
+        inner = "".join(_render_trix_node(child, indent) for child in node.children).strip() or href
+        return f"[{inner}]({href})" if href else inner
+
+    if name == "img":
+        src = (node.get("src") or "").strip()
+        alt = (node.get("alt") or "image").strip()
+        return f"![{alt}]({src})" if src else ""
+
+    if name in {"h1", "h2", "h3", "h4", "h5", "h6"}:
+        level = int(name[1])
+        inner = "".join(_render_trix_node(child, indent) for child in node.children).strip()
+        return f"{'#' * level} {inner}\n\n" if inner else ""
+
+    if name == "p":
+        inner = "".join(_render_trix_node(child, indent) for child in node.children).strip()
+        return f"{inner}\n\n" if inner else "\n"
+
+    if name == "blockquote":
+        inner = "".join(_render_trix_node(child, indent) for child in node.children).strip()
+        if not inner:
+            return ""
+        lines = [f"> {line}" if line.strip() else ">" for line in inner.splitlines()]
+        return "\n".join(lines) + "\n\n"
+
+    if name == "ul":
+        items = []
+        for li in node.find_all("li", recursive=False):
+            inner = "".join(_render_trix_node(child, indent + 1) for child in li.children).strip()
+            if inner:
+                items.append(f"{'  ' * indent}- {inner}")
+        return "\n".join(items) + "\n\n" if items else ""
+
+    if name == "ol":
+        items = []
+        for index, li in enumerate(node.find_all("li", recursive=False), 1):
+            inner = "".join(_render_trix_node(child, indent + 1) for child in li.children).strip()
+            if inner:
+                items.append(f"{'  ' * indent}{index}. {inner}")
+        return "\n".join(items) + "\n\n" if items else ""
+
+    return "".join(_render_trix_node(child, indent) for child in node.children)
+
+
+def parse_trix_body(raw_html: str) -> str:
+    if not raw_html:
+        return ""
+
+    if BeautifulSoup is not None:
+        soup = BeautifulSoup(raw_html, "html.parser")
+        md = "".join(_render_trix_node(child) for child in soup.contents)
+        md = re.sub(r"\n{3,}", "\n\n", md)
+        return md.strip()
+
+    # 兜底：在没有 bs4 时保留基础段落结构。
+    md = raw_html
+    md = re.sub(r"<br\s*/?>", "\n", md, flags=re.IGNORECASE)
+    md = re.sub(r"<h([1-6])[^>]*>(.*?)</h\1>", lambda m: f"{'#' * int(m.group(1))} {re.sub(r'<[^>]+>', '', m.group(2)).strip()}\n\n", md, flags=re.IGNORECASE | re.DOTALL)
+    md = re.sub(r"<li[^>]*>(.*?)</li>", lambda m: f"- {re.sub(r'<[^>]+>', '', m.group(1)).strip()}\n", md, flags=re.IGNORECASE | re.DOTALL)
+    md = re.sub(r"<p[^>]*>(.*?)</p>", lambda m: f"{re.sub(r'<[^>]+>', '', m.group(1)).strip()}\n\n", md, flags=re.IGNORECASE | re.DOTALL)
+    md = re.sub(r"<[^>]+>", "", md)
+    md = html.unescape(md)
+    md = re.sub(r"\n{3,}", "\n\n", md)
+    return md.strip()
+
+
+def parse_post_body(data: dict) -> str:
+    if not data:
+        return ""
+
+    if data.get("tiptap_body"):
+        return parse_tiptap_body(data.get("tiptap_body"))
+
+    trix_html = data.get("body_trix_content") or data.get("body_for_editor")
+    if trix_html:
+        return parse_trix_body(trix_html)
+
+    return ""

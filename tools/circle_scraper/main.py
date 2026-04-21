@@ -19,7 +19,7 @@ sys.path.append(os.path.dirname(__file__))
 
 from cookies import load_cookies
 from scraper import fetch_page, diagnose
-from tiptap import parse_tiptap_body
+from tiptap import parse_post_body, parse_tiptap_body
 
 DEFAULT_OUTPUT_DIR = os.path.join(
     os.path.dirname(__file__), "..", "..", "formal_projects", "curated_reads"
@@ -224,7 +224,7 @@ def main():
     post_id_map = diag["post_id_map"]
     oembed_links = list(result.get("comment_oembed_links") or [])  # mutable copy
 
-    body_md = parse_tiptap_body(post_data.get("tiptap_body"))
+    body_md = parse_post_body(post_data)
     body_md = replace_media(
         body_md, result["img_srcs"], result["iframe_srcs"],
         oembed_links=list(oembed_links),  # copy for post body

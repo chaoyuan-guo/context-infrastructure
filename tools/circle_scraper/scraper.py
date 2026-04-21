@@ -217,12 +217,14 @@ def diagnose(captured_api: dict) -> dict:
     ]
 
     post_data = None
-    has_tiptap = False
+    has_body = False
     for u in post_apis:
         d = captured_api[u]
-        if isinstance(d, dict) and d.get("tiptap_body"):
+        if isinstance(d, dict) and (
+            d.get("tiptap_body") or d.get("body_trix_content") or d.get("body_for_editor")
+        ):
             post_data = d
-            has_tiptap = True
+            has_body = True
             break
 
     # 收集评论（多页去重）
@@ -285,7 +287,7 @@ def diagnose(captured_api: dict) -> dict:
     needs_login = False
     diagnosis = ""
 
-    if has_tiptap:
+    if has_body:
         diagnosis = "✓ 帖子正文已获取"
     elif not post_apis:
         needs_login = True
@@ -304,7 +306,7 @@ def diagnose(captured_api: dict) -> dict:
 
     return {
         "has_post": bool(post_apis),
-        "has_tiptap": has_tiptap,
+        "has_tiptap": has_body,
         "needs_login": needs_login,
         "post_data": post_data,
         "comments": comments,
