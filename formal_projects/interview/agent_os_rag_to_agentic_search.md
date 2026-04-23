@@ -111,12 +111,10 @@ OpenCode 对这个项目最大的价值不在某个单点功能，而是它把�
 按照实际落地后的体感，三件事的解决程度差别很大。
 
 1. **context 管理：基本解决。** OpenCode 把 context 拆成"工作 context + 外置文件状态"，bash 输出可以选择性回写，子 agent 跑完只回传摘要。再配合 `experimental.session.compacting` hook 自定义压缩时哪些信息必须保留，第二阶段那个"压缩摘要把关键决策依据抹掉"的具体坑就被堵住了。
-2. **状态管理：runtime 内的 session 状态解决了，工具侧的事务和回滚是开放问题。** session 历史、消息流、todo、文件读写、permission 状态，OpenCode 都管。但 agent 调一个有副作用的工具失败了怎么回滚，这件事任何 runtime 都不管，业内（Microsoft Agent Framework、LangGraph 都一样）都是开放问题。工程上能走的就两条路：让工具本身可逆或幂等（事务 + idempotency key + 显式补偿，本质是 saga）；关键操作前用 `tool.execute.before` hook 拦下来人工审批或外部系统校验。要强调的是这两件事都是工具层和契约层的责任，runtime 帮不上忙。
+2. **状态管理：runtime 内的 session 状态解决了，工具侧的失败回滚是开放问题，必须靠工具自己的设计来兜底。** session 历史、消息流、todo、文件读写、permission 状态，OpenCode 都管。但 agent 调一个有副作用的工具失败了怎么回滚，任何 runtime 都不管，业内（Microsoft Agent Framework、LangGraph 都一样）都是开放问题。落到工程上，能给工具加的约束有两层：第一层是单工具内部要么可逆要么幂等——可逆是说一次做完，失败自动回到原样；幂等是说同一个调用重试多次结果一样，避免 agent 不知道上次有没有成功就盲目重试出脏数据。第二层是跨多个工具的业务操作要给每一步配一个反操作，失败时按倒序撤销，工程上有成熟方案（saga 模式），但落到 agent 场景属于开放问题，业内还在探索。如果做不到这两层，最稳妥的兜底是用 `tool.execute.before` hook 在关键操作前拦下来人工审批或外部系统校验。要强调的是这些都是工具层和契约层的责任，runtime 帮不上忙。
 3. **可观测性：开箱够用，工业级靠生态。** OpenCode 自带结构化日志（`client.app.log()` 分级输出），看每步发生了什么够用，但没有 LangSmith 那种 trace tree、token cost、replay 的成品。需要的话靠 plugin 补：`opencode-otel` 把 session/message/tool call 导成 OpenTelemetry，能接 Jaeger / Tempo / Honeycomb 任意 OTLP 后端；`opencode-plugin-langfuse` 直接接 Langfuse，体验最接近 LangSmith。官方在跟进 native OTLP export，issue 编号 14697。
 
 也就是说，第三阶段更准确的说法不是"三个坑都解决了"，而是 context 这条线 runtime 直接收掉，可观测性靠生态补齐，状态管理则是把"runtime 该管的"和"工具/契约层该管的"明确切开。这个切分本身就是阶段三最重要的认知收获。
-
-这背后还有一个生态层面的判断。Coding agent 是模型提供商当前主动适配的方向，工具调用格式、context 压缩策略、长 context 稳定性这些长尾问题，由整个生态一起摊。自己写 runtime，相当于把这些问题自己扛，跟模型迭代速度赛跑。站在通用 coding agent runtime 上，等于让 runtime 跟着模型生态一起进步，长期回报远高于一次性的自研投入。
 
 到了这一步，项目重点不再是堆 workflow，也不再是打磨自己的 runtime，而是收成三件事：先看 query 属于哪种知识形态；为这类 query 选对检索和执行路径；把结果对不对的标准写清楚，再用 skill 和验证逻辑把它固定下来。
 
