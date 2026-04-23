@@ -8,3 +8,4 @@ formal_projects/*
 .DS_Store
 tools/fetch-leetcode/cache/
 __pycache__/
+contexts/agent_traces/

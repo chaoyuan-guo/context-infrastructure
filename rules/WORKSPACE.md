@@ -15,6 +15,7 @@
 - 通用调研报告：`contexts/survey_sessions/`
 - 思考 / 复盘 / 方法论：`contexts/thought_review/`
 - 每日日志：`contexts/daily_records/`
+- Agent 对话轨迹与长期行为记录：`contexts/agent_traces/`
 
 ### 系统与规则
 - 可复用技术方案 / Skill：`rules/skills/`
