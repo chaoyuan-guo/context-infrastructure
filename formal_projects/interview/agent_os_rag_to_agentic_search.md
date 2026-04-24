@@ -1,6 +1,6 @@
 # Agent OS 项目经验底稿：从传统 RAG 到 Agentic Search + OpenCode Runtime
 
-> 用途：面试底稿，便于临场翻阅与被追问时定位细节。
+> 用途：面试底稿，尽可能的提前穷尽面试官可能会问的一切，以免在面试时陷入被动。
 > 结构：每节一张卡片，正文 + 表格 + 引用块。附录保留可深挖的技术细节。
 > 待办：聚合分析样例当前是脱敏同构版本，面试前替换成真实客户案例。
 
@@ -154,9 +154,13 @@ context 管理，基本解决。OpenCode 把 context 拆成「工作 context + �
 | 需求 | 方案 |
 |---|---|
 | 看每步发生了什么 | `client.app.log()` 结构化日志，分级输出 |
-| trace tree、token cost、replay | `opencode-otel` 导成 OpenTelemetry，接 Jaeger / Tempo / Honeycomb |
-| 类 LangSmith 体验 | `opencode-plugin-langfuse` 直接接 Langfuse |
-| 官方 native 支持 | issue #14697 在跟进 OTLP export |
+| trace tree、token cost、prompt/response 检视、replay | 当前用 Arize Phoenix。OpenCode 没有原生 OTLP export，自写 plugin (`phoenix-otel.ts`) 把 session/tool 事件按 OpenTelemetry 协议导到本地 Phoenix server (OTLP gRPC 4317，UI 6006)，靠 `experimental.openTelemetry` 开关挂上去 |
+
+什么时候会换：
+
+- 团队整体接入了 Grafana 栈，想把 LLM trace 和系统指标放一处看 → 把 OTLP 同时导一份到 Tempo，Phoenix 仍然保留作为 LLM 视图。
+- 开始做线上 prompt A/B 和系统化评测流水线 → 评估迁到 Langfuse，或 Phoenix + 单独的 prompt registry。
+- 业务真上微服务化、要做跨服务根因分析 → 才考虑 Jaeger 或 Honeycomb 这类通用后端。
 
 更准确的说法是：context 由 runtime 直接收掉，可观测性靠生态补齐，状态管理则把「runtime 该管的」和「工具/契约层该管的」明确切开。这个切分本身就是这一阶段的认知收获。
 
@@ -301,20 +305,20 @@ OpenCode 体系里子 agent 编排两种方式。task tool 是同 session 内主
 | 能力边界扩展 | 从只处理事实性问答，到覆盖程序性查询（业务流程 + 结构化分析），到覆盖判断性问题 |
 | 架构判断力成熟 | 从倾向自己造轮子，到知道哪一层该交出去、哪一层自己守 |
 
-面试官问「这个项目难在哪」，建议讲第三层。前两层不少团队都做过，第三层更能体现对 agent 系统工程边界的理解。
+面试官问「这个项目难在哪」，建议讲第三层。前两层很多团队都有，第三层更能体现对 agent 系统边界的认知。
 
 ### 4.2 留下的 6 个判断
 
 1. 召回是上限。事实性问答先把召回做对，再谈排序和生成。
 2. 知识形态决定检索范式。事实性、程序性、判断性三类不该用同一套方法硬打；程序性内部还要再分流程编排和结构化分析。
-3. 固定 workflow 不是落后，是模型能力不够时保留确定性的合理手段。
+3. 模型能力不够时，固定 workflow 是保留确定性的合理手段，谈不上落后。
 4. 自研 runtime 的成本不在功能开发，在 context 工程、状态管理、可观测性。
 5. runtime 这一层值得交给生态。应用层精力放在契约层、skill、业务结果定义上。
 6. 选 agent 的主干工具，看失败模式可不可判别，不看能力强不强。
 
 ### 4.3 一句话版本
 
-> 这个项目让我从「怎么把 RAG 调得更准」，走到「怎么给不同类型的 query 选对范式」，再走到「什么该自己做、什么该复用成熟 runtime」。分水岭不在模型层，在 runtime 层和契约层。
+> 项目走过三步：把 RAG 调准；给不同类型的 query 选对范式；划清自研和复用 runtime 的边界。难点在 runtime 层和契约层，不在模型层。
 
 ---
 
