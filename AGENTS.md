@@ -22,7 +22,7 @@ Don't ask permission. Just do it.
 
 ### Formal Project Activation
 
-当任务已经落到 `formal_projects/<project>/` 下的某个具体项目时，先读该项目根目录的 `AGENTS.md`，再继续工作。
+当任务已经落到 `formal_projects/<project>/` 下的某个具体项目时，先读该项目根目录的 `AGENTS.md`（如有），再继续工作。
 
 触发条件：
 
