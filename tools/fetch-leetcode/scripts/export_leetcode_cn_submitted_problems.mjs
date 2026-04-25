@@ -26,7 +26,7 @@ const INITIAL_BACKOFF_MS = 600;
 const CONCURRENCY = 3;
 
 function parseArgs(argv) {
-  const args = { output: DEFAULT_OUTPUT, skipCode: false, resume: false, verify: false, incremental: false };
+  const args = { output: DEFAULT_OUTPUT, skipCode: false, resume: false, verify: false, incremental: false, audit: false };
 
   for (let index = 0; index < argv.length; index += 1) {
     const current = argv[index];
@@ -55,12 +55,16 @@ function parseArgs(argv) {
       args.incremental = true;
       continue;
     }
+    if (current === "--audit" || current === "-a") {
+      args.audit = true;
+      continue;
+    }
     throw new Error(`Unknown argument: ${current}`);
   }
 
-  const enabledModes = [args.resume, args.verify, args.incremental].filter(Boolean).length;
+  const enabledModes = [args.resume, args.verify, args.incremental, args.audit].filter(Boolean).length;
   if (enabledModes > 1) {
-    throw new Error("--resume, --verify, and --incremental cannot be used together");
+    throw new Error("--resume, --verify, --incremental, and --audit cannot be used together");
   }
 
   return args;
@@ -523,6 +527,238 @@ function parseMarkdownExport(content) {
   };
 }
 
+function findSubmissionConflicts(problemsData) {
+  const ownersBySubmissionId = new Map();
+
+  for (const problem of problemsData) {
+    const seenIds = new Set();
+    for (const submission of problem.submissions || []) {
+      const submissionId = submission?.id ? String(submission.id) : null;
+      if (!submissionId || seenIds.has(submissionId)) {
+        continue;
+      }
+      seenIds.add(submissionId);
+
+      const owners = ownersBySubmissionId.get(submissionId) || [];
+      owners.push(problem.slug);
+      ownersBySubmissionId.set(submissionId, owners);
+    }
+  }
+
+  const conflictsBySlug = new Map();
+  for (const [submissionId, owners] of ownersBySubmissionId) {
+    const uniqueOwners = [...new Set(owners)];
+    if (uniqueOwners.length <= 1) {
+      continue;
+    }
+
+    for (const slug of uniqueOwners) {
+      const entry = conflictsBySlug.get(slug) || {
+        submissionIds: new Set(),
+        relatedSlugs: new Set(),
+      };
+      entry.submissionIds.add(submissionId);
+      for (const otherSlug of uniqueOwners) {
+        if (otherSlug !== slug) {
+          entry.relatedSlugs.add(otherSlug);
+        }
+      }
+      conflictsBySlug.set(slug, entry);
+    }
+  }
+
+  return conflictsBySlug;
+}
+
+function formatSubmissionConflictSummary(conflictsBySlug, maxItems = 5) {
+  return [...conflictsBySlug.entries()]
+    .slice(0, maxItems)
+    .map(([slug, conflict]) => {
+      const ids = [...conflict.submissionIds].slice(0, 3).join(", ");
+      const related = [...conflict.relatedSlugs].join(", ");
+      return `${slug} <-> ${related} [${ids}]`;
+    })
+    .join("; ");
+}
+
+function buildAuditReport(problemsData) {
+  const issues = [];
+  const ownersBySubmissionId = new Map();
+  const ownersBySubmissionSequence = new Map();
+  const ownersByCode = new Map();
+
+  for (const problem of problemsData) {
+    const submissions = problem.submissions || [];
+    const submissionIds = [];
+    const seenIds = new Set();
+    const timestamps = [];
+
+    for (const submission of submissions) {
+      const submissionId = submission?.id ? String(submission.id) : null;
+      if (!submissionId) {
+        continue;
+      }
+      submissionIds.push(submissionId);
+      timestamps.push(submission.timestamp);
+
+      if (seenIds.has(submissionId)) {
+        issues.push({
+          slug: problem.slug,
+          type: "duplicate_submission_id_within_problem",
+          detail: submissionId,
+        });
+        continue;
+      }
+      seenIds.add(submissionId);
+
+      const owners = ownersBySubmissionId.get(submissionId) || [];
+      owners.push(problem.slug);
+      ownersBySubmissionId.set(submissionId, owners);
+    }
+
+    if ((problem.totalSubmissions || 0) !== submissions.length) {
+      issues.push({
+        slug: problem.slug,
+        type: "submission_count_mismatch",
+        detail: `meta=${problem.totalSubmissions} rows=${submissions.length}`,
+      });
+    }
+
+    for (let index = 0; index < submissions.length - 1; index += 1) {
+      const current = submissions[index]?.timestamp;
+      const next = submissions[index + 1]?.timestamp;
+      if (current && next && current < next) {
+        issues.push({ slug: problem.slug, type: "submission_order_not_desc", detail: null });
+        break;
+      }
+    }
+
+    const latestSubmissionTime = timestamps.filter(Boolean).length > 0
+      ? Math.max(...timestamps.filter(Boolean))
+      : null;
+    if ((problem.latestSubmissionTime || null) !== latestSubmissionTime) {
+      issues.push({
+        slug: problem.slug,
+        type: "latest_submission_time_mismatch",
+        detail: `meta=${problem.latestSubmissionTime || "N/A"} max=${latestSubmissionTime || "N/A"}`,
+      });
+    }
+
+    if (!problem.latestAc) {
+      issues.push({ slug: problem.slug, type: "missing_latest_ac", detail: null });
+    }
+
+    if (!problem.code) {
+      issues.push({ slug: problem.slug, type: "missing_ac_code", detail: null });
+    }
+
+    if (submissionIds.length > 0) {
+      const key = JSON.stringify(submissionIds);
+      const owners = ownersBySubmissionSequence.get(key) || [];
+      owners.push(problem.slug);
+      ownersBySubmissionSequence.set(key, owners);
+    }
+
+    if (problem.code) {
+      const owners = ownersByCode.get(problem.code) || [];
+      owners.push(problem.slug);
+      ownersByCode.set(problem.code, owners);
+    }
+  }
+
+  const crossProblemSubmissionConflicts = [];
+  for (const [submissionId, owners] of ownersBySubmissionId) {
+    const uniqueOwners = [...new Set(owners)];
+    if (uniqueOwners.length > 1) {
+      crossProblemSubmissionConflicts.push({ submissionId, slugs: uniqueOwners });
+    }
+  }
+
+  const identicalSubmissionSequences = [];
+  for (const [key, owners] of ownersBySubmissionSequence) {
+    const uniqueOwners = [...new Set(owners)];
+    if (uniqueOwners.length > 1) {
+      identicalSubmissionSequences.push({
+        slugs: uniqueOwners,
+        submissionCount: JSON.parse(key).length,
+      });
+    }
+  }
+
+  const identicalCodeGroups = [];
+  for (const [code, owners] of ownersByCode) {
+    const uniqueOwners = [...new Set(owners)];
+    if (uniqueOwners.length > 1) {
+      identicalCodeGroups.push({
+        slugs: uniqueOwners,
+        defs: [...code.matchAll(/def\s+(\w+)\(/g)].map((match) => match[1]).slice(0, 3),
+      });
+    }
+  }
+
+  return {
+    totalProblems: problemsData.length,
+    issues,
+    crossProblemSubmissionConflicts,
+    identicalSubmissionSequences,
+    identicalCodeGroups,
+  };
+}
+
+function printAuditReport(report) {
+  console.log("=== Audit mode ===\n");
+  console.log(`Problems scanned: ${report.totalProblems}`);
+  console.log(`Local issues: ${report.issues.length}`);
+  console.log(`Cross-problem submission ID conflicts: ${report.crossProblemSubmissionConflicts.length}`);
+  console.log(`Identical submission sequences: ${report.identicalSubmissionSequences.length}`);
+  console.log(`Identical code groups: ${report.identicalCodeGroups.length}\n`);
+
+  if (report.issues.length > 0) {
+    console.log("Local issues:");
+    for (const issue of report.issues.slice(0, 20)) {
+      const detail = issue.detail ? ` (${issue.detail})` : "";
+      console.log(`  - ${issue.slug}: ${issue.type}${detail}`);
+    }
+    console.log("");
+  }
+
+  if (report.crossProblemSubmissionConflicts.length > 0) {
+    console.log("Cross-problem submission ID conflicts:");
+    for (const conflict of report.crossProblemSubmissionConflicts.slice(0, 20)) {
+      console.log(`  - ${conflict.submissionId}: ${conflict.slugs.join(", ")}`);
+    }
+    console.log("");
+  }
+
+  if (report.identicalSubmissionSequences.length > 0) {
+    console.log("Identical submission sequences:");
+    for (const group of report.identicalSubmissionSequences.slice(0, 20)) {
+      console.log(`  - ${group.slugs.join(", ")} (${group.submissionCount} submissions)`);
+    }
+    console.log("");
+  }
+
+  if (report.identicalCodeGroups.length > 0) {
+    console.log("Identical code groups:");
+    for (const group of report.identicalCodeGroups.slice(0, 20)) {
+      const defs = group.defs.length > 0 ? ` [${group.defs.join(", ")}]` : "";
+      console.log(`  - ${group.slugs.join(", ")}${defs}`);
+    }
+    console.log("");
+  }
+
+  const hasHardFailures = report.issues.length > 0
+    || report.crossProblemSubmissionConflicts.length > 0
+    || report.identicalSubmissionSequences.length > 0;
+
+  if (!hasHardFailures) {
+    console.log("Audit passed.");
+    return;
+  }
+
+  throw new Error("Audit failed");
+}
+
 function buildCachePayload({ acProblems, problemsData, generatedAt = null, output = null, source = null }) {
   return {
     acProblems,
@@ -717,7 +953,15 @@ async function loadCache() {
 }
 
 async function main() {
-  const { output, skipCode, resume, verify, incremental } = parseArgs(process.argv.slice(2));
+  const { output, skipCode, resume, verify, incremental, audit } = parseArgs(process.argv.slice(2));
+
+  if (audit) {
+    const exportContent = await readFile(output, "utf8");
+    const parsedExport = parseMarkdownExport(exportContent);
+    const auditReport = buildAuditReport(parsedExport.problemsData);
+    printAuditReport(auditReport);
+    return;
+  }
 
   if (!process.env.LEETCODE_SESSION) {
     throw new Error("LEETCODE_SESSION is not set");
@@ -749,6 +993,7 @@ async function main() {
     console.log(`  Baseline problems: ${baseline.problemsData.length}\n`);
 
     const baselineBySlug = new Map(baseline.problemsData.map((problem) => [problem.slug, problem]));
+    const baselineSubmissionConflicts = findSubmissionConflicts(baseline.problemsData);
 
     const currentAcProblems = await fetchAllAcProblemsFromApi(session);
     const currentProblemBySlug = new Map(currentAcProblems.map((problem) => [problem.slug, problem]));
@@ -758,28 +1003,44 @@ async function main() {
     const serverCountBySlug = new Map(serverQuestions.map((question) => [question.titleSlug, question.numSubmitted]));
 
     const problemsToRefresh = [];
+    const refreshReasons = new Map();
     let newAcProblems = 0;
     let countMismatches = 0;
     let serverCountMissing = 0;
+    let integrityConflicts = 0;
+
+    const markForRefresh = (problemInfo, reason) => {
+      if (!refreshReasons.has(problemInfo.slug)) {
+        problemsToRefresh.push(problemInfo);
+        refreshReasons.set(problemInfo.slug, new Set());
+      }
+      refreshReasons.get(problemInfo.slug).add(reason);
+    };
 
     for (const problemInfo of currentAcProblems) {
       const localProblem = baselineBySlug.get(problemInfo.slug);
       const serverCount = serverCountBySlug.get(problemInfo.slug);
 
       if (!localProblem) {
-        problemsToRefresh.push(problemInfo);
+        markForRefresh(problemInfo, "new_ac_problem");
         newAcProblems += 1;
         continue;
       }
 
+      if (baselineSubmissionConflicts.has(problemInfo.slug)) {
+        markForRefresh(problemInfo, "duplicate_submission_ids");
+        integrityConflicts += 1;
+        continue;
+      }
+
       if (serverCount === undefined) {
-        problemsToRefresh.push(problemInfo);
+        markForRefresh(problemInfo, "missing_server_count");
         serverCountMissing += 1;
         continue;
       }
 
       if ((localProblem.totalSubmissions || 0) !== serverCount) {
-        problemsToRefresh.push(problemInfo);
+        markForRefresh(problemInfo, "submission_count_mismatch");
         countMismatches += 1;
       }
     }
@@ -789,8 +1050,13 @@ async function main() {
     console.log(`  New AC problems: ${newAcProblems}`);
     console.log(`  Submission count changed: ${countMismatches}`);
     console.log(`  Missing server counts: ${serverCountMissing}`);
+    console.log(`  Duplicate submission IDs: ${integrityConflicts}`);
     console.log(`  Removed from current AC list: ${removedProblems}`);
     console.log(`  Problems to refresh: ${problemsToRefresh.length}\n`);
+
+    if (baselineSubmissionConflicts.size > 0) {
+      console.log(`  Baseline conflict sample: ${formatSubmissionConflictSummary(baselineSubmissionConflicts)}`);
+    }
 
     const refreshedBySlug = new Map();
     const failedRefreshes = [];
@@ -801,7 +1067,8 @@ async function main() {
         const chunk = problemsToRefresh.slice(i, i + CONCURRENCY);
         const refreshedChunk = await Promise.all(chunk.map(async (problemInfo, chunkIndex) => {
           const progress = i + chunkIndex + 1;
-          console.log(`[${progress}/${problemsToRefresh.length}] Refreshing: ${problemInfo.title}...`);
+          const reasons = [...(refreshReasons.get(problemInfo.slug) || [])].join(", ");
+          console.log(`[${progress}/${problemsToRefresh.length}] Refreshing: ${problemInfo.title} (${reasons})...`);
           try {
             return await fetchProblemData(session, problemInfo, skipCode);
           } catch (error) {
@@ -857,6 +1124,7 @@ async function main() {
     }
 
     const problems = cache.problemsData;
+    const problemsBySlug = new Map(problems.map((problem) => [problem.slug, problem]));
     const slugToIdx = {};
     for (let i = 0; i < problems.length; i++) {
       slugToIdx[problems[i].slug] = i;
@@ -866,7 +1134,17 @@ async function main() {
     const serverQuestions = await fetchServerSubmitCounts(session);
     console.log(`Server: ${serverQuestions.length} AC problems\n`);
 
+    const submissionConflicts = findSubmissionConflicts(problems);
     const toRetry = [];
+    const retryReasons = new Map();
+    const addRetry = (slug, payload, reason) => {
+      if (!retryReasons.has(slug)) {
+        toRetry.push(payload);
+        retryReasons.set(slug, new Set());
+      }
+      retryReasons.get(slug).add(reason);
+    };
+
     for (const sq of serverQuestions) {
       const idx = slugToIdx[sq.titleSlug];
       if (idx === undefined) {
@@ -875,11 +1153,38 @@ async function main() {
       }
       const ours = problems[idx].totalSubmissions || 0;
       if (ours !== sq.numSubmitted) {
-        toRetry.push({ idx, slug: sq.titleSlug, title: sq.title, serverCount: sq.numSubmitted, ourCount: ours });
+        addRetry(
+          sq.titleSlug,
+          { idx, slug: sq.titleSlug, title: sq.title, serverCount: sq.numSubmitted, ourCount: ours },
+          "submission_count_mismatch"
+        );
       }
     }
 
-    console.log(`Found ${toRetry.length} problems with submission count mismatch\n`);
+    for (const [slug] of submissionConflicts) {
+      const idx = slugToIdx[slug];
+      if (idx === undefined) {
+        continue;
+      }
+      const problem = problemsBySlug.get(slug);
+      addRetry(
+        slug,
+        {
+          idx,
+          slug,
+          title: problem?.title || slug,
+          serverCount: problem?.totalSubmissions || 0,
+          ourCount: problem?.totalSubmissions || 0,
+        },
+        "duplicate_submission_ids"
+      );
+    }
+
+    console.log(`Found ${toRetry.length} problems needing refresh\n`);
+    if (submissionConflicts.size > 0) {
+      console.log(`Detected duplicate submission IDs in cache: ${submissionConflicts.size}`);
+      console.log(`  Conflict sample: ${formatSubmissionConflictSummary(submissionConflicts)}\n`);
+    }
 
     if (toRetry.length > 0) {
       const VERIFY_CONCURRENCY = 2;
@@ -889,7 +1194,8 @@ async function main() {
         const chunk = toRetry.slice(b, b + VERIFY_CONCURRENCY);
         await Promise.all(chunk.map(async (item, chunkIdx) => {
           const { idx, slug, title, serverCount, ourCount } = item;
-          console.log(`[${b + chunkIdx + 1}/${toRetry.length}] ${title} (${slug}): server=${serverCount} ours=${ourCount}`);
+          const reasons = [...(retryReasons.get(slug) || [])].join(", ");
+          console.log(`[${b + chunkIdx + 1}/${toRetry.length}] ${title} (${slug}): server=${serverCount} ours=${ourCount} reasons=${reasons}`);
           try {
             // 使用 problemsData 里已有的基础信息作为 problemInfo
             const problemInfo = {

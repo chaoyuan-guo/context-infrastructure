@@ -54,9 +54,10 @@ node tools/fetch-leetcode/scripts/export_leetcode_cn_submitted_problems.mjs \
 - `--resume`：从 cache 断点续传。适合全量抓取中途中断后继续。
 - `--verify`：与服务端逐题对比提交次数，只重抓有差异的题目。适合补抓和修复。
 - `--incremental`：基于现有导出文件做增量更新，只重抓发生变化的题目，并自动补入新 AC 题。
+- `--audit`：只审计本地导出文件的一致性，不访问 LeetCode。用于检查 submission ID 串题、统计不一致、缺少 AC 代码等问题。
 - `--skip-code`：跳过最近一次 AC 代码抓取，只保留题目信息和提交记录。
 
-约束：`--resume`、`--verify`、`--incremental` 三者互斥。
+约束：`--resume`、`--verify`、`--incremental`、`--audit` 四者互斥。
 
 ### 2.3 前置依赖
 ```bash
@@ -100,12 +101,25 @@ export LEETCODE_SESSION="<你的 session 值>"
    ```
 
 5. **需要更快但不抓代码时**：
+    ```bash
+    node tools/fetch-leetcode/scripts/export_leetcode_cn_submitted_problems.mjs \
+        --output formal_projects/leetcode/leetcode_submissions.md \
+        --incremental \
+        --skip-code
+    ```
+
+6. **导出后做一致性审计**：
    ```bash
    node tools/fetch-leetcode/scripts/export_leetcode_cn_submitted_problems.mjs \
        --output formal_projects/leetcode/leetcode_submissions.md \
-       --incremental \
-       --skip-code
+       --audit
    ```
+   这会本地扫描导出结果，检查以下问题：
+   - 题内 `总提交次数` 与表格行数不一致
+   - `最近提交时间` 与最新提交记录不一致
+   - 题内缺少 Accepted 提交或缺少 AC 代码
+   - 不同题目共用同一个 submission ID
+   - 不同题目拥有完全相同的提交序列
 
 ---
 
