@@ -247,9 +247,16 @@ def main():
     out_path = os.path.join(output_dir, f"{date_prefix}{safe_title}.md")
     with open(out_path, "w") as f:
         f.write(md)
+    top_level_comment_count = len(diag["comments"])
+    reply_count = sum(len(c.get("replies") or []) for c in diag["comments"])
+    total_comment_count = top_level_comment_count + reply_count
+
     print(f"  ✓ {out_path}")
     print(f"  标题: {title}")
-    print(f"  正文: {len(body_md)} 字符, 评论: {len(diag['comments'])} 条")
+    print(
+        f"  正文: {len(body_md)} 字符, 评论: {total_comment_count} 条"
+        f"（{top_level_comment_count} 条评论 + {reply_count} 条回复）"
+    )
 
 
 if __name__ == "__main__":
