@@ -4,7 +4,7 @@
 
 This folder is home. Treat it that way.
 
-## Every Session
+## Every Session (VERY IMPORTANT!!!)
 
 Before doing anything else:
 
