@@ -168,13 +168,29 @@ def fetch_page(url: str, cookies: list[dict] | None = None) -> dict:
             "[data-testid='comment-body'] img", "els => els.map(e => e.src)"
         )
 
-        # 评论区 oembed 链接预览卡片
+        # 正文区 oembed 链接预览卡片
         # Circle.so 渲染 embed 节点为 .node-embed 内的 <a> 标签
+        post_oembed_links = page.evaluate("""() => {
+            const results = [];
+            const embeds = document.querySelectorAll("[data-testid='post-body'] .node-embed a[href]");
+            for (const link of embeds) {
+                const img = link.querySelector('img');
+                let text = '';
+                if (img && img.alt) {
+                    text = img.alt;
+                } else {
+                    try { text = new URL(link.href).hostname; } catch(e) { text = link.href; }
+                }
+                results.push({ href: link.href, text: text });
+            }
+            return results;
+        }""")
+
+        # 评论区 oembed 链接预览卡片
         comment_oembed_links = page.evaluate("""() => {
             const results = [];
-            const embeds = document.querySelectorAll('.node-embed a[href]');
+            const embeds = document.querySelectorAll("[data-testid='comment-body'] .node-embed a[href]");
             for (const link of embeds) {
-                // 取 img alt 作为标题（通常是 og:title），否则用 URL hostname
                 const img = link.querySelector('img');
                 let text = '';
                 if (img && img.alt) {
@@ -193,6 +209,7 @@ def fetch_page(url: str, cookies: list[dict] | None = None) -> dict:
         "captured_api": captured_api,
         "img_srcs": img_srcs,
         "iframe_srcs": iframe_srcs,
+        "post_oembed_links": post_oembed_links,
         "comment_img_srcs": comment_img_srcs,
         "comment_oembed_links": comment_oembed_links,
     }

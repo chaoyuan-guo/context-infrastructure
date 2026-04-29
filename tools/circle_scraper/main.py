@@ -167,6 +167,15 @@ def replace_media(body_md: str, img_srcs: list, iframe_srcs: list,
             href = ol.get("href", "")
             if href:
                 return f"[{text}]({href})"
+        # 有些 Circle embed 在 API 中没有 src/url，但 DOM 实际渲染成 iframe 视频。
+        # 这时回退复用 iframe 列表，避免把正文开头的视频链接吞掉。
+        if idx2[0] < len(iframe_srcs):
+            src = iframe_srcs[idx2[0]]
+            idx2[0] += 1
+            yt = re.search(r"youtube\.com/embed/([^?]+)", src)
+            if yt:
+                src = f"https://www.youtube.com/watch?v={yt.group(1)}"
+            return f"[视频]({src})"
         return ""  # 无法解析，移除占位符
     body_md = re.sub(r"\[OEMBED:(.*?)\]", rep_oembed, body_md)
 
@@ -222,18 +231,19 @@ def main():
 
     post_data = diag["post_data"]
     post_id_map = diag["post_id_map"]
-    oembed_links = list(result.get("comment_oembed_links") or [])  # mutable copy
+    post_oembed_links = list(result.get("post_oembed_links") or [])
+    comment_oembed_links = list(result.get("comment_oembed_links") or [])
 
     body_md = parse_post_body(post_data)
     body_md = replace_media(
         body_md, result["img_srcs"], result["iframe_srcs"],
-        oembed_links=list(oembed_links),  # copy for post body
+        oembed_links=list(post_oembed_links),
         post_id_map=post_id_map, domain=domain,
     )
 
     md = build_markdown(
         post_data, body_md, diag["comments"], url, domain,
-        oembed_links=oembed_links, post_id_map=post_id_map,
+        oembed_links=comment_oembed_links, post_id_map=post_id_map,
         comment_img_srcs=result.get("comment_img_srcs", []),
     )
 
