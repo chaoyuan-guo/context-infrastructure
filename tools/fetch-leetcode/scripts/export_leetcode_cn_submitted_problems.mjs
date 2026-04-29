@@ -86,6 +86,10 @@ function toNumber(value) {
   return null;
 }
 
+function hasChineseTitle(value) {
+  return typeof value === "string" && /\p{Script=Han}/u.test(value);
+}
+
 function formatDateTime(timestamp) {
   if (!timestamp) return "N/A";
   const date = new Date(timestamp * 1000);
@@ -1008,6 +1012,7 @@ async function main() {
     let countMismatches = 0;
     let serverCountMissing = 0;
     let integrityConflicts = 0;
+    let englishFallbackTitles = 0;
 
     const markForRefresh = (problemInfo, reason) => {
       if (!refreshReasons.has(problemInfo.slug)) {
@@ -1025,6 +1030,11 @@ async function main() {
         markForRefresh(problemInfo, "new_ac_problem");
         newAcProblems += 1;
         continue;
+      }
+
+      if (!hasChineseTitle(localProblem.title)) {
+        markForRefresh(problemInfo, "english_fallback_title");
+        englishFallbackTitles += 1;
       }
 
       if (baselineSubmissionConflicts.has(problemInfo.slug)) {
@@ -1049,6 +1059,7 @@ async function main() {
     console.log(`Current AC problems: ${currentAcProblems.length}`);
     console.log(`  New AC problems: ${newAcProblems}`);
     console.log(`  Submission count changed: ${countMismatches}`);
+    console.log(`  English fallback titles: ${englishFallbackTitles}`);
     console.log(`  Missing server counts: ${serverCountMissing}`);
     console.log(`  Duplicate submission IDs: ${integrityConflicts}`);
     console.log(`  Removed from current AC list: ${removedProblems}`);
