@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Circle.so 社区帖子抓取工具。
+"""Web Article Scraper: 社区帖子与公众号文章抓取工具。
 
 用法:
-    python tools/circle_scraper/main.py <URL> [--output-dir <dir>]
+    python tools/web_article_scraper/main.py <URL> [--output-dir <dir>]
 
 示例:
-    python tools/circle_scraper/main.py https://www.superlinear.academy/c/share-your-insights/ai-pattern
-    python tools/circle_scraper/main.py https://www.superlinear.academy/c/share-your-insights/ai-pattern --output-dir ./output
+    python tools/web_article_scraper/main.py https://www.superlinear.academy/c/share-your-insights/ai-pattern
+    python tools/web_article_scraper/main.py https://www.superlinear.academy/c/share-your-insights/ai-pattern --output-dir ./output
+    python tools/web_article_scraper/main.py https://mp.weixin.qq.com/s/d1aBQMx-JwLh4H8xlyV0OA
 """
 
 import argparse
@@ -14,21 +15,155 @@ import json
 import os
 import re
 import sys
+from datetime import datetime, timedelta, timezone
+from urllib.request import Request, urlopen
 
 sys.path.append(os.path.dirname(__file__))
 
 from cookies import load_cookies
 from scraper import fetch_page, diagnose
-from tiptap import parse_post_body, parse_tiptap_body
+from tiptap import BeautifulSoup, parse_post_body, parse_tiptap_body, parse_trix_body
 
-DEFAULT_OUTPUT_DIR = os.path.join(
+DEFAULT_OUTPUT_ROOT = os.path.join(
     os.path.dirname(__file__), "..", "..", "formal_projects", "curated_reads"
+)
+WECHAT_USER_AGENT = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/136.0.0.0 Safari/537.36"
 )
 
 
 def extract_domain(url: str) -> str:
     from urllib.parse import urlparse
     return urlparse(url).netloc
+
+
+def detect_site(url: str) -> str:
+    domain = extract_domain(url)
+    if domain == "mp.weixin.qq.com":
+        return "wechat"
+    return "circle"
+
+
+def default_output_dir_for_site(site: str) -> str:
+    if site == "wechat":
+        return os.path.join(DEFAULT_OUTPUT_ROOT, "wechat")
+    return os.path.join(DEFAULT_OUTPUT_ROOT, "superlinear")
+
+
+def save_markdown(output_dir: str, title: str, published: str, markdown: str) -> str:
+    os.makedirs(output_dir, exist_ok=True)
+    safe_title = re.sub(r'[/\\:*?"<>|]', "", title).strip() or "untitled"
+    date_prefix = published[:10].replace("-", "")[2:] + "_" if published else ""
+    out_path = os.path.join(output_dir, f"{date_prefix}{safe_title}.md")
+    with open(out_path, "w") as f:
+        f.write(markdown)
+    return out_path
+
+
+def extract_wechat_publish_time(html_text: str) -> str:
+    create_time_match = re.search(r"var\s+createTime\s*=\s*'([^']+)'", html_text)
+    if create_time_match:
+        return create_time_match.group(1)
+
+    timestamp_match = re.search(r'var\s+ct\s*=\s*"?(\d{10})"?', html_text)
+    if not timestamp_match:
+        return ""
+
+    dt = datetime.fromtimestamp(
+        int(timestamp_match.group(1)), tz=timezone(timedelta(hours=8))
+    )
+    return dt.strftime("%Y-%m-%d %H:%M")
+
+
+def parse_wechat_article(url: str) -> dict:
+    if BeautifulSoup is None:
+        raise RuntimeError("缺少 beautifulsoup4，无法解析微信公众号文章 HTML")
+
+    req = Request(
+        url,
+        headers={
+            "User-Agent": WECHAT_USER_AGENT,
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+            "Referer": "https://mp.weixin.qq.com/",
+        },
+    )
+
+    with urlopen(req, timeout=60) as resp:
+        html_text = resp.read().decode("utf-8", "replace")
+
+    soup = BeautifulSoup(html_text, "html.parser")
+    content = soup.find(id="js_content")
+    if content is None:
+        raise RuntimeError("未找到微信公众号正文容器 #js_content")
+
+    for node in content.select("script, style"):
+        node.decompose()
+
+    title = ""
+    title_node = soup.select_one("#activity-name .js_title_inner")
+    if title_node:
+        title = title_node.get_text(" ", strip=True)
+    if not title:
+        meta_title = soup.select_one('meta[property="og:title"]')
+        title = (meta_title.get("content") or "").strip() if meta_title else ""
+
+    author = ""
+    author_node = soup.select_one("#js_author_name")
+    if author_node:
+        author = author_node.get_text(" ", strip=True)
+    if not author:
+        meta_author = soup.select_one('meta[name="author"]')
+        author = (meta_author.get("content") or "").strip() if meta_author else ""
+
+    account_name = ""
+    account_node = soup.select_one("#js_name")
+    if account_node:
+        account_name = account_node.get_text(" ", strip=True)
+    if not account_name:
+        nickname_match = re.search(r'var\s+nickname\s*=\s*htmlDecode\("([^"]*)"\)', html_text)
+        if nickname_match:
+            account_name = nickname_match.group(1)
+
+    body_md = parse_trix_body(content.decode_contents())
+
+    return {
+        "title": title or "untitled",
+        "author": author or "unknown",
+        "account_name": account_name or "unknown",
+        "published": extract_wechat_publish_time(html_text),
+        "body_md": body_md,
+    }
+
+
+def build_wechat_markdown(article: dict, url: str) -> str:
+    return f"""# {article['title']}
+
+> 来源：<{url}>
+> 作者：{article['author']}
+> 公众号：{article['account_name']}
+> 发布日期：{article['published']}
+> 平台：微信公众号
+
+---
+
+{article['body_md'].strip()}
+"""
+
+
+def scrape_wechat_article(url: str, output_dir: str) -> None:
+    print("[1/3] 获取微信公众号文章 HTML...")
+    article = parse_wechat_article(url)
+
+    print("[2/3] 解析正文...")
+    md = build_wechat_markdown(article, url)
+
+    print("[3/3] 保存文件...")
+    out_path = save_markdown(output_dir, article["title"], article["published"], md)
+    print(f"  ✓ {out_path}")
+    print(f"  标题: {article['title']}")
+    print(f"  正文: {len(article['body_md'])} 字符")
 
 
 def extract_reply_to_name(tiptap_body) -> str | None:
@@ -195,15 +330,8 @@ def replace_media(body_md: str, img_srcs: list, iframe_srcs: list,
     return body_md
 
 
-def main():
-    parser = argparse.ArgumentParser(description="抓取 Circle.so 社区帖子并保存为 Markdown")
-    parser.add_argument("url", help="帖子 URL")
-    parser.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR, help="输出目录")
-    args = parser.parse_args()
-
-    url = args.url
+def scrape_circle_article(url: str, output_dir: str) -> None:
     domain = extract_domain(url)
-    output_dir = os.path.abspath(args.output_dir)
 
     print(f"[1/4] 加载 Cookie...")
     cookies, err = load_cookies(domain)
@@ -248,15 +376,9 @@ def main():
     )
 
     print(f"[4/4] 保存文件...")
-    os.makedirs(output_dir, exist_ok=True)
     title = post_data.get("name", "untitled")
-    safe_title = re.sub(r'[/\\:*?"<>|]', "", title).strip()
-    # 生成 YYMMDD_ 前缀（从 published_at 或 created_at 中提取）
     published = (post_data.get("published_at") or post_data.get("created_at") or "")[:10]
-    date_prefix = published.replace("-", "")[2:] + "_" if published else ""
-    out_path = os.path.join(output_dir, f"{date_prefix}{safe_title}.md")
-    with open(out_path, "w") as f:
-        f.write(md)
+    out_path = save_markdown(output_dir, title, published, md)
     top_level_comment_count = len(diag["comments"])
     reply_count = sum(len(c.get("replies") or []) for c in diag["comments"])
     total_comment_count = top_level_comment_count + reply_count
@@ -267,6 +389,23 @@ def main():
         f"  正文: {len(body_md)} 字符, 评论: {total_comment_count} 条"
         f"（{top_level_comment_count} 条评论 + {reply_count} 条回复）"
     )
+
+
+def main():
+    parser = argparse.ArgumentParser(description="抓取社区帖子或微信公众号文章并保存为 Markdown")
+    parser.add_argument("url", help="帖子 URL")
+    parser.add_argument("--output-dir", help="输出目录")
+    args = parser.parse_args()
+
+    url = args.url
+    site = detect_site(url)
+    output_dir = os.path.abspath(args.output_dir or default_output_dir_for_site(site))
+
+    if site == "wechat":
+        scrape_wechat_article(url, output_dir)
+        return
+
+    scrape_circle_article(url, output_dir)
 
 
 if __name__ == "__main__":

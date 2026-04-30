@@ -148,7 +148,17 @@ def parse_tiptap_body(raw) -> str:
 def _normalize_inline_text(text: str) -> str:
     if not text:
         return ""
+    if not text.strip():
+        return ""
     return re.sub(r"\s+", " ", html.unescape(text))
+
+
+def _normalize_url(url: str) -> str:
+    if not url:
+        return ""
+    if url.startswith("//"):
+        return f"https:{url}"
+    return url
 
 
 def _render_trix_node(node, indent: int = 0) -> str:
@@ -176,14 +186,18 @@ def _render_trix_node(node, indent: int = 0) -> str:
         return "\n"
 
     if name == "a":
-        href = (node.get("href") or "").strip()
+        href = _normalize_url((node.get("href") or "").strip())
         inner = "".join(_render_trix_node(child, indent) for child in node.children).strip() or href
         return f"[{inner}]({href})" if href else inner
 
     if name == "img":
-        src = (node.get("src") or "").strip()
+        src = _normalize_url((node.get("data-src") or node.get("src") or "").strip())
         alt = (node.get("alt") or "image").strip()
         return f"![{alt}]({src})" if src else ""
+
+    if name == "iframe":
+        src = _normalize_url((node.get("src") or "").strip())
+        return f"[视频]({src})" if src else ""
 
     if name in {"h1", "h2", "h3", "h4", "h5", "h6"}:
         level = int(name[1])
