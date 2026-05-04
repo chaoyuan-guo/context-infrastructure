@@ -2,15 +2,16 @@
 """Web Article Scraper: 社区帖子与公众号文章抓取工具。
 
 用法:
-    python tools/web_article_scraper/main.py <URL> [--output-dir <dir>]
+    python tools/web_article_scraper/main.py <URL> [--output-dir <dir>] [--verify] [--json]
 
 示例:
-    python tools/web_article_scraper/main.py https://www.superlinear.academy/c/share-your-insights/ai-pattern
+    python tools/web_article_scraper/main.py https://www.superlinear.academy/c/share-your-insights/ai-pattern --verify --json
     python tools/web_article_scraper/main.py https://www.superlinear.academy/c/share-your-insights/ai-pattern --output-dir ./output
-    python tools/web_article_scraper/main.py https://mp.weixin.qq.com/s/d1aBQMx-JwLh4H8xlyV0OA
+    python tools/web_article_scraper/main.py https://mp.weixin.qq.com/s/d1aBQMx-JwLh4H8xlyV0OA --verify
 """
 
 import argparse
+import contextlib
 import json
 import os
 import re
@@ -57,9 +58,65 @@ def save_markdown(output_dir: str, title: str, published: str, markdown: str) ->
     safe_title = re.sub(r'[/\\:*?"<>|]', "", title).strip() or "untitled"
     date_prefix = published[:10].replace("-", "")[2:] + "_" if published else ""
     out_path = os.path.join(output_dir, f"{date_prefix}{safe_title}.md")
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         f.write(markdown)
     return out_path
+
+
+def verify_output_file(out_path: str, title: str, url: str, body_chars: int) -> list[str]:
+    errors = []
+
+    if not os.path.exists(out_path):
+        return [f"输出文件不存在: {out_path}"]
+
+    if body_chars <= 0:
+        errors.append("正文长度为 0")
+
+    with open(out_path, encoding="utf-8") as f:
+        content = f.read()
+
+    expected_header = f"# {title}"
+    if expected_header not in content:
+        errors.append("文件中缺少标题头")
+
+    expected_source = f"> 来源：<{url}>"
+    if expected_source not in content:
+        errors.append("文件中缺少来源链接")
+
+    if "---" not in content:
+        errors.append("文件中缺少元数据分隔线")
+
+    return errors
+
+
+def build_result(
+    *,
+    site: str,
+    url: str,
+    title: str,
+    author: str,
+    platform: str,
+    published: str,
+    output_path: str,
+    body_chars: int,
+    top_level_comments: int = 0,
+    reply_count: int = 0,
+) -> dict:
+    return {
+        "site": site,
+        "url": url,
+        "title": title,
+        "author": author,
+        "platform": platform,
+        "published": published,
+        "output_path": output_path,
+        "body_chars": body_chars,
+        "top_level_comments": top_level_comments,
+        "reply_count": reply_count,
+        "total_comments": top_level_comments + reply_count,
+        "verified": None,
+        "verification_errors": [],
+    }
 
 
 def extract_wechat_publish_time(html_text: str) -> str:
@@ -152,7 +209,7 @@ def build_wechat_markdown(article: dict, url: str) -> str:
 """
 
 
-def scrape_wechat_article(url: str, output_dir: str) -> None:
+def scrape_wechat_article(url: str, output_dir: str) -> dict:
     print("[1/3] 获取微信公众号文章 HTML...")
     article = parse_wechat_article(url)
 
@@ -164,6 +221,17 @@ def scrape_wechat_article(url: str, output_dir: str) -> None:
     print(f"  ✓ {out_path}")
     print(f"  标题: {article['title']}")
     print(f"  正文: {len(article['body_md'])} 字符")
+
+    return build_result(
+        site="wechat",
+        url=url,
+        title=article["title"],
+        author=article["author"],
+        platform="微信公众号",
+        published=article["published"],
+        output_path=out_path,
+        body_chars=len(article["body_md"]),
+    )
 
 
 def extract_reply_to_name(tiptap_body) -> str | None:
@@ -195,7 +263,6 @@ def build_markdown(post_data: dict, body_md: str, comments: list, url: str, doma
     title = post_data.get("name", "untitled")
     author = (post_data.get("community_member") or {}).get("name", "unknown")
     published = (post_data.get("published_at") or post_data.get("created_at") or "")[:10]
-    slug = post_data.get("slug", "")
 
     oembed_links = list(oembed_links or [])
     post_id_map = post_id_map or {}
@@ -330,21 +397,21 @@ def replace_media(body_md: str, img_srcs: list, iframe_srcs: list,
     return body_md
 
 
-def scrape_circle_article(url: str, output_dir: str) -> None:
+def scrape_circle_article(url: str, output_dir: str) -> dict:
     domain = extract_domain(url)
 
-    print(f"[1/4] 加载 Cookie...")
+    print("[1/4] 加载 Cookie...")
     cookies, err = load_cookies(domain)
     if err:
         print(f"  ⚠️  {err}")
         print("  将尝试无 Cookie 抓取（公开帖子可能可行）")
 
-    print(f"[2/4] 抓取页面...")
+    print("[2/4] 抓取页面...")
     result = fetch_page(url, cookies)
     captured_api = result["captured_api"]
     print(f"  拦截到 {len(captured_api)} 个 API 响应")
 
-    print(f"[3/4] 诊断与解析...")
+    print("[3/4] 诊断与解析...")
     if result.get("challenge_detected"):
         print("  ✗ 页面被 Cloudflare 人机验证拦截")
         print("  请先在浏览器中通过验证，或补充最新的 cf_clearance Cookie")
@@ -380,7 +447,7 @@ def scrape_circle_article(url: str, output_dir: str) -> None:
         comment_img_srcs=result.get("comment_img_srcs", []),
     )
 
-    print(f"[4/4] 保存文件...")
+    print("[4/4] 保存文件...")
     title = post_data.get("name", "untitled")
     published = (post_data.get("published_at") or post_data.get("created_at") or "")[:10]
     out_path = save_markdown(output_dir, title, published, md)
@@ -395,22 +462,60 @@ def scrape_circle_article(url: str, output_dir: str) -> None:
         f"（{top_level_comment_count} 条评论 + {reply_count} 条回复）"
     )
 
+    return build_result(
+        site="circle",
+        url=url,
+        title=title,
+        author=(post_data.get("community_member") or {}).get("name", "unknown"),
+        platform="Superlinear Academy",
+        published=published,
+        output_path=out_path,
+        body_chars=len(body_md),
+        top_level_comments=top_level_comment_count,
+        reply_count=reply_count,
+    )
+
 
 def main():
     parser = argparse.ArgumentParser(description="抓取社区帖子或微信公众号文章并保存为 Markdown")
     parser.add_argument("url", help="帖子 URL")
     parser.add_argument("--output-dir", help="输出目录")
+    parser.add_argument("--json", action="store_true", help="将最终结果以 JSON 输出到 stdout")
+    parser.add_argument("--verify", action="store_true", help="保存后校验输出文件完整性")
     args = parser.parse_args()
 
     url = args.url
     site = detect_site(url)
     output_dir = os.path.abspath(args.output_dir or default_output_dir_for_site(site))
 
-    if site == "wechat":
-        scrape_wechat_article(url, output_dir)
-        return
+    scrape_fn = scrape_wechat_article if site == "wechat" else scrape_circle_article
+    if args.json:
+        with contextlib.redirect_stdout(sys.stderr):
+            result = scrape_fn(url, output_dir)
+    else:
+        result = scrape_fn(url, output_dir)
 
-    scrape_circle_article(url, output_dir)
+    verification_errors = []
+    if args.verify:
+        verification_errors = verify_output_file(
+            result["output_path"], result["title"], result["url"], result["body_chars"]
+        )
+        result["verified"] = not verification_errors
+        result["verification_errors"] = verification_errors
+        if args.json:
+            pass
+        elif verification_errors:
+            print("  校验: 失败")
+            for error in verification_errors:
+                print(f"    - {error}")
+        else:
+            print("  校验: 通过")
+
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+
+    if verification_errors:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

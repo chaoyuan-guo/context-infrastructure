@@ -15,13 +15,8 @@
 
 ### 1.2 触发建议
 
-**直接执行**（不需要额外判断）：
-- 用户给出 `superlinear.academy` 或 `*.circle.so` 的帖子链接
-- 用户给出 `mp.weixin.qq.com` 的公众号文章链接
-- 用户说"抓取这篇文章"并给出 SPA 社区 URL
-
-**先验证再决定**：
-- 不确定是否为 SPA → 先用 WebFetch 试一下，拿不到正文再用此工具
+- `superlinear.academy`、`*.circle.so`、`mp.weixin.qq.com`：直接执行
+- 不确定是否为动态页面：先用 WebFetch，拿不到正文再用此工具
 
 ---
 
@@ -30,13 +25,15 @@
 ### 2.1 核心命令
 
 ```bash
-python tools/web_article_scraper/main.py <URL> [--output-dir <dir>]
+python tools/web_article_scraper/main.py <URL> [--output-dir <dir>] [--verify] [--json]
 ```
 
 ### 2.2 参数规范
 
 - `<URL>`：必需。帖子完整 URL。
 - `--output-dir`：可选。显式指定输出目录。
+- `--verify`：可选。保存后检查输出文件是否存在、标题/来源/分隔线是否完整，失败时返回非 0 退出码。
+- `--json`：可选。将抓取结果以 JSON 输出到 stdout，便于脚本或 agent 直接消费；进度日志会输出到 stderr。
 - 默认输出目录按站点分流：
   - 微信公众号 → `formal_projects/curated_reads/wechat/`
   - Superlinear / Circle → `formal_projects/curated_reads/superlinear/`
@@ -54,15 +51,13 @@ python3 -m playwright install chromium
 
 1. **执行抓取**：
    ```bash
-   python tools/web_article_scraper/main.py "https://www.superlinear.academy/c/share-your-insights/ai-pattern"
+   python tools/web_article_scraper/main.py "https://www.superlinear.academy/c/share-your-insights/ai-pattern" --verify --json
    ```
 
-2. **观察输出**：脚本会自动完成以下步骤并打印进度：
-   - Circle.so 路径：加载 Cookie、检测代理、Playwright 加载页面、拦截 API、解析正文与评论
-   - 微信公众号路径：直接抓取 HTML、解析 `#js_content`、抽取标题/作者/公众号/发布时间
-   - HTML / tiptap → Markdown 转换
-   - 替换图片/视频占位符或真实资源链接
-   - 默认保存到站点对应子目录：`formal_projects/curated_reads/wechat/` 或 `formal_projects/curated_reads/superlinear/`
+2. **观察输出**：
+   - 默认会打印抓取进度并保存 Markdown 到对应站点目录
+   - `--verify` 会额外校验输出文件结构
+   - `--json` 会返回 `output_path`、`title`、`published`、`body_chars`、`total_comments`、`verified` 等结构化字段
 
 3. **处理失败情况**：
    - 如果 Circle.so 路径报告"需要登录"，引导用户提供 Cookie（见 §4）
@@ -109,7 +104,7 @@ tools/web_article_scraper/
 └── cookies.py    # Cookie 加载与过期检查
 ```
 
-所有确定性逻辑（代理检测、登录诊断、HTML/tiptap 转换、Cookie 管理）在代码中处理，**AI 只需要执行命令并处理异常输出**。
+确定性逻辑都在代码里，AI 侧直接执行命令即可。
 
 ---
 
