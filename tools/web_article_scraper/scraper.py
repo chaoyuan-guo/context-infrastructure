@@ -12,6 +12,11 @@ PROXY_CANDIDATES = [
     "http://127.0.0.1:7890",  # Clash
     "http://127.0.0.1:1087",  # ClashX
 ]
+DESKTOP_CHROME_USER_AGENT = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/136.0.0.0 Safari/537.36"
+)
 
 
 def detect_proxy(domain: str) -> str | None:
@@ -123,14 +128,30 @@ def fetch_page(url: str, cookies: list[dict] | None = None) -> dict:
 
     domain = urlparse(url).netloc
     proxy = detect_proxy(domain)
-    launch_kwargs = {"headless": True}
+    launch_kwargs = {
+        "headless": True,
+        # 某些 Circle posts 接口会拒绝带明显自动化指纹的浏览器。
+        "channel": "chrome",
+        "args": ["--disable-blink-features=AutomationControlled"],
+    }
     if proxy:
         launch_kwargs["proxy"] = {"server": proxy}
         print(f"  检测到本地代理（Surge/Clash），使用 {proxy}")
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(**launch_kwargs)
-        ctx = browser.new_context(ignore_https_errors=True)
+        try:
+            browser = p.chromium.launch(**launch_kwargs)
+        except Exception:
+            # 如果本机没有 Chrome channel，回退到 Playwright 自带 Chromium。
+            fallback_kwargs = dict(launch_kwargs)
+            fallback_kwargs.pop("channel", None)
+            browser = p.chromium.launch(**fallback_kwargs)
+        # Cloudflare 对 Playwright 默认 UA 更敏感，显式伪装成常规桌面 Chrome 更稳定。
+        ctx = browser.new_context(
+            ignore_https_errors=True,
+            user_agent=DESKTOP_CHROME_USER_AGENT,
+            locale="zh-CN",
+        )
         if cookies:
             ctx.add_cookies(cookies)
         page = ctx.new_page()
@@ -203,6 +224,13 @@ def fetch_page(url: str, cookies: list[dict] | None = None) -> dict:
             return results;
         }""")
 
+        page_title = page.title()
+        body_text_sample = page.locator("body").inner_text()[:500]
+        challenge_detected = (
+            page_title == "Just a moment..."
+            or "Verifying you are a human" in body_text_sample
+        )
+
         browser.close()
 
     return {
@@ -212,6 +240,8 @@ def fetch_page(url: str, cookies: list[dict] | None = None) -> dict:
         "post_oembed_links": post_oembed_links,
         "comment_img_srcs": comment_img_srcs,
         "comment_oembed_links": comment_oembed_links,
+        "challenge_detected": challenge_detected,
+        "page_title": page_title,
     }
 
 

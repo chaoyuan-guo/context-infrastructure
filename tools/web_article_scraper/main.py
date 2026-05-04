@@ -345,6 +345,11 @@ def scrape_circle_article(url: str, output_dir: str) -> None:
     print(f"  拦截到 {len(captured_api)} 个 API 响应")
 
     print(f"[3/4] 诊断与解析...")
+    if result.get("challenge_detected"):
+        print("  ✗ 页面被 Cloudflare 人机验证拦截")
+        print("  请先在浏览器中通过验证，或补充最新的 cf_clearance Cookie")
+        sys.exit(1)
+
     diag = diagnose(captured_api)
     print(f"  {diag['diagnosis']}")
 
