@@ -13,6 +13,58 @@ except ImportError:  # pragma: no cover - optional dependency
     Tag = None
 
 
+def _decode_entity_post_id(sgid: str) -> str | None:
+    if not sgid:
+        return None
+    try:
+        decoded = base64.b64decode(sgid + "==", altchars=b"-_").decode(
+            "latin-1", errors="replace"
+        )
+    except Exception:
+        return None
+
+    match = re.search(r"Posts::Basic/(\d+)", decoded)
+    return match.group(1) if match else None
+
+
+def _encode_entity_fallback_text(text: str) -> str:
+    if not text:
+        return ""
+    return base64.urlsafe_b64encode(text.encode("utf-8")).decode("ascii").rstrip("=")
+
+
+def decode_entity_fallback_text(text: str) -> str:
+    if not text:
+        return ""
+    padding = "=" * (-len(text) % 4)
+    try:
+        return base64.urlsafe_b64decode(text + padding).decode("utf-8")
+    except Exception:
+        return ""
+
+
+def extract_entity_post_ids(raw) -> set[str]:
+    if not raw:
+        return set()
+
+    tb = json.loads(raw) if isinstance(raw, str) else raw
+    body = tb.get("body", tb)
+    ids = set()
+    stack = [body]
+
+    while stack:
+        node = stack.pop()
+        if not isinstance(node, dict):
+            continue
+        if node.get("type") == "entity":
+            post_id = _decode_entity_post_id((node.get("attrs") or {}).get("sgid", ""))
+            if post_id:
+                ids.add(post_id)
+        stack.extend(reversed(node.get("content") or []))
+
+    return ids
+
+
 def marks_wrap(text: str, marks: list | None) -> str:
     if not marks:
         return text
@@ -59,8 +111,9 @@ def tiptap_to_md(node: dict | None, indent: int = 0) -> str:
         return "\n".join(items)
 
     if t == "orderedList":
+        start = attrs.get("start", 1)
         items = []
-        for i, li in enumerate(content, 1):
+        for i, li in enumerate(content, start):
             inner = " ".join(
                 tiptap_to_md(c).strip() for c in (li.get("content") or [])
             ).strip()
@@ -113,19 +166,11 @@ def tiptap_to_md(node: dict | None, indent: int = 0) -> str:
             or node.get("circle_ios_fallback_text")
             or "内部链接"
         )
-        post_id = None
-        try:
-            decoded = base64.b64decode(sgid + "==", altchars=b"-_").decode(
-                "latin-1", errors="replace"
-            )
-            m = re.search(r"Posts::Basic/(\d+)", decoded)
-            if m:
-                post_id = m.group(1)
-        except Exception:
-            pass
+        post_id = _decode_entity_post_id(sgid)
         if post_id:
-            # 用占位符，由 main.py 从 post_id_map 替换为真实 URL
-            return f"[ENTITY:{post_id}:{fallback}]"
+            # 编码 fallback，避免标题中的 markdown 字符干扰占位符解析。
+            encoded_fallback = _encode_entity_fallback_text(fallback)
+            return f"[ENTITY:{post_id}:{encoded_fallback}]"
         return f"**{fallback}**"
 
     # fallback: recurse into children

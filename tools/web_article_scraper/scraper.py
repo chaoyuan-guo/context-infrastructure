@@ -189,6 +189,15 @@ def fetch_page(url: str, cookies: list[dict] | None = None) -> dict:
             "[data-testid='comment-body'] img", "els => els.map(e => e.src)"
         )
 
+        post_entity_texts = page.eval_on_selector_all(
+            "[data-testid='post-body'] .node-entity [role='button']",
+            "els => els.map(e => (e.textContent || '').trim())",
+        )
+        comment_entity_texts = page.eval_on_selector_all(
+            "[data-testid='comment-body'] .node-entity [role='button']",
+            "els => els.map(e => (e.textContent || '').trim())",
+        )
+
         # 正文区 oembed 链接预览卡片
         # Circle.so 渲染 embed 节点为 .node-embed 内的 <a> 标签
         post_oembed_links = page.evaluate("""() => {
@@ -237,8 +246,10 @@ def fetch_page(url: str, cookies: list[dict] | None = None) -> dict:
         "captured_api": captured_api,
         "img_srcs": img_srcs,
         "iframe_srcs": iframe_srcs,
+        "post_entity_texts": post_entity_texts,
         "post_oembed_links": post_oembed_links,
         "comment_img_srcs": comment_img_srcs,
+        "comment_entity_texts": comment_entity_texts,
         "comment_oembed_links": comment_oembed_links,
         "challenge_detected": challenge_detected,
         "page_title": page_title,
@@ -264,6 +275,7 @@ def diagnose(captured_api: dict) -> dict:
     ]
 
     post_data = None
+    space_info = None
     has_body = False
     for u in post_apis:
         d = captured_api[u]
@@ -272,6 +284,11 @@ def diagnose(captured_api: dict) -> dict:
         ):
             post_data = d
             has_body = True
+            break
+
+    for u, d in captured_api.items():
+        if "/spaces/" in u and isinstance(d, dict) and d.get("id") and d.get("slug"):
+            space_info = d
             break
 
     # 收集评论（多页去重）
@@ -356,6 +373,7 @@ def diagnose(captured_api: dict) -> dict:
         "has_tiptap": has_body,
         "needs_login": needs_login,
         "post_data": post_data,
+        "space_info": space_info,
         "comments": comments,
         "diagnosis": diagnosis,
         "post_id_map": _build_post_id_map(captured_api),
@@ -368,7 +386,18 @@ def _build_post_id_map(captured_api: dict) -> dict[str, str]:
     用于解析 entity 节点中的内部链接。扫描所有 space posts 列表 API，
     以及 post_details API，提取 id → slug + space_slug 的映射。
     """
-    post_id_map = {}  # post_id (str) → full URL
+    post_id_map = {}  # post_id (str) → {slug, space_slug, name}
+
+    def save_post(post: dict, default_space_slug: str = "") -> None:
+        pid = str(post.get("id", ""))
+        slug = post.get("slug", "")
+        if not pid or not slug:
+            return
+        post_id_map[pid] = {
+            "slug": slug,
+            "space_slug": post.get("space_slug") or default_space_slug,
+            "name": post.get("name", ""),
+        }
 
     for url, data in captured_api.items():
         # space posts 列表 API 返回帖子数组
@@ -377,11 +406,7 @@ def _build_post_id_map(captured_api: dict) -> dict[str, str]:
             if not isinstance(posts, list):
                 continue
             for p in posts:
-                pid = str(p.get("id", ""))
-                slug = p.get("slug", "")
-                # 从 URL 中提取 space_id，然后从 space API 获取 space_slug
-                if pid and slug:
-                    post_id_map[pid] = slug
+                save_post(p)
 
         # post_details API
         if "post_details" in url:
@@ -389,17 +414,11 @@ def _build_post_id_map(captured_api: dict) -> dict[str, str]:
             if not isinstance(details, list):
                 continue
             for p in details:
-                pid = str(p.get("id", ""))
-                slug = p.get("slug", "")
-                if pid and slug:
-                    post_id_map[pid] = slug
+                save_post(p)
 
         # 单个帖子详情 API
         if "/posts/" in url and "post_details" not in url and "comments" not in url:
             if isinstance(data, dict):
-                pid = str(data.get("id", ""))
-                slug = data.get("slug", "")
-                if pid and slug:
-                    post_id_map[pid] = slug
+                save_post(data)
 
     return post_id_map

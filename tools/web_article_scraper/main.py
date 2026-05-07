@@ -23,7 +23,14 @@ sys.path.append(os.path.dirname(__file__))
 
 from cookies import load_cookies
 from scraper import fetch_page, diagnose
-from tiptap import BeautifulSoup, parse_post_body, parse_tiptap_body, parse_trix_body
+from tiptap import (
+    BeautifulSoup,
+    decode_entity_fallback_text,
+    extract_entity_post_ids,
+    parse_post_body,
+    parse_tiptap_body,
+    parse_trix_body,
+)
 
 DEFAULT_OUTPUT_ROOT = os.path.join(
     os.path.dirname(__file__), "..", "..", "formal_projects", "curated_reads"
@@ -86,6 +93,14 @@ def verify_output_file(out_path: str, title: str, url: str, body_chars: int) -> 
     if "---" not in content:
         errors.append("文件中缺少元数据分隔线")
 
+    for text, href in re.findall(r"\[([^\]]+)\]\(([^)]+)\)", content):
+        if not text.strip():
+            errors.append("存在链接文本为空的 Markdown 链接")
+            break
+        if not href.strip():
+            errors.append("存在链接 URL 为空的 Markdown 链接")
+            break
+
     return errors
 
 
@@ -117,6 +132,59 @@ def build_result(
         "verified": None,
         "verification_errors": [],
     }
+
+
+def fetch_space_posts_map(domain: str, space_info: dict, cookies: list[dict] | None, post_ids: set[str]) -> dict[str, dict]:
+    if not space_info or not post_ids:
+        return {}
+
+    headers = {
+        "User-Agent": WECHAT_USER_AGENT,
+        "Accept": "application/json, text/plain, */*",
+    }
+    if cookies:
+        headers["Cookie"] = "; ".join(
+            f"{cookie['name']}={cookie['value']}" for cookie in cookies if cookie.get("name")
+        )
+
+    space_id = space_info.get("id")
+    target_ids = set(post_ids)
+    post_map = {}
+    page = 1
+    per_page = 100
+
+    while target_ids:
+        req = Request(
+            f"https://{domain}/internal_api/spaces/{space_id}/posts?page={page}&per_page={per_page}",
+            headers=headers,
+        )
+        with urlopen(req, timeout=60) as resp:
+            data = json.load(resp)
+
+        records = data.get("records", []) if isinstance(data, dict) else data
+        if not isinstance(records, list) or not records:
+            break
+
+        for post in records:
+            pid = str(post.get("id", ""))
+            slug = post.get("slug", "")
+            if pid and slug and pid in target_ids:
+                post_map[pid] = {
+                    "slug": slug,
+                    "space_slug": post.get("space_slug") or space_info.get("slug", ""),
+                    "name": post.get("name", ""),
+                }
+                target_ids.discard(pid)
+
+        if not data.get("has_next_page"):
+            break
+        page += 1
+
+    return post_map
+
+
+def escape_markdown_link_text(text: str) -> str:
+    return text.replace("\\", "\\\\").replace("[", "\\[").replace("]", "\\]")
 
 
 def extract_wechat_publish_time(html_text: str) -> str:
@@ -256,6 +324,56 @@ def extract_reply_to_name(tiptap_body) -> str | None:
     return None
 
 
+def hydrate_entity_fallbacks(raw, entity_texts: list[str] | None):
+    if not raw:
+        return raw
+
+    tb = json.loads(raw) if isinstance(raw, str) else raw
+    queue = list(entity_texts or [])
+
+    def visit(node):
+        if not isinstance(node, dict):
+            return
+        if node.get("type") == "entity":
+            text = queue.pop(0).strip() if queue else ""
+            attrs = node.setdefault("attrs", {})
+            fallback = attrs.get("circle_ios_fallback_text") or node.get("circle_ios_fallback_text")
+            if (not fallback or fallback == "内部链接") and text:
+                attrs["circle_ios_fallback_text"] = text
+                node["circle_ios_fallback_text"] = text
+        for child in node.get("content") or []:
+            visit(child)
+
+    visit(tb.get("body", tb))
+    return tb
+
+
+def hydrate_discussion_entities(comments: list[dict], entity_texts: list[str] | None) -> list[dict]:
+    queue = list(entity_texts or [])
+    hydrated_comments = []
+
+    for comment in comments:
+        hydrated_comment = dict(comment)
+        if hydrated_comment.get("tiptap_body"):
+            hydrated_comment["tiptap_body"] = hydrate_entity_fallbacks(
+                hydrated_comment.get("tiptap_body"), queue
+            )
+
+        hydrated_replies = []
+        for reply in hydrated_comment.get("replies") or []:
+            hydrated_reply = dict(reply)
+            if hydrated_reply.get("tiptap_body"):
+                hydrated_reply["tiptap_body"] = hydrate_entity_fallbacks(
+                    hydrated_reply.get("tiptap_body"), queue
+                )
+            hydrated_replies.append(hydrated_reply)
+
+        hydrated_comment["replies"] = hydrated_replies
+        hydrated_comments.append(hydrated_comment)
+
+    return hydrated_comments
+
+
 def build_markdown(post_data: dict, body_md: str, comments: list, url: str, domain: str,
                    oembed_links: list | None = None, post_id_map: dict | None = None,
                    comment_img_srcs: list | None = None) -> str:
@@ -384,15 +502,22 @@ def replace_media(body_md: str, img_srcs: list, iframe_srcs: list,
     # entity 占位符：[ENTITY:post_id:text] → 帖子链接
     def rep_entity(m):
         post_id = m.group(1)
-        text = m.group(2)
-        slug = post_id_map.get(post_id)
-        if slug and domain:
-            # 不知道 space_slug，用通用搜索路径
-            url = f"https://{domain}/c/{slug}"
+        fallback_text = decode_entity_fallback_text(m.group(2)) or "内部链接"
+        post_info = post_id_map.get(post_id) or {}
+        if isinstance(post_info, str):
+            post_info = {"slug": post_info}
+        text = escape_markdown_link_text(post_info.get("name") or fallback_text)
+        slug = post_info.get("slug")
+        space_slug = post_info.get("space_slug")
+        if slug and space_slug and domain:
+            url = f"https://{domain}/c/{space_slug}/{slug}"
             return f"[{text}]({url})"
         # 没找到，保留为加粗文本
         return f"**{text}**"
-    body_md = re.sub(r"\[ENTITY:(\d+):(.*?)\]", rep_entity, body_md)
+    body_md = re.sub(r"\[ENTITY:(\d+):([A-Za-z0-9_-]*)\]", rep_entity, body_md)
+
+    # Clean up empty bold markers left by standalone styled spaces around entity nodes.
+    body_md = body_md.replace("** **", "").replace("****", "")
 
     return body_md
 
@@ -434,6 +559,28 @@ def scrape_circle_article(url: str, output_dir: str) -> dict:
     post_oembed_links = list(result.get("post_oembed_links") or [])
     comment_oembed_links = list(result.get("comment_oembed_links") or [])
 
+    entity_post_ids = set()
+    entity_post_ids.update(extract_entity_post_ids(post_data.get("tiptap_body")))
+    for comment in diag["comments"]:
+        entity_post_ids.update(extract_entity_post_ids(comment.get("tiptap_body")))
+        for reply in comment.get("replies") or []:
+            entity_post_ids.update(extract_entity_post_ids(reply.get("tiptap_body")))
+
+    space_post_map = fetch_space_posts_map(
+        domain, diag.get("space_info"), cookies, entity_post_ids
+    )
+    post_id_map = {**post_id_map, **space_post_map}
+
+    post_data = dict(post_data)
+    if post_data.get("tiptap_body"):
+        post_data["tiptap_body"] = hydrate_entity_fallbacks(
+            post_data.get("tiptap_body"), result.get("post_entity_texts")
+        )
+
+    hydrated_comments = hydrate_discussion_entities(
+        diag["comments"], result.get("comment_entity_texts")
+    )
+
     body_md = parse_post_body(post_data)
     body_md = replace_media(
         body_md, result["img_srcs"], result["iframe_srcs"],
@@ -442,7 +589,7 @@ def scrape_circle_article(url: str, output_dir: str) -> dict:
     )
 
     md = build_markdown(
-        post_data, body_md, diag["comments"], url, domain,
+        post_data, body_md, hydrated_comments, url, domain,
         oembed_links=comment_oembed_links, post_id_map=post_id_map,
         comment_img_srcs=result.get("comment_img_srcs", []),
     )
