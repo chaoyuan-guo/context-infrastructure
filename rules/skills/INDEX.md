@@ -7,26 +7,6 @@
 
 ---
 
-## 组件状态
-
-### Tier 1: 核心（clone 后即可开始）
-- ✅ Rules 框架（SOUL/USER/COMMUNICATION/WORKSPACE）— 填写即用
-- ✅ Skills 框架（本目录）— 填写即用
-- ✅ 三层记忆系统 — 需配置 OpenCode + cron
-
-### Tier 2: 扩展（需要额外配置）
-- ⚙️ Semantic Search — 需要 LLM Studio 或 OpenAI API
-- ⚙️ Share Report — 需要 SSH 服务器或 GitHub Pages
-- ⚙️ Google Docs — 需要 Google OAuth
-- ⚙️ Send Email — 需要 Gmail App Password
-- ⚙️ Delayed Execution — 适配你自己的工具路径
-
-### 说明
-✅ = 最多 15 分钟即可使用
-⚙️ = 需要额外配置，不配不影响核心功能
-
----
-
 ## 分类索引
 
 ### API Guide（API 指南）
@@ -34,13 +14,6 @@
 调用外部系统或工具的操作手册。
 
 - [AI CLI Agent 实用指南](./ai_agent_cli_guide.md) — CLI Agent 设计原则、工具对比（Claude Code / Codex / OpenCode）、文件响应模式、AI 调用 AI
-- [给自己发邮件技能](./send_email.md) ⚙️ — 通过 Gmail 发送邮件通知，需配置 App Password
-- [分享报告到 Web](./share_report.md) ⚙️ — 将 MD 报告转 HTML 发布到你自己的服务器，返回 URL
-- [Google Docs 操作](./google_docs.md) ⚙️ — CLI 工具：发布 Markdown、创建/搜索/修改/分享文档
-- [图片生成与放大](./generate_image.md) — CLI 工具：Gemini Flash / Gemini Pro / GPT-Image-2 文生图、图片编辑、分辨率放大
-- [增长数据分析](./growth_analytics.md) ⚙️ — 三个 CLI 查询网站流量（GA4）、邮件订阅（Kit）、Twitter 互动（Typefully）
-- [Typefully Metrics CLI](./typefully_metrics.md) ⚙️ — 通过浏览器 session 凭据查询 Twitter impression、engagement、followers 数据
-- [Typefully 发帖 CLI](./typefully_post.md) ⚙️ — 通过 Typefully v2 API 创建草稿、排期发布和直接发布 tweet / thread
 
 ### Workflow（工作流）
 
