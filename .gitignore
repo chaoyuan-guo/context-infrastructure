@@ -8,3 +8,5 @@ formal_projects/*
 tools/fetch-leetcode/cache/
 __pycache__/
 contexts/agent_traces/
+.knowledge_cache/
+tmp/

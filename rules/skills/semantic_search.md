@@ -52,11 +52,15 @@ python tools/semantic_search/main.py \
     --cache-dir .knowledge_cache
 ```
 
+默认请求远端 OpenAI-compatible embedding 服务：`http://10.0.34.60:8034/v1`，模型名为 `Qwen3-Embedding-0.6B`，不需要配置 API key。
+
 ### 2.2 参数规范
 - `--file-list`：必需。指向一个包含待搜索文件路径列表的文本文件。建议放在 `tmp/` 目录下。
 - `--query`：必需。完整的、描述性的句子。例如 "用户对 Agentic AI 核心矛盾的最新思考" 优于 "Agentic AI"。
 - `--top-k`：可选。返回的相关片段数量，默认 5，建议设为 10 以获得更广的上下文。
 - `--cache-dir`：**务必指定为 `.knowledge_cache`**（根目录下），以复用预计算好的特征向量，大幅提升响应速度。
+- `--endpoint`：可选。默认 `http://10.0.34.60:8034/v1`。
+- `--model`：可选。默认 `Qwen3-Embedding-0.6B`。
 
 ---
 
@@ -70,8 +74,6 @@ python tools/semantic_search/main.py \
     ```
 2.  **执行语义搜索**：
     ```bash
-    source .venv/bin/activate
-    export OPENAI_API_KEY=$(grep OPENAI_API_KEY .env | cut -d '=' -f2)
     python tools/semantic_search/main.py --file-list tmp/search_files.txt --query "..." --top-k 10 --cache-dir .knowledge_cache
     ```
 3.  **分析与综合**：阅读搜索结果（通常包含 score, source_file, text），结合元数据（日期、分类）进行综合分析。

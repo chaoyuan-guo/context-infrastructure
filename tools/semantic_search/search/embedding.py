@@ -3,8 +3,8 @@ from typing import List
 import time
 
 class EmbeddingClient:
-    def __init__(self, base_url: str = "http://localhost:1234/v1", model: str = "text-embedding-qwen3-embedding-8b"):
-        self.client = OpenAI(base_url=base_url, api_key="lm-studio")
+    def __init__(self, base_url: str = "http://10.0.34.60:8034/v1", model: str = "Qwen3-Embedding-0.6B"):
+        self.client = OpenAI(base_url=base_url, api_key="unused")
         self.model = model
 
     def embed(self, text: str) -> List[float]:
