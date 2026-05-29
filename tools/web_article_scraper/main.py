@@ -16,6 +16,7 @@ import json
 import os
 import re
 import sys
+from http.client import IncompleteRead
 from datetime import datetime, timedelta, timezone
 from urllib.request import Request, urlopen
 
@@ -216,7 +217,13 @@ def parse_wechat_article(url: str) -> dict:
     )
 
     with urlopen(req, timeout=60) as resp:
-        html_text = resp.read().decode("utf-8", "replace")
+        try:
+            html_bytes = resp.read()
+        except IncompleteRead as exc:
+            # WeChat occasionally closes large responses early. The partial body
+            # still contains the article HTML in practice, so keep parsing.
+            html_bytes = exc.partial
+        html_text = html_bytes.decode("utf-8", "replace")
 
     soup = BeautifulSoup(html_text, "html.parser")
     content = soup.find(id="js_content")
