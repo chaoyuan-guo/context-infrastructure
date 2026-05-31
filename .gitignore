@@ -10,3 +10,4 @@ __pycache__/
 contexts/agent_traces/
 .knowledge_cache/
 tmp/
+./contexts

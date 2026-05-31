@@ -1,4 +1,4 @@
-# PodcastInsight 项目面试准备底稿
+# PodInsight 项目面试准备底稿
 
 ## 开场介绍
 
