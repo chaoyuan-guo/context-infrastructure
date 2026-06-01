@@ -19,6 +19,19 @@ except ImportError:  # pragma: no cover
 DEFAULT_TIMEZONE = "Asia/Shanghai"
 DEFAULT_USER_LABEL = "chaoyuan"
 SESSION_ID_PATTERN = re.compile(r"^session_id:\s*'([^']+)'", re.M)
+LOW_SIGNAL_TITLE_QUERY_PREFIXES = {
+    "增量同步 agent_traces 会话记录": [
+        "<auto-slash-command>\n# /sync-agent-traces Command",
+    ],
+    "查看未提交的变更": [
+        "查看未提交的变更",
+        "现在有哪些未提交的变更",
+    ],
+}
+LOW_SIGNAL_FIRST_QUERIES = {
+    "查看未提交的变更",
+    "现在有哪些未提交的变更",
+}
 
 
 @dataclass
@@ -161,8 +174,15 @@ def normalize_session_name(title: str, fallback: str) -> str:
     return name or "session"
 
 
-def is_generic_session_title(title: str) -> bool:
-    return title.lower().startswith("new session")
+def is_suspicious_session_title(title: str) -> bool:
+    normalized = title.strip().lower()
+    return (
+        normalized.startswith("new session")
+        or normalized.startswith("<system-reminder>")
+        or normalized.startswith("<auto-slash-command>")
+        or normalized == "..."
+        or "[pasted ~" in normalized
+    )
 
 
 def is_probe_query(text: str) -> bool:
@@ -178,11 +198,99 @@ def is_probe_query(text: str) -> bool:
     return any(pattern in normalized for pattern in probe_patterns)
 
 
+def normalize_text(text: str) -> str:
+    return " ".join(text.strip().split())
+
+
+def strip_leading_xml_block(text: str, tag: str) -> str:
+    pattern = rf"^\s*<{tag}>.*?</{tag}>\s*"
+    return re.sub(pattern, "", text, count=1, flags=re.S)
+
+
+def clean_query_for_title(text: str) -> str:
+    cleaned = text.strip()
+    cleaned = strip_leading_xml_block(cleaned, "system-reminder")
+    cleaned = strip_leading_xml_block(cleaned, "auto-slash-command")
+
+    candidates: list[str] = []
+    for raw_line in cleaned.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        line = re.sub(r"^[A-Za-z0-9_./-]+\.md\s+", "", line)
+        line = re.sub(r"^/[A-Za-z0-9_./-]+\.md\s+", "", line)
+        if line.startswith("[Pasted ~"):
+            break
+        if line.startswith("/"):
+            continue
+        if re.match(r"^[A-Za-z0-9_./-]+$", line) and ("/" in line or line.endswith(".md")):
+            continue
+        if line.startswith("# "):
+            continue
+        if line.startswith("**") and line.endswith("**"):
+            continue
+        if line in {"---", "## Command Instructions"}:
+            continue
+        if re.match(r"^(def |class |from |import |return |if |for |while |with )", line):
+            break
+        if re.match(r"^[A-Za-z_][A-Za-z0-9_]*\s*=", line):
+            break
+        if candidates:
+            if re.match(r"^[A-Za-z0-9_./-]+$", line) and ("/" in line or line.endswith(".md")):
+                break
+            if re.match(r"^(def |class |from |import |return |if |for |while |with )", line):
+                break
+            if re.match(r"^[A-Za-z_][A-Za-z0-9_]*\s*=", line):
+                break
+        candidates.append(line)
+        break
+
+    return " ".join(candidates).strip()
+
+
+def truncate_title(text: str, limit: int) -> str:
+    normalized = normalize_text(text)
+    if len(normalized) <= limit:
+        return normalized
+
+    boundary_chars = "，。；：:,.!?！？()（）"
+    cutoff = max(limit - 12, int(limit * 0.6))
+    for index in range(min(limit, len(normalized)) - 1, cutoff - 1, -1):
+        if normalized[index] in boundary_chars:
+            return normalized[:index].rstrip(boundary_chars + " ")
+
+    return normalized[:limit].rstrip()
+
+
+def is_low_signal_session(session: SessionRecord, pairs: list[ConversationPair]) -> bool:
+    if not pairs:
+        return True
+
+    first_pair = pairs[0]
+    first_query = normalize_text(first_pair.query_text)
+    title = normalize_text(session.title)
+    has_assistant_output = any(pair.answer_text.strip() for pair in pairs)
+
+    if not has_assistant_output:
+        if "<auto-slash-command>" in first_pair.query_text:
+            return True
+        if len(pairs) == 1:
+            return True
+
+    title_prefixes = LOW_SIGNAL_TITLE_QUERY_PREFIXES.get(title, [])
+    if any(first_pair.query_text.startswith(prefix) for prefix in title_prefixes):
+        return True
+    if first_query in LOW_SIGNAL_FIRST_QUERIES:
+        return True
+
+    return False
+
+
 def summarize_query_as_name(text: str, limit: int = 48) -> str:
-    normalized = " ".join(text.strip().split())
+    normalized = clean_query_for_title(text) or " ".join(text.strip().split())
     normalized = normalized.strip('"\'')
-    if len(normalized) > limit:
-        normalized = normalized[:limit].rstrip()
+    normalized = re.sub(r"\s*\[Pasted ~\d+.*$", "", normalized).rstrip("：: ([")
+    normalized = truncate_title(normalized, limit)
     return normalized or "session"
 
 
@@ -605,6 +713,7 @@ def export_sessions(args: argparse.Namespace) -> list[Path]:
         used_names_by_dir: dict[Path, set[str]] = defaultdict(set)
         export_items: list[ExportSession] = []
         filtered_probe_sessions: list[SessionRecord] = []
+        filtered_low_signal_sessions: list[SessionRecord] = []
         session_records_by_id = {session.session_id: session for session in sessions}
 
         for session in sessions:
@@ -612,7 +721,10 @@ def export_sessions(args: argparse.Namespace) -> list[Path]:
             if not args.include_probes and len(pairs) == 1 and is_probe_query(pairs[0].query_text):
                 filtered_probe_sessions.append(session)
                 continue
-            if is_generic_session_title(session.title) and pairs:
+            if is_low_signal_session(session, pairs):
+                filtered_low_signal_sessions.append(session)
+                continue
+            if is_suspicious_session_title(session.title) and pairs:
                 display_title = summarize_query_as_name(pairs[0].query_text)
             else:
                 display_title = session.title
@@ -637,16 +749,29 @@ def export_sessions(args: argparse.Namespace) -> list[Path]:
                 stale_path.unlink(missing_ok=True)
             manifest.get("sessions", {}).pop(session.session_id, None)
 
+        for session in filtered_low_signal_sessions:
+            session_date = datetime.fromtimestamp(session.time_created / 1000, tz=tz).date()
+            month_prefix = session_date.strftime("%y%m")
+            date_prefix = session_date.strftime("%y%m%d")
+            day_dir = output_dir / month_prefix / date_prefix
+            stale_paths = find_existing_session_paths(day_dir, session.session_id)
+            for stale_path in stale_paths:
+                stale_path.unlink(missing_ok=True)
+            manifest.get("sessions", {}).pop(session.session_id, None)
+
         if args.sync:
             valid_session_ids = {item.session.session_id for item in export_items}
             probe_session_ids = {session.session_id for session in filtered_probe_sessions}
+            low_signal_session_ids = {session.session_id for session in filtered_low_signal_sessions}
 
-            # Prune stale exported files and manifest entries when DB no longer has the session
-            # or when the session is filtered out by current probe rules.
             for session_id, paths in existing_session_multimap.items():
                 if session_id in valid_session_ids:
                     continue
-                if session_id in probe_session_ids or session_id not in session_records_by_id:
+                if (
+                    session_id in probe_session_ids
+                    or session_id in low_signal_session_ids
+                    or session_id not in session_records_by_id
+                ):
                     for path in paths:
                         path.unlink(missing_ok=True)
                     manifest.get("sessions", {}).pop(session_id, None)
@@ -654,7 +779,11 @@ def export_sessions(args: argparse.Namespace) -> list[Path]:
             for session_id in list(manifest.get("sessions", {}).keys()):
                 if session_id in valid_session_ids:
                     continue
-                if session_id in probe_session_ids or session_id not in session_records_by_id:
+                if (
+                    session_id in probe_session_ids
+                    or session_id in low_signal_session_ids
+                    or session_id not in session_records_by_id
+                ):
                     manifest["sessions"].pop(session_id, None)
 
         if args.sync:
@@ -682,17 +811,14 @@ def export_sessions(args: argparse.Namespace) -> list[Path]:
                 if entry.get("time_updated") != session.time_updated:
                     sessions_to_export.append(item)
                     continue
+                if entry.get("display_title") != item.display_title:
+                    sessions_to_export.append(item)
+                    continue
                 if entry.get("path") != relative_path:
-                    if existing_path:
-                        entry["path"] = existing_path
-                        entry["time_updated"] = session.time_updated
-                        entry["created_at"] = session.time_created
-                        entry["display_title"] = item.display_title
-                        continue
                     sessions_to_export.append(item)
                     continue
                 if not expected_exists:
-                    if existing_path:
+                    if existing_path and existing_path == relative_path:
                         entry["path"] = existing_path
                         entry["time_updated"] = session.time_updated
                         entry["created_at"] = session.time_created
