@@ -1,6 +1,5 @@
 formal_projects/*
 !formal_projects/interview/
-!formal_projects/podinsight_mvp/
 
 .opencode/
 .claude/
