@@ -1,0 +1,30 @@
+[
+  {
+    "claim": "Claude Code becomes more valuable when it can reason across multiple files and tools.",
+    "evidence": [
+      {
+        "speaker": "Annatar",
+        "timestamp": "00:04:43",
+        "quote": "Cloud Code 的能力非常非常非常强大。"
+      }
+    ],
+    "boundary": "This only holds when the engineer can keep the task scoped and provide enough repository context.",
+    "action": null,
+    "topics": ["ai coding"],
+    "source_view": "controversy"
+  },
+  {
+    "claim": "API-priced coding agents are too expensive for sustained heavy use.",
+    "evidence": [
+      {
+        "speaker": "Annatar",
+        "timestamp": "00:06:21",
+        "quote": "我一周可以花到 150 美金左右。"
+      }
+    ],
+    "boundary": "This matters when usage is frequent enough that token spend compounds week over week.",
+    "action": "Prefer subscription-style plans for repeated use.",
+    "topics": ["ai product strategy", "ai coding"],
+    "source_view": "controversy"
+  }
+]

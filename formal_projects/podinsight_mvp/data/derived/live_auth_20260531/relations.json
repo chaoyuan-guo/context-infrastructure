@@ -1,0 +1,62 @@
+[
+  {
+    "left_claim": "Claude Code works well for implementing standard, well-defined programming tasks like tree traversal.",
+    "right_claim": "将需求文档复制粘贴到Claude Code中可以高效地让AI自动化完成开发任务。",
+    "label": "support",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "AI can understand you better than your friends or even family.",
+    "right_claim": "The surest opportunity is to relentlessly use AI to become a super individual.",
+    "label": "support",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "AI can understand you better than your friends or even family.",
+    "right_claim": "人类独有的体验能带来AI无法复制的顿悟时刻，不一定要依赖AI。",
+    "label": "conflict",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "I now doubt my previous view about ChatGPT's capabilities after recent usage.",
+    "right_claim": "ChatGPT is the best from a data perspective.",
+    "label": "conflict",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "I now doubt my previous view about ChatGPT's capabilities after recent usage.",
+    "right_claim": "AI的潜力被严重低估，用户常因初期结果不满意而浅尝辄止。",
+    "label": "support",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "人类独有的体验能带来AI无法复制的顿悟时刻，不一定要依赖AI。",
+    "right_claim": "The surest opportunity is to relentlessly use AI to become a super individual.",
+    "label": "conflict",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "人类独有的体验能带来AI无法复制的顿悟时刻，不一定要依赖AI。",
+    "right_claim": "缓解AI焦虑可通过扎实学习AI或投入真正的兴趣爱好来实现。",
+    "label": "support",
+    "confidence": 0.85
+  },
+  {
+    "left_claim": "AI的潜力被严重低估，用户常因初期结果不满意而浅尝辄止。",
+    "right_claim": "人类独有的体验能带来AI无法复制的顿悟时刻，不一定要依赖AI。",
+    "label": "conflict",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "将需求文档复制粘贴到Claude Code中可以高效地让AI自动化完成开发任务。",
+    "right_claim": "使用Claude Code即使每天消耗300美元也能在一天内回本，因此高消耗是值得的。",
+    "label": "support",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "ChatGPT is dominant in its ecological niche.",
+    "right_claim": "ChatGPT is the best from a data perspective.",
+    "label": "support",
+    "confidence": 0.85
+  }
+]

@@ -1,0 +1,70 @@
+[
+  {
+    "summary": "These three episodes collectively suggest that **AI agents in real work are highly capable and disruptive**, but their impact is nuanced:\n\n1. **Capabilities are evolving and may defy prior expectations** – The first episode shows that hands-on experience with an AI agent (like ChatGPT) can overturn established beliefs about its limits, implying that real-world performance often surpasses or differs from abstract assumptions.\n\n2. **They provoke anxiety but also offer a path forward** – The second episode highlights a common response: fear of job or life disruption. However, the suggested remedy—learning AI or pursuing genuine interests—implies that workers can adapt by either mastering these tools or doubling down on uniquely human skills.\n\n3. **They directly threaten entry-level roles** – The third episode is stark: AI coding assistants (e.g., Claude Code) are so effective that they may eliminate the traditional pipeline for junior developers. This suggests that AI agents can automate routine or well-defined tasks, compressing career ladders and raising the bar for new entrants.\n\n**Overall, these episodes suggest that AI agents in real work are powerful tools that demand continuous learning, shift skill requirements toward higher-level reasoning and creativity, and create both opportunities and existential threats for certain job categories.** The key takeaway: passive familiarity is insufficient; proactive adaptation and deep domain expertise become critical.",
+    "supporting_cards": [
+      {
+        "episode_id": "4822400",
+        "claim": "I now doubt my previous view about ChatGPT's capabilities after recent usage.",
+        "evidence": [
+          {
+            "speaker": "课代表立正",
+            "timestamp": "00:30:48",
+            "quote": "但是我现在怀疑这个观点，"
+          }
+        ],
+        "boundary": "This matters when new experiences challenge established beliefs.",
+        "action": "Re-evaluate your assumptions when new evidence emerges.",
+        "topics": [
+          "doubt",
+          "belief change",
+          "ChatGPT"
+        ],
+        "source_views": [
+          "controversy"
+        ]
+      },
+      {
+        "episode_id": "4886157",
+        "claim": "缓解AI焦虑可通过扎实学习AI或投入真正的兴趣爱好来实现。",
+        "evidence": [
+          {
+            "speaker": "课代表立正",
+            "timestamp": "00:31:39",
+            "quote": "如果真的很焦虑，那就是学 AI。"
+          }
+        ],
+        "boundary": "This works when you feel anxious about AI’s impact on your job or daily life.",
+        "action": "选择系统学习AI工具和原理，或找一个即使没有AI你也会沉浸其中的爱好。",
+        "topics": [
+          "AI焦虑",
+          "学习",
+          "兴趣爱好"
+        ],
+        "source_views": [
+          "practice"
+        ]
+      },
+      {
+        "episode_id": "4597222",
+        "claim": "Claude Code will make junior programmers' future prospects very limited.",
+        "evidence": [
+          {
+            "speaker": "Annatar",
+            "timestamp": "00:10:46",
+            "quote": "Junior 的程序员已经很难再有未来了"
+          }
+        ],
+        "boundary": "This holds when AI coding assistants write code '他写代码实在是太棒了' and can replace entry-level coding tasks.",
+        "action": "Junior programmers should shift focus to higher-level skills like system design and problem-solving that are harder for AI to automate.",
+        "topics": [
+          "junior developers",
+          "career impact",
+          "ai automation"
+        ],
+        "source_views": [
+          "judgment"
+        ]
+      }
+    ]
+  }
+]

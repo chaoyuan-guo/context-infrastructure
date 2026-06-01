@@ -1,0 +1,1381 @@
+{
+  "junior developers": [
+    {
+      "episode_id": "4597222",
+      "claim": "Claude Code will make junior programmers' future prospects very limited.",
+      "evidence": [
+        {
+          "speaker": "Annatar",
+          "timestamp": "00:10:46",
+          "quote": "Junior 的程序员已经很难再有未来了"
+        }
+      ],
+      "boundary": "This holds when AI coding assistants write code '他写代码实在是太棒了' and can replace entry-level coding tasks.",
+      "action": "Junior programmers should shift focus to higher-level skills like system design and problem-solving that are harder for AI to automate.",
+      "topics": [
+        "junior developers",
+        "career impact",
+        "ai automation"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "career impact": [
+    {
+      "episode_id": "4597222",
+      "claim": "Claude Code will make junior programmers' future prospects very limited.",
+      "evidence": [
+        {
+          "speaker": "Annatar",
+          "timestamp": "00:10:46",
+          "quote": "Junior 的程序员已经很难再有未来了"
+        }
+      ],
+      "boundary": "This holds when AI coding assistants write code '他写代码实在是太棒了' and can replace entry-level coding tasks.",
+      "action": "Junior programmers should shift focus to higher-level skills like system design and problem-solving that are harder for AI to automate.",
+      "topics": [
+        "junior developers",
+        "career impact",
+        "ai automation"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "ai automation": [
+    {
+      "episode_id": "4597222",
+      "claim": "Claude Code will make junior programmers' future prospects very limited.",
+      "evidence": [
+        {
+          "speaker": "Annatar",
+          "timestamp": "00:10:46",
+          "quote": "Junior 的程序员已经很难再有未来了"
+        }
+      ],
+      "boundary": "This holds when AI coding assistants write code '他写代码实在是太棒了' and can replace entry-level coding tasks.",
+      "action": "Junior programmers should shift focus to higher-level skills like system design and problem-solving that are harder for AI to automate.",
+      "topics": [
+        "junior developers",
+        "career impact",
+        "ai automation"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    },
+    {
+      "episode_id": "4612409",
+      "claim": "Automating grocery shopping with AI saves significant time.",
+      "evidence": [
+        {
+          "speaker": "鸭哥",
+          "timestamp": "00:34:58",
+          "quote": "网上买菜像现在五五分钟就点完了"
+        }
+      ],
+      "boundary": "This works when the AI is integrated with online shopping platforms and can learn your preferences.",
+      "action": "Delegate routine purchases to AI to free up time.",
+      "topics": [
+        "ai automation",
+        "grocery shopping",
+        "time-saving"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "popularity decline": [
+    {
+      "episode_id": "4597222",
+      "claim": "The overall popularity of Claude Code is declining.",
+      "evidence": [
+        {
+          "speaker": "Annatar",
+          "timestamp": "00:02:32",
+          "quote": "我感觉到它整体的热度是在往下走的"
+        }
+      ],
+      "boundary": "This holds when initial excitement fades and users encounter practical limitations like cost or usability issues.",
+      "action": "Evaluate whether Claude Code's adoption trend affects its long-term viability as a development tool.",
+      "topics": [
+        "popularity decline",
+        "tool adoption",
+        "claude code"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "tool adoption": [
+    {
+      "episode_id": "4597222",
+      "claim": "The overall popularity of Claude Code is declining.",
+      "evidence": [
+        {
+          "speaker": "Annatar",
+          "timestamp": "00:02:32",
+          "quote": "我感觉到它整体的热度是在往下走的"
+        }
+      ],
+      "boundary": "This holds when initial excitement fades and users encounter practical limitations like cost or usability issues.",
+      "action": "Evaluate whether Claude Code's adoption trend affects its long-term viability as a development tool.",
+      "topics": [
+        "popularity decline",
+        "tool adoption",
+        "claude code"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "ai coding": [
+    {
+      "episode_id": "4597222",
+      "claim": "The overall popularity of Claude Code is declining.",
+      "evidence": [
+        {
+          "speaker": "Annatar",
+          "timestamp": "00:02:32",
+          "quote": "我感觉到它整体的热度是在往下走的"
+        }
+      ],
+      "boundary": "This holds when initial excitement fades and users encounter practical limitations like cost or usability issues.",
+      "action": "Evaluate whether Claude Code's adoption trend affects its long-term viability as a development tool.",
+      "topics": [
+        "popularity decline",
+        "tool adoption",
+        "claude code"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    },
+    {
+      "episode_id": "5080136",
+      "claim": "使用Claude Code即使每天消耗300美元也能在一天内回本，因此高消耗是值得的。",
+      "evidence": [
+        {
+          "speaker": "刘小排",
+          "timestamp": "00:05:55",
+          "quote": "我发现它一天就能消耗 300 美元，我就一天回本。"
+        }
+      ],
+      "boundary": "This holds when the output generated by Claude Code leads to immediate revenue or cost savings that cover the daily consumption within a day.",
+      "action": null,
+      "topics": [
+        "claude code",
+        "cost-effectiveness",
+        "roi"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    },
+    {
+      "episode_id": "5080136",
+      "claim": "将需求文档复制粘贴到Claude Code中可以高效地让AI自动化完成开发任务。",
+      "evidence": [
+        {
+          "speaker": "刘小排",
+          "timestamp": "00:59:12",
+          "quote": "写完之后，你把这个需求复制粘贴到 Claude Code 里面。"
+        }
+      ],
+      "boundary": "This works when the requirements are clearly written and the task is within Claude Code's automation capabilities.",
+      "action": "将需求文档复制粘贴到Claude Code中。",
+      "topics": [
+        "claude code",
+        "prompting",
+        "task automation"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "standard tasks": [
+    {
+      "episode_id": "4597222",
+      "claim": "Claude Code works well for implementing standard, well-defined programming tasks like tree traversal.",
+      "evidence": [
+        {
+          "speaker": "Annatar",
+          "timestamp": "00:05:20",
+          "quote": "如果你给他那种非常标准的东西，比如说像是数的便利"
+        }
+      ],
+      "boundary": "This works when the task is a standard algorithmic problem with many examples in the model's training data.",
+      "action": "Use Claude Code to quickly generate boilerplate or standard algorithmic solutions to save development time.",
+      "topics": [
+        "standard tasks",
+        "code generation",
+        "productivity"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "code generation": [
+    {
+      "episode_id": "4597222",
+      "claim": "Claude Code works well for implementing standard, well-defined programming tasks like tree traversal.",
+      "evidence": [
+        {
+          "speaker": "Annatar",
+          "timestamp": "00:05:20",
+          "quote": "如果你给他那种非常标准的东西，比如说像是数的便利"
+        }
+      ],
+      "boundary": "This works when the task is a standard algorithmic problem with many examples in the model's training data.",
+      "action": "Use Claude Code to quickly generate boilerplate or standard algorithmic solutions to save development time.",
+      "topics": [
+        "standard tasks",
+        "code generation",
+        "productivity"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "productivity": [
+    {
+      "episode_id": "4597222",
+      "claim": "Claude Code works well for implementing standard, well-defined programming tasks like tree traversal.",
+      "evidence": [
+        {
+          "speaker": "Annatar",
+          "timestamp": "00:05:20",
+          "quote": "如果你给他那种非常标准的东西，比如说像是数的便利"
+        }
+      ],
+      "boundary": "This works when the task is a standard algorithmic problem with many examples in the model's training data.",
+      "action": "Use Claude Code to quickly generate boilerplate or standard algorithmic solutions to save development time.",
+      "topics": [
+        "standard tasks",
+        "code generation",
+        "productivity"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "personal ai": [
+    {
+      "episode_id": "4612409",
+      "claim": "AI can understand you better than your friends or even family.",
+      "evidence": [
+        {
+          "speaker": "Koji",
+          "timestamp": "00:47:08",
+          "quote": "AI 可能比你身边任何一个朋友甚至家人都更懂你"
+        }
+      ],
+      "boundary": "This holds when the AI has access to extensive personal data through continuous monitoring and interaction.",
+      "action": "Consider using AI as a trusted companion for self-reflection and advice.",
+      "topics": [
+        "personal ai",
+        "ai companionship",
+        "understanding"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "ai companionship": [
+    {
+      "episode_id": "4612409",
+      "claim": "AI can understand you better than your friends or even family.",
+      "evidence": [
+        {
+          "speaker": "Koji",
+          "timestamp": "00:47:08",
+          "quote": "AI 可能比你身边任何一个朋友甚至家人都更懂你"
+        }
+      ],
+      "boundary": "This holds when the AI has access to extensive personal data through continuous monitoring and interaction.",
+      "action": "Consider using AI as a trusted companion for self-reflection and advice.",
+      "topics": [
+        "personal ai",
+        "ai companionship",
+        "understanding"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "understanding": [
+    {
+      "episode_id": "4612409",
+      "claim": "AI can understand you better than your friends or even family.",
+      "evidence": [
+        {
+          "speaker": "Koji",
+          "timestamp": "00:47:08",
+          "quote": "AI 可能比你身边任何一个朋友甚至家人都更懂你"
+        }
+      ],
+      "boundary": "This holds when the AI has access to extensive personal data through continuous monitoring and interaction.",
+      "action": "Consider using AI as a trusted companion for self-reflection and advice.",
+      "topics": [
+        "personal ai",
+        "ai companionship",
+        "understanding"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "privacy": [
+    {
+      "episode_id": "4612409",
+      "claim": "Constantly recording conversations for AI raises privacy concerns and discomfort.",
+      "evidence": [
+        {
+          "speaker": "Koji",
+          "timestamp": "00:16:33",
+          "quote": "那你会有点因此而谨慎，小心，有些话不要说出来吗？"
+        }
+      ],
+      "boundary": "This matters when AI is given continuous access to private conversations and daily life.",
+      "action": "Establish clear boundaries and consent for AI recording.",
+      "topics": [
+        "privacy",
+        "ai ethics",
+        "recording"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "ai ethics": [
+    {
+      "episode_id": "4612409",
+      "claim": "Constantly recording conversations for AI raises privacy concerns and discomfort.",
+      "evidence": [
+        {
+          "speaker": "Koji",
+          "timestamp": "00:16:33",
+          "quote": "那你会有点因此而谨慎，小心，有些话不要说出来吗？"
+        }
+      ],
+      "boundary": "This matters when AI is given continuous access to private conversations and daily life.",
+      "action": "Establish clear boundaries and consent for AI recording.",
+      "topics": [
+        "privacy",
+        "ai ethics",
+        "recording"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "recording": [
+    {
+      "episode_id": "4612409",
+      "claim": "Constantly recording conversations for AI raises privacy concerns and discomfort.",
+      "evidence": [
+        {
+          "speaker": "Koji",
+          "timestamp": "00:16:33",
+          "quote": "那你会有点因此而谨慎，小心，有些话不要说出来吗？"
+        }
+      ],
+      "boundary": "This matters when AI is given continuous access to private conversations and daily life.",
+      "action": "Establish clear boundaries and consent for AI recording.",
+      "topics": [
+        "privacy",
+        "ai ethics",
+        "recording"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "grocery shopping": [
+    {
+      "episode_id": "4612409",
+      "claim": "Automating grocery shopping with AI saves significant time.",
+      "evidence": [
+        {
+          "speaker": "鸭哥",
+          "timestamp": "00:34:58",
+          "quote": "网上买菜像现在五五分钟就点完了"
+        }
+      ],
+      "boundary": "This works when the AI is integrated with online shopping platforms and can learn your preferences.",
+      "action": "Delegate routine purchases to AI to free up time.",
+      "topics": [
+        "ai automation",
+        "grocery shopping",
+        "time-saving"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "time-saving": [
+    {
+      "episode_id": "4612409",
+      "claim": "Automating grocery shopping with AI saves significant time.",
+      "evidence": [
+        {
+          "speaker": "鸭哥",
+          "timestamp": "00:34:58",
+          "quote": "网上买菜像现在五五分钟就点完了"
+        }
+      ],
+      "boundary": "This works when the AI is integrated with online shopping platforms and can learn your preferences.",
+      "action": "Delegate routine purchases to AI to free up time.",
+      "topics": [
+        "ai automation",
+        "grocery shopping",
+        "time-saving"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "chatgpt": [
+    {
+      "episode_id": "4822400",
+      "claim": "ChatGPT is the best from a data perspective.",
+      "evidence": [
+        {
+          "speaker": "Monica",
+          "timestamp": "00:36:34",
+          "quote": "它就是最好的。"
+        }
+      ],
+      "boundary": "This holds when comparing AI models using data metrics.",
+      "action": "Use ChatGPT as the primary benchmark for AI performance.",
+      "topics": [
+        "ChatGPT",
+        "AI models",
+        "performance"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    },
+    {
+      "episode_id": "4822400",
+      "claim": "I now doubt my previous view about ChatGPT's capabilities after recent usage.",
+      "evidence": [
+        {
+          "speaker": "课代表立正",
+          "timestamp": "00:30:48",
+          "quote": "但是我现在怀疑这个观点，"
+        }
+      ],
+      "boundary": "This matters when new experiences challenge established beliefs.",
+      "action": "Re-evaluate your assumptions when new evidence emerges.",
+      "topics": [
+        "doubt",
+        "belief change",
+        "ChatGPT"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    },
+    {
+      "episode_id": "5175701",
+      "claim": "ChatGPT is dominant in its ecological niche.",
+      "evidence": [
+        {
+          "speaker": "姚顺雨",
+          "timestamp": "00:52:41",
+          "quote": "但是，然后这个生态位我觉得 ChatGPT 是占主的，"
+        }
+      ],
+      "boundary": "This holds when considering the current AI assistant market.",
+      "action": "Recognize ChatGPT's leading position.",
+      "topics": [
+        "chatgpt",
+        "market dominance"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "ai models": [
+    {
+      "episode_id": "4822400",
+      "claim": "ChatGPT is the best from a data perspective.",
+      "evidence": [
+        {
+          "speaker": "Monica",
+          "timestamp": "00:36:34",
+          "quote": "它就是最好的。"
+        }
+      ],
+      "boundary": "This holds when comparing AI models using data metrics.",
+      "action": "Use ChatGPT as the primary benchmark for AI performance.",
+      "topics": [
+        "ChatGPT",
+        "AI models",
+        "performance"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "performance": [
+    {
+      "episode_id": "4822400",
+      "claim": "ChatGPT is the best from a data perspective.",
+      "evidence": [
+        {
+          "speaker": "Monica",
+          "timestamp": "00:36:34",
+          "quote": "它就是最好的。"
+        }
+      ],
+      "boundary": "This holds when comparing AI models using data metrics.",
+      "action": "Use ChatGPT as the primary benchmark for AI performance.",
+      "topics": [
+        "ChatGPT",
+        "AI models",
+        "performance"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "doubt": [
+    {
+      "episode_id": "4822400",
+      "claim": "I now doubt my previous view about ChatGPT's capabilities after recent usage.",
+      "evidence": [
+        {
+          "speaker": "课代表立正",
+          "timestamp": "00:30:48",
+          "quote": "但是我现在怀疑这个观点，"
+        }
+      ],
+      "boundary": "This matters when new experiences challenge established beliefs.",
+      "action": "Re-evaluate your assumptions when new evidence emerges.",
+      "topics": [
+        "doubt",
+        "belief change",
+        "ChatGPT"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "belief change": [
+    {
+      "episode_id": "4822400",
+      "claim": "I now doubt my previous view about ChatGPT's capabilities after recent usage.",
+      "evidence": [
+        {
+          "speaker": "课代表立正",
+          "timestamp": "00:30:48",
+          "quote": "但是我现在怀疑这个观点，"
+        }
+      ],
+      "boundary": "This matters when new experiences challenge established beliefs.",
+      "action": "Re-evaluate your assumptions when new evidence emerges.",
+      "topics": [
+        "doubt",
+        "belief change",
+        "ChatGPT"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "frameworks": [
+    {
+      "episode_id": "4822400",
+      "claim": "When answering certain questions, using three perspectives is an effective approach.",
+      "evidence": [
+        {
+          "speaker": "Koji",
+          "timestamp": "00:26:34",
+          "quote": "我觉得在回答这样的问题的时候，其实有三种视角，"
+        }
+      ],
+      "boundary": "This works when the question is multi-faceted.",
+      "action": "Adopt a three-perspective framework for complex problem-solving.",
+      "topics": [
+        "frameworks",
+        "analysis",
+        "problem-solving"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "analysis": [
+    {
+      "episode_id": "4822400",
+      "claim": "When answering certain questions, using three perspectives is an effective approach.",
+      "evidence": [
+        {
+          "speaker": "Koji",
+          "timestamp": "00:26:34",
+          "quote": "我觉得在回答这样的问题的时候，其实有三种视角，"
+        }
+      ],
+      "boundary": "This works when the question is multi-faceted.",
+      "action": "Adopt a three-perspective framework for complex problem-solving.",
+      "topics": [
+        "frameworks",
+        "analysis",
+        "problem-solving"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "problem-solving": [
+    {
+      "episode_id": "4822400",
+      "claim": "When answering certain questions, using three perspectives is an effective approach.",
+      "evidence": [
+        {
+          "speaker": "Koji",
+          "timestamp": "00:26:34",
+          "quote": "我觉得在回答这样的问题的时候，其实有三种视角，"
+        }
+      ],
+      "boundary": "This works when the question is multi-faceted.",
+      "action": "Adopt a three-perspective framework for complex problem-solving.",
+      "topics": [
+        "frameworks",
+        "analysis",
+        "problem-solving"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "aha moment": [
+    {
+      "episode_id": "4886157",
+      "claim": "人类独有的体验能带来AI无法复制的顿悟时刻，不一定要依赖AI。",
+      "evidence": [
+        {
+          "speaker": "Koji",
+          "timestamp": "00:19:54",
+          "quote": "我觉得这种东西还是真的只有人类才能给你带来的 aha moment。"
+        }
+      ],
+      "boundary": "This matters when you seek deep human connection or inspiration beyond efficiency.",
+      "action": "投入让你有内心冲动的人类活动，比如爱好或艺术体验。",
+      "topics": [
+        "aha moment",
+        "人类体验",
+        "AI替代"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "人类体验": [
+    {
+      "episode_id": "4886157",
+      "claim": "人类独有的体验能带来AI无法复制的顿悟时刻，不一定要依赖AI。",
+      "evidence": [
+        {
+          "speaker": "Koji",
+          "timestamp": "00:19:54",
+          "quote": "我觉得这种东西还是真的只有人类才能给你带来的 aha moment。"
+        }
+      ],
+      "boundary": "This matters when you seek deep human connection or inspiration beyond efficiency.",
+      "action": "投入让你有内心冲动的人类活动，比如爱好或艺术体验。",
+      "topics": [
+        "aha moment",
+        "人类体验",
+        "AI替代"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "ai替代": [
+    {
+      "episode_id": "4886157",
+      "claim": "人类独有的体验能带来AI无法复制的顿悟时刻，不一定要依赖AI。",
+      "evidence": [
+        {
+          "speaker": "Koji",
+          "timestamp": "00:19:54",
+          "quote": "我觉得这种东西还是真的只有人类才能给你带来的 aha moment。"
+        }
+      ],
+      "boundary": "This matters when you seek deep human connection or inspiration beyond efficiency.",
+      "action": "投入让你有内心冲动的人类活动，比如爱好或艺术体验。",
+      "topics": [
+        "aha moment",
+        "人类体验",
+        "AI替代"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "ai潜力": [
+    {
+      "episode_id": "4886157",
+      "claim": "AI的潜力被严重低估，用户常因初期结果不满意而浅尝辄止。",
+      "evidence": [
+        {
+          "speaker": "课代表立正",
+          "timestamp": "00:02:07",
+          "quote": "你以为它的潜力是 10 分，但是其实潜力是 100 分，所以说你试到 10 分就停了。"
+        }
+      ],
+      "boundary": "This holds when users make a few attempts with AI and then give up prematurely.",
+      "action": "对同一任务尝试多次或从不同角度引导AI，直到挖掘出其上限。",
+      "topics": [
+        "AI潜力",
+        "浅尝辄止",
+        "任务控制"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "浅尝辄止": [
+    {
+      "episode_id": "4886157",
+      "claim": "AI的潜力被严重低估，用户常因初期结果不满意而浅尝辄止。",
+      "evidence": [
+        {
+          "speaker": "课代表立正",
+          "timestamp": "00:02:07",
+          "quote": "你以为它的潜力是 10 分，但是其实潜力是 100 分，所以说你试到 10 分就停了。"
+        }
+      ],
+      "boundary": "This holds when users make a few attempts with AI and then give up prematurely.",
+      "action": "对同一任务尝试多次或从不同角度引导AI，直到挖掘出其上限。",
+      "topics": [
+        "AI潜力",
+        "浅尝辄止",
+        "任务控制"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "任务控制": [
+    {
+      "episode_id": "4886157",
+      "claim": "AI的潜力被严重低估，用户常因初期结果不满意而浅尝辄止。",
+      "evidence": [
+        {
+          "speaker": "课代表立正",
+          "timestamp": "00:02:07",
+          "quote": "你以为它的潜力是 10 分，但是其实潜力是 100 分，所以说你试到 10 分就停了。"
+        }
+      ],
+      "boundary": "This holds when users make a few attempts with AI and then give up prematurely.",
+      "action": "对同一任务尝试多次或从不同角度引导AI，直到挖掘出其上限。",
+      "topics": [
+        "AI潜力",
+        "浅尝辄止",
+        "任务控制"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "ai焦虑": [
+    {
+      "episode_id": "4886157",
+      "claim": "缓解AI焦虑可通过扎实学习AI或投入真正的兴趣爱好来实现。",
+      "evidence": [
+        {
+          "speaker": "课代表立正",
+          "timestamp": "00:31:39",
+          "quote": "如果真的很焦虑，那就是学 AI。"
+        }
+      ],
+      "boundary": "This works when you feel anxious about AI’s impact on your job or daily life.",
+      "action": "选择系统学习AI工具和原理，或找一个即使没有AI你也会沉浸其中的爱好。",
+      "topics": [
+        "AI焦虑",
+        "学习",
+        "兴趣爱好"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "学习": [
+    {
+      "episode_id": "4886157",
+      "claim": "缓解AI焦虑可通过扎实学习AI或投入真正的兴趣爱好来实现。",
+      "evidence": [
+        {
+          "speaker": "课代表立正",
+          "timestamp": "00:31:39",
+          "quote": "如果真的很焦虑，那就是学 AI。"
+        }
+      ],
+      "boundary": "This works when you feel anxious about AI’s impact on your job or daily life.",
+      "action": "选择系统学习AI工具和原理，或找一个即使没有AI你也会沉浸其中的爱好。",
+      "topics": [
+        "AI焦虑",
+        "学习",
+        "兴趣爱好"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "兴趣爱好": [
+    {
+      "episode_id": "4886157",
+      "claim": "缓解AI焦虑可通过扎实学习AI或投入真正的兴趣爱好来实现。",
+      "evidence": [
+        {
+          "speaker": "课代表立正",
+          "timestamp": "00:31:39",
+          "quote": "如果真的很焦虑，那就是学 AI。"
+        }
+      ],
+      "boundary": "This works when you feel anxious about AI’s impact on your job or daily life.",
+      "action": "选择系统学习AI工具和原理，或找一个即使没有AI你也会沉浸其中的爱好。",
+      "topics": [
+        "AI焦虑",
+        "学习",
+        "兴趣爱好"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "fake work": [
+    {
+      "episode_id": "5006605",
+      "claim": "Many jobs generated by software systems are fake work, empty busywork.",
+      "evidence": [
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:00:16",
+          "quote": "我们不得不制造很多 fakework 来充实我们的工作量"
+        }
+      ],
+      "boundary": "This matters when companies adopt many SaaS modules that create coordination tasks instead of automating them.",
+      "action": "Replace execution-layer busywork with AI agents.",
+      "topics": [
+        "fake work",
+        "busy work"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "busy work": [
+    {
+      "episode_id": "5006605",
+      "claim": "Many jobs generated by software systems are fake work, empty busywork.",
+      "evidence": [
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:00:16",
+          "quote": "我们不得不制造很多 fakework 来充实我们的工作量"
+        }
+      ],
+      "boundary": "This matters when companies adopt many SaaS modules that create coordination tasks instead of automating them.",
+      "action": "Replace execution-layer busywork with AI agents.",
+      "topics": [
+        "fake work",
+        "busy work"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "super individual": [
+    {
+      "episode_id": "5006605",
+      "claim": "The surest opportunity is to relentlessly use AI to become a super individual.",
+      "evidence": [
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:16:03",
+          "quote": "不计成本的使用都是现在唯一确定性的应该做的事"
+        }
+      ],
+      "boundary": "This works when you have domain expertise and hands-on ability to integrate AI into workflows.",
+      "action": "Experiment intensely with AI tools, irrespective of cost, to find super individual opportunities.",
+      "topics": [
+        "super individual",
+        "ai usage"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "ai usage": [
+    {
+      "episode_id": "5006605",
+      "claim": "The surest opportunity is to relentlessly use AI to become a super individual.",
+      "evidence": [
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:16:03",
+          "quote": "不计成本的使用都是现在唯一确定性的应该做的事"
+        }
+      ],
+      "boundary": "This works when you have domain expertise and hands-on ability to integrate AI into workflows.",
+      "action": "Experiment intensely with AI tools, irrespective of cost, to find super individual opportunities.",
+      "topics": [
+        "super individual",
+        "ai usage"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "non-consensus": [
+    {
+      "episode_id": "5006606",
+      "claim": "真正意义上基于第一性原理的非共识观点非常少见。",
+      "evidence": [
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:00:00",
+          "quote": "真正意义上的基于 first principle 的非共识的观点是非常少见的。"
+        }
+      ],
+      "boundary": "This matters when evaluating the originality of ideas in technology and investing.",
+      "action": "Develop the ability to distinguish genuine first-principle non-consensus from merely contrarian opinions.",
+      "topics": [
+        "non-consensus",
+        "first principles",
+        "originality"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "first principles": [
+    {
+      "episode_id": "5006606",
+      "claim": "真正意义上基于第一性原理的非共识观点非常少见。",
+      "evidence": [
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:00:00",
+          "quote": "真正意义上的基于 first principle 的非共识的观点是非常少见的。"
+        }
+      ],
+      "boundary": "This matters when evaluating the originality of ideas in technology and investing.",
+      "action": "Develop the ability to distinguish genuine first-principle non-consensus from merely contrarian opinions.",
+      "topics": [
+        "non-consensus",
+        "first principles",
+        "originality"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "originality": [
+    {
+      "episode_id": "5006606",
+      "claim": "真正意义上基于第一性原理的非共识观点非常少见。",
+      "evidence": [
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:00:00",
+          "quote": "真正意义上的基于 first principle 的非共识的观点是非常少见的。"
+        }
+      ],
+      "boundary": "This matters when evaluating the originality of ideas in technology and investing.",
+      "action": "Develop the ability to distinguish genuine first-principle non-consensus from merely contrarian opinions.",
+      "topics": [
+        "non-consensus",
+        "first principles",
+        "originality"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "ai transformation": [
+    {
+      "episode_id": "5006606",
+      "claim": "AI represents a fundamental shift that makes this time different from previous technological transitions.",
+      "evidence": [
+        {
+          "speaker": "课代表立正",
+          "timestamp": "00:16:25",
+          "quote": "有人会提出一个挑战，就是 this time is different。"
+        }
+      ],
+      "boundary": "This matters when determining whether to apply historical patterns or develop entirely new strategies.",
+      "action": "Assess both the continuities and discontinuities in AI's impact before adopting the 'this time is different' thesis.",
+      "topics": [
+        "AI transformation",
+        "historical analogies",
+        "technology cycles"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "historical analogies": [
+    {
+      "episode_id": "5006606",
+      "claim": "AI represents a fundamental shift that makes this time different from previous technological transitions.",
+      "evidence": [
+        {
+          "speaker": "课代表立正",
+          "timestamp": "00:16:25",
+          "quote": "有人会提出一个挑战，就是 this time is different。"
+        }
+      ],
+      "boundary": "This matters when determining whether to apply historical patterns or develop entirely new strategies.",
+      "action": "Assess both the continuities and discontinuities in AI's impact before adopting the 'this time is different' thesis.",
+      "topics": [
+        "AI transformation",
+        "historical analogies",
+        "technology cycles"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "technology cycles": [
+    {
+      "episode_id": "5006606",
+      "claim": "AI represents a fundamental shift that makes this time different from previous technological transitions.",
+      "evidence": [
+        {
+          "speaker": "课代表立正",
+          "timestamp": "00:16:25",
+          "quote": "有人会提出一个挑战，就是 this time is different。"
+        }
+      ],
+      "boundary": "This matters when determining whether to apply historical patterns or develop entirely new strategies.",
+      "action": "Assess both the continuities and discontinuities in AI's impact before adopting the 'this time is different' thesis.",
+      "topics": [
+        "AI transformation",
+        "historical analogies",
+        "technology cycles"
+      ],
+      "source_views": [
+        "controversy"
+      ]
+    }
+  ],
+  "problem finding": [
+    {
+      "episode_id": "5006606",
+      "claim": "在AI时代，关键的元能力是有效找到问题的能力。",
+      "evidence": [
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:01:02",
+          "quote": "我是不是能够有效地去找到问题？"
+        },
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:15:08",
+          "quote": "很可能就是我们对于这个元能力的认知的欠缺"
+        }
+      ],
+      "boundary": "This works when individuals transition from task execution to strategic roles requiring innovation.",
+      "action": "Prioritize developing problem-identification skills over purely technical proficiency.",
+      "topics": [
+        "problem finding",
+        "meta-capability",
+        "career growth"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "meta-capability": [
+    {
+      "episode_id": "5006606",
+      "claim": "在AI时代，关键的元能力是有效找到问题的能力。",
+      "evidence": [
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:01:02",
+          "quote": "我是不是能够有效地去找到问题？"
+        },
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:15:08",
+          "quote": "很可能就是我们对于这个元能力的认知的欠缺"
+        }
+      ],
+      "boundary": "This works when individuals transition from task execution to strategic roles requiring innovation.",
+      "action": "Prioritize developing problem-identification skills over purely technical proficiency.",
+      "topics": [
+        "problem finding",
+        "meta-capability",
+        "career growth"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "career growth": [
+    {
+      "episode_id": "5006606",
+      "claim": "在AI时代，关键的元能力是有效找到问题的能力。",
+      "evidence": [
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:01:02",
+          "quote": "我是不是能够有效地去找到问题？"
+        },
+        {
+          "speaker": "杜磊",
+          "timestamp": "00:15:08",
+          "quote": "很可能就是我们对于这个元能力的认知的欠缺"
+        }
+      ],
+      "boundary": "This works when individuals transition from task execution to strategic roles requiring innovation.",
+      "action": "Prioritize developing problem-identification skills over purely technical proficiency.",
+      "topics": [
+        "problem finding",
+        "meta-capability",
+        "career growth"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "cost-effectiveness": [
+    {
+      "episode_id": "5080136",
+      "claim": "使用Claude Code即使每天消耗300美元也能在一天内回本，因此高消耗是值得的。",
+      "evidence": [
+        {
+          "speaker": "刘小排",
+          "timestamp": "00:05:55",
+          "quote": "我发现它一天就能消耗 300 美元，我就一天回本。"
+        }
+      ],
+      "boundary": "This holds when the output generated by Claude Code leads to immediate revenue or cost savings that cover the daily consumption within a day.",
+      "action": null,
+      "topics": [
+        "claude code",
+        "cost-effectiveness",
+        "roi"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "roi": [
+    {
+      "episode_id": "5080136",
+      "claim": "使用Claude Code即使每天消耗300美元也能在一天内回本，因此高消耗是值得的。",
+      "evidence": [
+        {
+          "speaker": "刘小排",
+          "timestamp": "00:05:55",
+          "quote": "我发现它一天就能消耗 300 美元，我就一天回本。"
+        }
+      ],
+      "boundary": "This holds when the output generated by Claude Code leads to immediate revenue or cost savings that cover the daily consumption within a day.",
+      "action": null,
+      "topics": [
+        "claude code",
+        "cost-effectiveness",
+        "roi"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "prompting": [
+    {
+      "episode_id": "5080136",
+      "claim": "将需求文档复制粘贴到Claude Code中可以高效地让AI自动化完成开发任务。",
+      "evidence": [
+        {
+          "speaker": "刘小排",
+          "timestamp": "00:59:12",
+          "quote": "写完之后，你把这个需求复制粘贴到 Claude Code 里面。"
+        }
+      ],
+      "boundary": "This works when the requirements are clearly written and the task is within Claude Code's automation capabilities.",
+      "action": "将需求文档复制粘贴到Claude Code中。",
+      "topics": [
+        "claude code",
+        "prompting",
+        "task automation"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "task automation": [
+    {
+      "episode_id": "5080136",
+      "claim": "将需求文档复制粘贴到Claude Code中可以高效地让AI自动化完成开发任务。",
+      "evidence": [
+        {
+          "speaker": "刘小排",
+          "timestamp": "00:59:12",
+          "quote": "写完之后，你把这个需求复制粘贴到 Claude Code 里面。"
+        }
+      ],
+      "boundary": "This works when the requirements are clearly written and the task is within Claude Code's automation capabilities.",
+      "action": "将需求文档复制粘贴到Claude Code中。",
+      "topics": [
+        "claude code",
+        "prompting",
+        "task automation"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "market dominance": [
+    {
+      "episode_id": "5175701",
+      "claim": "ChatGPT is dominant in its ecological niche.",
+      "evidence": [
+        {
+          "speaker": "姚顺雨",
+          "timestamp": "00:52:41",
+          "quote": "但是，然后这个生态位我觉得 ChatGPT 是占主的，"
+        }
+      ],
+      "boundary": "This holds when considering the current AI assistant market.",
+      "action": "Recognize ChatGPT's leading position.",
+      "topics": [
+        "chatgpt",
+        "market dominance"
+      ],
+      "source_views": [
+        "judgment"
+      ]
+    }
+  ],
+  "incremental progress": [
+    {
+      "episode_id": "5175701",
+      "claim": "Focus on high-certainty tasks and accumulate progress step by step.",
+      "evidence": [
+        {
+          "speaker": "姚顺雨",
+          "timestamp": "02:19:12",
+          "quote": "去做确定性强的事情，然后一步一步积累。"
+        }
+      ],
+      "boundary": "This works when building capabilities in a new or uncertain field.",
+      "action": "Prioritize tasks with clear outcomes and build incrementally.",
+      "topics": [
+        "incremental progress",
+        "certainty",
+        "execution"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "certainty": [
+    {
+      "episode_id": "5175701",
+      "claim": "Focus on high-certainty tasks and accumulate progress step by step.",
+      "evidence": [
+        {
+          "speaker": "姚顺雨",
+          "timestamp": "02:19:12",
+          "quote": "去做确定性强的事情，然后一步一步积累。"
+        }
+      ],
+      "boundary": "This works when building capabilities in a new or uncertain field.",
+      "action": "Prioritize tasks with clear outcomes and build incrementally.",
+      "topics": [
+        "incremental progress",
+        "certainty",
+        "execution"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ],
+  "execution": [
+    {
+      "episode_id": "5175701",
+      "claim": "Focus on high-certainty tasks and accumulate progress step by step.",
+      "evidence": [
+        {
+          "speaker": "姚顺雨",
+          "timestamp": "02:19:12",
+          "quote": "去做确定性强的事情，然后一步一步积累。"
+        }
+      ],
+      "boundary": "This works when building capabilities in a new or uncertain field.",
+      "action": "Prioritize tasks with clear outcomes and build incrementally.",
+      "topics": [
+        "incremental progress",
+        "certainty",
+        "execution"
+      ],
+      "source_views": [
+        "practice"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+Traceback (most recent call last):
+  File "/Users/guochaoyuan/context-infrastructure/formal_projects/podinsight_mvp/scripts/run_pipeline.py", line 464, in <module>
+    main()
+  File "/Users/guochaoyuan/context-infrastructure/formal_projects/podinsight_mvp/scripts/run_pipeline.py", line 451, in main
+    artifacts = build_demo_artifacts(
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/guochaoyuan/context-infrastructure/formal_projects/podinsight_mvp/src/podinsight_mvp/pipeline.py", line 57, in build_demo_artifacts
+    view_payloads = extractor.build_candidates(transcript)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/guochaoyuan/context-infrastructure/formal_projects/podinsight_mvp/src/podinsight_mvp/model_clients.py", line 128, in build_candidates
+    response = self.client.complete(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/guochaoyuan/context-infrastructure/formal_projects/podinsight_mvp/src/podinsight_mvp/openai_client.py", line 47, in complete
+    response = self.transport.create_chat_completion(model=self.config.model, messages=messages)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/guochaoyuan/context-infrastructure/formal_projects/podinsight_mvp/src/podinsight_mvp/openai_client.py", line 24, in create_chat_completion
+    response = self.client.chat.completions.create(model=model, messages=typed_messages)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/guochaoyuan/context-infrastructure/formal_projects/podinsight_mvp/.venv/lib/python3.11/site-packages/openai/_utils/_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/guochaoyuan/context-infrastructure/formal_projects/podinsight_mvp/.venv/lib/python3.11/site-packages/openai/resources/chat/completions/completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/Users/guochaoyuan/context-infrastructure/formal_projects/podinsight_mvp/.venv/lib/python3.11/site-packages/openai/_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/guochaoyuan/context-infrastructure/formal_projects/podinsight_mvp/.venv/lib/python3.11/site-packages/openai/_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.AuthenticationError: Error code: 401 - {'error': {'code': '', 'message': '无效的令牌 (request id: 2026053113150353238271030eqKJ1a)', 'type': 'new_api_error'}}

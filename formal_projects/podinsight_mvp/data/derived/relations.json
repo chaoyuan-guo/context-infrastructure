@@ -1,0 +1,44 @@
+[
+  {
+    "left_claim": "然后最近也出了 API，但这个东西它有个问题就是它的成本实在是过高。",
+    "right_claim": "一个新的科技出现，成本还没有下降到足够普惠到可以做一个大规模的 To C 的应用。",
+    "label": "support",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "通过这样的方式让上千个字的 prompt 变成一种常态。",
+    "right_claim": "我的 prompt 里面也没有加任何的复杂的东西。",
+    "label": "support",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "你才能够知道最新的技术编辑在哪里，有什么新的创业机会。",
+    "right_claim": "那这种情况下，创业公司最大的机会就是说我能探索新的交互方式。",
+    "label": "support",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "所以说我不觉得 AI 所谓的取代了这些程序员的工作。",
+    "right_claim": "就是程序员变得再强，也不能够取代产品经理把产品文档。",
+    "label": "support",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "你的所有的 mcp call，你 agent 自己的 introspection，你的思维链都是在开会。",
+    "right_claim": "然后我觉得可能基于特定的任务你会有很多就是 workflow 或者更 specific 的方法。",
+    "label": "prerequisite",
+    "confidence": 0.86
+  },
+  {
+    "left_claim": "然后我会让 Claude Code 把市面上知名的大概十几个开源的 3D 模型自己去部署上去。",
+    "right_claim": "第二个好用的功能是 sub-agent，就是 Claude Code 他自己是一个大 agent。",
+    "label": "support",
+    "confidence": 0.9
+  },
+  {
+    "left_claim": "然后我觉得可能基于特定的任务你会有很多就是 workflow 或者更 specific 的方法。",
+    "right_claim": "但是他不一样的地方就是 Agent 的价值所在，他会做任务规划。",
+    "label": "prerequisite",
+    "confidence": 0.86
+  }
+]

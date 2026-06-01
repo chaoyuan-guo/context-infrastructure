@@ -1,0 +1,25 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.5, pytest-9.0.3, pluggy-1.6.0
+rootdir: /Users/guochaoyuan/context-infrastructure/formal_projects/podinsight_mvp
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.13.0
+collected 27 items
+
+tests/test_aggregate.py .                                                [  3%]
+tests/test_catalog.py .                                                  [  7%]
+tests/test_cli.py ......                                                 [ 29%]
+tests/test_extract.py .                                                  [ 33%]
+tests/test_ingest.py ...                                                 [ 44%]
+tests/test_model_clients.py ..                                           [ 51%]
+tests/test_openai_client.py ....                                         [ 66%]
+tests/test_pipeline_smoke.py .                                           [ 70%]
+tests/test_presenters.py .                                               [ 74%]
+tests/test_project_smoke.py .                                            [ 77%]
+tests/test_query.py .                                                    [ 81%]
+tests/test_relations.py .                                                [ 85%]
+tests/test_streamlit_import.py .                                         [ 88%]
+tests/test_types.py .                                                    [ 92%]
+tests/test_validate.py ..                                                [100%]
+
+============================== 27 passed in 1.23s ==============================

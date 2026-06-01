@@ -1,0 +1,16 @@
+
+Collecting usage statistics. To deactivate, set browser.gatherUsageStats to false.
+
+2026-05-31 13:02:16.891 Uvicorn server started on 0.0.0.0:8506
+
+  You can now view your Streamlit app in your browser.
+
+  Local URL: http://localhost:8506
+  Network URL: http://192.168.255.114:8506
+  External URL: http://203.218.66.52:8506
+
+  For better performance, install the Watchdog module:
+
+  $ xcode-select --install
+  $ pip install watchdog
+            
