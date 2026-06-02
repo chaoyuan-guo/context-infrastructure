@@ -31,13 +31,20 @@
 - `Continue if you have next steps...`、`[restore checkpointed session agent configuration after compaction]` 这类 continuation / compaction 控制消息
 - `<!-- OMO_INTERNAL_INITIATOR -->` 这类内部注释标记
 
-对应地，下面这些 assistant 内容也不再单独保留为导出轮次：
+对应地，assistant 侧现在优先按 OpenCode 原始数据库字段做筛选，而不是主要靠正文 regex 清洗：
+
+- 只把 `message.data.role = assistant` 且 `message.data.finish = stop` 的 child message 视为候选最终回复
+- 只提取 `part.data.type = text` 的文本内容
+- 默认忽略 `tool`、`step-start`、`step-finish`、`reasoning`、`patch`、`compaction`、`file`、`subtask` 这类执行/过程 part
+
+在这个字段层过滤之后，下面这些 assistant 内容自然不会再单独保留为导出轮次：
 
 - 纯内部等待/轮询状态，例如“还在等 background task 完成”“不能主动轮询”
+- 混在执行态消息里的 process/status 广播，例如 `What changed:`、`Verified:`、`Remaining wait:`、`Oracle re-reviewed ...`、`I already launched a background explore task ...`
 - `_No final assistant output found._` 这类空输出占位
 - 只有 `<promise>DONE</promise>` / `<promise>VERIFIED</promise>` 之类 loop 协议信号的回复
 
-如果控制消息后面跟着的 assistant 文本里包含真实业务输出，导出时会把这段输出并回上一条真实用户提问，而不是单独保留控制轮次。
+当前实现不再把 control-only user turn 后面的 assistant 文本并回上一轮；assistant 侧只保留明确落在 `finish = stop` 上的最终回复。这样结构更稳，也减少了 process text 混入真实答复的概率。
 
 ## Judgment Standard
 
@@ -58,7 +65,7 @@
 1. 新的低信息量 session 不再落盘
 2. 之前已经导出的同类文件，会在后续 `--sync` 时被 prune 掉
 
-另外，导出文件带 `export_format_version`。当清洗规则升级时，后续 `--sync` 会基于版本自动重写旧文件，避免 manifest 里看起来“没变”但磁盘内容仍是旧格式。
+另外，导出文件带 `export_format_version`。当清洗规则升级时，后续 `--sync` 会基于版本自动重写旧文件，避免 manifest 里看起来“没变”但磁盘内容仍是旧格式。当前这轮字段驱动重构后，脚本里的版本已提升到 `9`。
 
 标题规则也遵循同一个脚本里的简单约定：
 

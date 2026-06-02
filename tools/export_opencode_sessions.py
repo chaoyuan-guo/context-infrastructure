@@ -18,7 +18,7 @@ except ImportError:  # pragma: no cover
 
 DEFAULT_TIMEZONE = "Asia/Shanghai"
 DEFAULT_USER_LABEL = "chaoyuan"
-EXPORT_FORMAT_VERSION = 3
+EXPORT_FORMAT_VERSION = 9
 SESSION_ID_PATTERN = re.compile(r"^session_id:\s*'([^']+)'", re.M)
 EXPORT_FORMAT_VERSION_PATTERN = re.compile(r"^export_format_version:\s*(\d+)\s*$", re.M)
 INTERNAL_INITIATOR_COMMENT_PATTERN = re.compile(
@@ -45,22 +45,31 @@ LEADING_INTERNAL_XML_TAGS = (
 CONTROL_ONLY_QUERY_PREFIXES = (
     "ultrawork [system directive:",
 )
-INTERNAL_ASSISTANT_MARKERS = (
-    "background task",
+PROMISE_ONLY_LINE_PATTERN = re.compile(r"(?m)^\s*<promise>(DONE|VERIFIED)</promise>\s*$")
+ULTRAWORK_LINE_PATTERN = re.compile(r"(?m)^\s*ULTRAWORK MODE ENABLED!\s*$")
+WAIT_STATE_ACTION_MARKERS = (
+    "wait",
+    "waiting",
+    "still running",
+    "still-running",
     "completion reminder",
-    "still in progress",
-    "do not poll",
-    "review is in flight",
-    "wait for the completion reminders",
-    "waiting for the completion reminders",
-    "waiting for the completion notifications",
-    "can't collect results until",
-    "cannot collect results until",
-    "cannot actively poll",
-    "can't actively poll",
-    "不能主动轮询",
-    "必须等系统",
-    "completion notifications",
+    "completion notification",
+    "actively poll",
+    "轮询",
+    "完成通知",
+    "等系统",
+    "等后台",
+    "结果回来",
+    "收口",
+)
+WAIT_STATE_SUBJECT_MARKERS = (
+    "reviewer",
+    "review-work",
+    "oracle",
+    "background task",
+    "security / context",
+    "skeptical oracle",
+    "后台",
 )
 
 
@@ -285,75 +294,55 @@ def is_control_only_query(text: str) -> bool:
     return False
 
 
-def clean_assistant_text(text: str) -> str:
+def clean_final_assistant_text(text: str) -> str:
     cleaned = remove_internal_initiator_comments(text).strip()
-    cleaned = re.sub(r"^\s*ULTRAWORK MODE ENABLED!\s*", "", cleaned, count=1)
-    cleaned = re.sub(r"(?m)^\s*<promise>(DONE|VERIFIED)</promise>\s*$", "", cleaned)
-    return cleaned.strip()
+    cleaned = ULTRAWORK_LINE_PATTERN.sub("", cleaned)
+    cleaned = PROMISE_ONLY_LINE_PATTERN.sub("", cleaned)
+    paragraphs = [paragraph.strip() for paragraph in re.split(r"\n\s*\n", cleaned) if paragraph.strip()]
+    kept = [strip_wait_state_sentences(paragraph) for paragraph in paragraphs if not is_wait_state_paragraph(paragraph)]
+    kept = [paragraph for paragraph in kept if paragraph]
+    return "\n\n".join(kept).strip()
 
 
-def is_internal_assistant_output(text: str) -> bool:
-    normalized = normalize_text(clean_assistant_text(text)).lower()
+def has_exportable_assistant_output(text: str) -> bool:
+    normalized = normalize_text(clean_final_assistant_text(text)).lower()
+    return bool(normalized and normalized != "_no final assistant output found._")
+
+
+def is_wait_state_paragraph(paragraph: str) -> bool:
+    normalized = normalize_text(paragraph).lower()
     if not normalized:
         return True
-    if normalized == "_no final assistant output found._":
+    return any(action in normalized for action in WAIT_STATE_ACTION_MARKERS) and any(
+        subject in normalized for subject in WAIT_STATE_SUBJECT_MARKERS
+    )
+
+
+def strip_wait_state_sentences(paragraph: str) -> str:
+    lines = [line.strip() for line in paragraph.splitlines() if line.strip()]
+    kept_lines = [line for line in lines if not is_wait_state_line(line)]
+    return "\n".join(kept_lines).strip()
+
+
+def is_wait_state_line(line: str) -> bool:
+    normalized = normalize_text(line).lower()
+    if not normalized:
+        return False
+    if is_wait_state_paragraph(line):
         return True
-    return any(marker in normalized for marker in INTERNAL_ASSISTANT_MARKERS)
+    sentence_fragments = re.split(r"(?<=[。！？!?;；.])\s+", line)
+    if len(sentence_fragments) <= 1:
+        return False
+    return all(is_wait_state_fragment(fragment) for fragment in sentence_fragments if normalize_text(fragment))
 
 
-def merge_assistant_outputs(existing: str, follow_up: str) -> str:
-    existing = clean_assistant_text(existing)
-    follow_up = clean_assistant_text(follow_up)
-    if not follow_up:
-        return existing
-    if not existing:
-        return follow_up
-    if existing == follow_up or follow_up in existing:
-        return existing
-    if is_internal_assistant_output(existing):
-        return follow_up
-    return f"{existing}\n\n---\n\n{follow_up}"
-
-
-def normalize_conversation_pairs(pairs: list[ConversationPair]) -> list[ConversationPair]:
-    normalized_pairs: list[ConversationPair] = []
-    latest_real_pair: ConversationPair | None = None
-
-    for pair in pairs:
-        cleaned_query = clean_query_text(pair.query_text)
-        cleaned_answer = clean_assistant_text(pair.answer_text)
-        normalized_pair = ConversationPair(
-            query_text=cleaned_query,
-            answer_text=cleaned_answer,
-            model_id=pair.model_id,
-            provider_id=pair.provider_id,
-            user_time_created=pair.user_time_created,
-            assistant_time_created=pair.assistant_time_created,
-        )
-
-        if is_control_only_query(cleaned_query):
-            if latest_real_pair and cleaned_answer and not is_internal_assistant_output(cleaned_answer):
-                latest_real_pair.answer_text = merge_assistant_outputs(
-                    latest_real_pair.answer_text, cleaned_answer
-                )
-                latest_real_pair.model_id = normalized_pair.model_id or latest_real_pair.model_id
-                latest_real_pair.provider_id = (
-                    normalized_pair.provider_id or latest_real_pair.provider_id
-                )
-                latest_real_pair.assistant_time_created = (
-                    normalized_pair.assistant_time_created
-                    or latest_real_pair.assistant_time_created
-                )
-            continue
-
-        normalized_pairs.append(normalized_pair)
-        latest_real_pair = normalized_pair
-
-    return [
-        pair
-        for pair in normalized_pairs
-        if pair.query_text and pair.answer_text and not is_internal_assistant_output(pair.answer_text)
-    ]
+def is_wait_state_fragment(fragment: str) -> bool:
+    normalized = normalize_text(fragment).lower()
+    if not normalized:
+        return False
+    return any(action in normalized for action in WAIT_STATE_ACTION_MARKERS) and any(
+        subject in normalized for subject in WAIT_STATE_SUBJECT_MARKERS
+    )
 
 
 def clean_query_for_title(text: str) -> str:
@@ -507,20 +496,34 @@ def load_session_payloads(
     parts_by_message: dict[str, list[dict]] = defaultdict(list)
     for row in parts:
         payload = json.loads(row["data"])
+        payload["_id"] = row["id"]
         payload["_time_created"] = row["time_created"]
         parts_by_message[row["message_id"]].append(payload)
     return messages, parts_by_message
 
 
-def extract_non_empty_text(parts: Iterable[dict]) -> str:
+def extract_text_parts(parts: Iterable[dict]) -> str:
     texts: list[str] = []
     for part in parts:
-        if part.get("type") != "text":
+        part_type = part.get("type")
+        if part_type != "text":
             continue
         text_value = (part.get("text") or "").strip()
         if text_value:
             texts.append(text_value)
     return "\n\n".join(texts).strip()
+
+
+def choose_final_assistant_message(
+    candidates: Iterable[dict], parts_by_message: dict[str, list[dict]]
+) -> dict | None:
+    stop_candidates = [candidate for candidate in candidates if candidate["finish"] == "stop"]
+    for candidate in reversed(stop_candidates):
+        final_output = extract_text_parts(parts_by_message.get(candidate["id"], []))
+        if has_exportable_assistant_output(final_output):
+            candidate["_final_output"] = clean_final_assistant_text(final_output)
+            return candidate
+    return None
 
 
 def build_conversation_pairs(conn: sqlite3.Connection, session_id: str) -> list[tuple[str, str]]:
@@ -548,40 +551,31 @@ def build_conversation_pairs(conn: sqlite3.Connection, session_id: str) -> list[
         if message["role"] != "user":
             continue
 
-        query_text = extract_non_empty_text(parts_by_message.get(message["id"], []))
+        query_text = clean_query_text(extract_text_parts(parts_by_message.get(message["id"], [])))
         if not query_text:
+            continue
+        if is_control_only_query(query_text):
             continue
 
         assistant_candidates = [
             child for child in children_by_parent.get(message["id"], []) if child["role"] == "assistant"
         ]
-        final_output = ""
-        model_id = None
-        provider_id = None
-        assistant_time_created = None
-
-        preferred = [candidate for candidate in assistant_candidates if candidate["finish"] == "stop"]
-        search_space = list(reversed(preferred or assistant_candidates))
-        for candidate in search_space:
-            final_output = extract_non_empty_text(parts_by_message.get(candidate["id"], []))
-            if final_output:
-                model_id = candidate["model_id"]
-                provider_id = candidate["provider_id"]
-                assistant_time_created = candidate["time_created"]
-                break
+        final_message = choose_final_assistant_message(assistant_candidates, parts_by_message)
+        if final_message is None:
+            continue
 
         pairs.append(
             ConversationPair(
                 query_text=query_text,
-                answer_text=final_output,
-                model_id=model_id,
-                provider_id=provider_id,
+                answer_text=final_message["_final_output"],
+                model_id=final_message["model_id"],
+                provider_id=final_message["provider_id"],
                 user_time_created=message["time_created"],
-                assistant_time_created=assistant_time_created,
+                assistant_time_created=final_message["time_created"],
             )
         )
 
-    return normalize_conversation_pairs(pairs)
+    return pairs
 
 
 def format_assistant_label(model_id: str | None, provider_id: str | None) -> str:
