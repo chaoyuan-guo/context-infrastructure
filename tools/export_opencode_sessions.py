@@ -18,7 +18,7 @@ except ImportError:  # pragma: no cover
 
 DEFAULT_TIMEZONE = "Asia/Shanghai"
 DEFAULT_USER_LABEL = "chaoyuan"
-EXPORT_FORMAT_VERSION = 10
+EXPORT_FORMAT_VERSION = 11
 SESSION_ID_PATTERN = re.compile(r"^session_id:\s*'([^']+)'", re.M)
 EXPORT_FORMAT_VERSION_PATTERN = re.compile(r"^export_format_version:\s*(\d+)\s*$", re.M)
 INTERNAL_INITIATOR_COMMENT_PATTERN = re.compile(
@@ -33,6 +33,48 @@ LEADING_MODE_PREAMBLE_PATTERN = re.compile(
     r"\n\s*---\s*\n*"
     r")",
     re.S | re.I,
+)
+LEADING_SYSTEM_DIRECTIVE_PATTERN = re.compile(
+    r"^\s*\[SYSTEM DIRECTIVE: OH-MY-OPENCODE - TODO CONTINUATION\]\s*.*?\n\s*---\s*\n*",
+    re.S | re.I,
+)
+TASK_BRIEF_REQUIRED_PREFIXES = (
+    "1. task:",
+    "2. expected outcome:",
+    "3. required tools:",
+    "4. must do:",
+)
+TASK_BRIEF_CONTINUATION_PATTERN = re.compile(
+    r"^(?:"
+    r"\d+\.\s*[A-Z][A-Z\s_-]*:"
+    r"|[-*]\s+"
+    r"|<!--\s*OMO_INTERNAL_INITIATOR\s*-->"
+    r"|=+"
+    r"|---"
+    r"|\[Status:.*\]"
+    r"|Remaining tasks:"
+    r"|Known repo fact:"
+    r"|Key files:"
+    r"|Goal:"
+    r"|Constraints:"
+    r"|Existing local verification:"
+    r"|Return results in the format requested by .*"
+    r")",
+    re.I,
+)
+TODO_CONTINUATION_LINE_PATTERN = re.compile(
+    r"^(?:"
+    r"\[SYSTEM DIRECTIVE: OH-MY-OPENCODE - TODO CONTINUATION\]"
+    r"|Incomplete tasks remain in your todo list\. Continue working on the next pending task\."
+    r"|- Proceed without asking for permission"
+    r"|- Mark each task complete when finished"
+    r"|- Do not stop until all tasks are done"
+    r"|- If you believe all work is already complete, the system is questioning your completion claim\..*"
+    r"|\[Status:.*\]"
+    r"|Remaining tasks:"
+    r"|- \[(?:in_progress|pending|completed|cancelled)\].*"
+    r")$",
+    re.I,
 )
 LOW_SIGNAL_TITLE_QUERY_PREFIXES = {
     "增量同步 agent_traces 会话记录": [
@@ -54,6 +96,7 @@ LEADING_INTERNAL_XML_TAGS = (
 )
 CONTROL_ONLY_QUERY_PREFIXES = (
     "ultrawork [system directive:",
+    "[system directive: oh-my-opencode - todo continuation]",
 )
 PROMISE_ONLY_LINE_PATTERN = re.compile(r"(?m)^\s*<promise>(DONE|VERIFIED)</promise>\s*$")
 ULTRAWORK_LINE_PATTERN = re.compile(r"(?m)^\s*ULTRAWORK MODE ENABLED!\s*$")
@@ -281,9 +324,55 @@ def strip_leading_internal_blocks(text: str) -> str:
         for tag in LEADING_INTERNAL_XML_TAGS:
             cleaned = strip_leading_xml_block(cleaned, tag).strip()
         cleaned = LEADING_MODE_PREAMBLE_PATTERN.sub("", cleaned, count=1).strip()
+        cleaned = LEADING_SYSTEM_DIRECTIVE_PATTERN.sub("", cleaned, count=1).strip()
+        cleaned = strip_leading_task_brief_block(cleaned)
+        cleaned = strip_leading_todo_continuation_block(cleaned)
         cleaned = remove_internal_initiator_comments(cleaned).strip()
         if cleaned == previous:
             return cleaned
+
+
+def strip_leading_task_brief_block(text: str) -> str:
+    lines = text.splitlines()
+    significant = [line.strip().lower() for line in lines if line.strip()]
+    if len(significant) < len(TASK_BRIEF_REQUIRED_PREFIXES):
+        return text.strip()
+    for expected, actual in zip(TASK_BRIEF_REQUIRED_PREFIXES, significant):
+        if not actual.startswith(expected):
+            return text.strip()
+
+    index = 0
+    while index < len(lines):
+        stripped = lines[index].strip()
+        if not stripped:
+            index += 1
+            continue
+        if TASK_BRIEF_CONTINUATION_PATTERN.match(stripped):
+            index += 1
+            continue
+        break
+    return "\n".join(lines[index:]).strip()
+
+
+def strip_leading_todo_continuation_block(text: str) -> str:
+    lines = text.splitlines()
+    index = 0
+    matched_any = False
+    while index < len(lines):
+        stripped = lines[index].strip()
+        if not stripped:
+            if matched_any:
+                index += 1
+                continue
+            break
+        if TODO_CONTINUATION_LINE_PATTERN.match(stripped) or stripped == "<!-- OMO_INTERNAL_INITIATOR -->":
+            matched_any = True
+            index += 1
+            continue
+        break
+    if not matched_any:
+        return text.strip()
+    return "\n".join(lines[index:]).strip()
 
 
 def clean_query_text(text: str) -> str:
