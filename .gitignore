@@ -2,14 +2,17 @@ formal_projects/*
 !formal_projects/interview/
 
 .opencode/
+.opencode_tmp/
 .claude/
 .vscode/
 .DS_Store
 tools/fetch-leetcode/cache/
 __pycache__/
-contexts/agent_traces/
 .knowledge_cache/
 tmp/
 contexts/*
+!contexts/memory/
+contexts/memory/*
+!contexts/memory/OBSERVATIONS.md
 .omo/
 .playwright-mcp/
