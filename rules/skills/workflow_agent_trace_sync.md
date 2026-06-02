@@ -24,6 +24,21 @@
 - `/sync-agent-traces` 这类自动 slash command 记录，且导出内容里没有 final assistant output
 - `查看未提交的变更` / `现在有哪些未提交的变更` 这类纯工作区状态查询
 
+导出轮次内部，默认还会剔除这些不属于“你的真实输入”的伪 user turns：
+
+- `<system-reminder>` 后台任务提醒、完成通知、结果 ready 通知
+- `<ultrawork-mode>`、`ultrawork [SYSTEM DIRECTIVE: ...]`、`ralph loop`、verification loop 这类运行时注入指令
+- `Continue if you have next steps...`、`[restore checkpointed session agent configuration after compaction]` 这类 continuation / compaction 控制消息
+- `<!-- OMO_INTERNAL_INITIATOR -->` 这类内部注释标记
+
+对应地，下面这些 assistant 内容也不再单独保留为导出轮次：
+
+- 纯内部等待/轮询状态，例如“还在等 background task 完成”“不能主动轮询”
+- `_No final assistant output found._` 这类空输出占位
+- 只有 `<promise>DONE</promise>` / `<promise>VERIFIED</promise>` 之类 loop 协议信号的回复
+
+如果控制消息后面跟着的 assistant 文本里包含真实业务输出，导出时会把这段输出并回上一条真实用户提问，而不是单独保留控制轮次。
+
 ## Judgment Standard
 
 判断标准不是“轮数少”，而是“有没有可复用的判断、方案、知识或认知变化”。
@@ -42,6 +57,8 @@
 
 1. 新的低信息量 session 不再落盘
 2. 之前已经导出的同类文件，会在后续 `--sync` 时被 prune 掉
+
+另外，导出文件带 `export_format_version`。当清洗规则升级时，后续 `--sync` 会基于版本自动重写旧文件，避免 manifest 里看起来“没变”但磁盘内容仍是旧格式。
 
 标题规则也遵循同一个脚本里的简单约定：
 

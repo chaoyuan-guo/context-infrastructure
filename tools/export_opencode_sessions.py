@@ -18,7 +18,12 @@ except ImportError:  # pragma: no cover
 
 DEFAULT_TIMEZONE = "Asia/Shanghai"
 DEFAULT_USER_LABEL = "chaoyuan"
+EXPORT_FORMAT_VERSION = 3
 SESSION_ID_PATTERN = re.compile(r"^session_id:\s*'([^']+)'", re.M)
+EXPORT_FORMAT_VERSION_PATTERN = re.compile(r"^export_format_version:\s*(\d+)\s*$", re.M)
+INTERNAL_INITIATOR_COMMENT_PATTERN = re.compile(
+    r"(?m)^\s*<!--\s*OMO_INTERNAL_INITIATOR\s*-->\s*$"
+)
 LOW_SIGNAL_TITLE_QUERY_PREFIXES = {
     "增量同步 agent_traces 会话记录": [
         "<auto-slash-command>\n# /sync-agent-traces Command",
@@ -32,6 +37,31 @@ LOW_SIGNAL_FIRST_QUERIES = {
     "查看未提交的变更",
     "现在有哪些未提交的变更",
 }
+LEADING_INTERNAL_XML_TAGS = (
+    "system-reminder",
+    "auto-slash-command",
+    "ultrawork-mode",
+)
+CONTROL_ONLY_QUERY_PREFIXES = (
+    "ultrawork [system directive:",
+)
+INTERNAL_ASSISTANT_MARKERS = (
+    "background task",
+    "completion reminder",
+    "still in progress",
+    "do not poll",
+    "review is in flight",
+    "wait for the completion reminders",
+    "waiting for the completion reminders",
+    "waiting for the completion notifications",
+    "can't collect results until",
+    "cannot collect results until",
+    "cannot actively poll",
+    "can't actively poll",
+    "不能主动轮询",
+    "必须等系统",
+    "completion notifications",
+)
 
 
 @dataclass
@@ -202,15 +232,132 @@ def normalize_text(text: str) -> str:
     return " ".join(text.strip().split())
 
 
+CONTROL_ONLY_QUERY_EXACT = {
+    normalize_text(
+        "Continue if you have next steps, or stop and ask for clarification if you are unsure how to proceed."
+    ).lower(),
+    normalize_text("[restore checkpointed session agent configuration after compaction]").lower(),
+    normalize_text("继续").lower(),
+    normalize_text("继续啊").lower(),
+    normalize_text("继续吧").lower(),
+    normalize_text("继续处理").lower(),
+    normalize_text("卡住了吗").lower(),
+    normalize_text("卡住了吗？").lower(),
+}
+
+
+def remove_internal_initiator_comments(text: str) -> str:
+    return INTERNAL_INITIATOR_COMMENT_PATTERN.sub("", text)
+
+
 def strip_leading_xml_block(text: str, tag: str) -> str:
     pattern = rf"^\s*<{tag}>.*?</{tag}>\s*"
     return re.sub(pattern, "", text, count=1, flags=re.S)
 
 
+def strip_leading_internal_blocks(text: str) -> str:
+    cleaned = remove_internal_initiator_comments(text).strip()
+    while True:
+        previous = cleaned
+        for tag in LEADING_INTERNAL_XML_TAGS:
+            cleaned = strip_leading_xml_block(cleaned, tag).strip()
+        cleaned = remove_internal_initiator_comments(cleaned).strip()
+        if cleaned == previous:
+            return cleaned
+
+
+def clean_query_text(text: str) -> str:
+    cleaned = strip_leading_internal_blocks(text)
+    cleaned = re.sub(r"^(?:\s*---\s*)+", "", cleaned)
+    return cleaned.strip()
+
+
+def is_control_only_query(text: str) -> bool:
+    normalized = normalize_text(text).lower()
+    if not normalized:
+        return True
+    if normalized in CONTROL_ONLY_QUERY_EXACT:
+        return True
+    if any(normalized.startswith(prefix) for prefix in CONTROL_ONLY_QUERY_PREFIXES):
+        return True
+    if len(normalized) <= 8 and any(token in normalized for token in ("继续", "卡住", "好了", "ok", "好的")):
+        return True
+    return False
+
+
+def clean_assistant_text(text: str) -> str:
+    cleaned = remove_internal_initiator_comments(text).strip()
+    cleaned = re.sub(r"^\s*ULTRAWORK MODE ENABLED!\s*", "", cleaned, count=1)
+    cleaned = re.sub(r"(?m)^\s*<promise>(DONE|VERIFIED)</promise>\s*$", "", cleaned)
+    return cleaned.strip()
+
+
+def is_internal_assistant_output(text: str) -> bool:
+    normalized = normalize_text(clean_assistant_text(text)).lower()
+    if not normalized:
+        return True
+    if normalized == "_no final assistant output found._":
+        return True
+    return any(marker in normalized for marker in INTERNAL_ASSISTANT_MARKERS)
+
+
+def merge_assistant_outputs(existing: str, follow_up: str) -> str:
+    existing = clean_assistant_text(existing)
+    follow_up = clean_assistant_text(follow_up)
+    if not follow_up:
+        return existing
+    if not existing:
+        return follow_up
+    if existing == follow_up or follow_up in existing:
+        return existing
+    if is_internal_assistant_output(existing):
+        return follow_up
+    return f"{existing}\n\n---\n\n{follow_up}"
+
+
+def normalize_conversation_pairs(pairs: list[ConversationPair]) -> list[ConversationPair]:
+    normalized_pairs: list[ConversationPair] = []
+    latest_real_pair: ConversationPair | None = None
+
+    for pair in pairs:
+        cleaned_query = clean_query_text(pair.query_text)
+        cleaned_answer = clean_assistant_text(pair.answer_text)
+        normalized_pair = ConversationPair(
+            query_text=cleaned_query,
+            answer_text=cleaned_answer,
+            model_id=pair.model_id,
+            provider_id=pair.provider_id,
+            user_time_created=pair.user_time_created,
+            assistant_time_created=pair.assistant_time_created,
+        )
+
+        if is_control_only_query(cleaned_query):
+            if latest_real_pair and cleaned_answer and not is_internal_assistant_output(cleaned_answer):
+                latest_real_pair.answer_text = merge_assistant_outputs(
+                    latest_real_pair.answer_text, cleaned_answer
+                )
+                latest_real_pair.model_id = normalized_pair.model_id or latest_real_pair.model_id
+                latest_real_pair.provider_id = (
+                    normalized_pair.provider_id or latest_real_pair.provider_id
+                )
+                latest_real_pair.assistant_time_created = (
+                    normalized_pair.assistant_time_created
+                    or latest_real_pair.assistant_time_created
+                )
+            continue
+
+        normalized_pairs.append(normalized_pair)
+        latest_real_pair = normalized_pair
+
+    return [
+        pair
+        for pair in normalized_pairs
+        if pair.query_text and pair.answer_text and not is_internal_assistant_output(pair.answer_text)
+    ]
+
+
 def clean_query_for_title(text: str) -> str:
-    cleaned = text.strip()
-    cleaned = strip_leading_xml_block(cleaned, "system-reminder")
-    cleaned = strip_leading_xml_block(cleaned, "auto-slash-command")
+    cleaned = clean_query_text(text)
 
     candidates: list[str] = []
     for raw_line in cleaned.splitlines():
@@ -434,7 +581,7 @@ def build_conversation_pairs(conn: sqlite3.Connection, session_id: str) -> list[
             )
         )
 
-    return pairs
+    return normalize_conversation_pairs(pairs)
 
 
 def format_assistant_label(model_id: str | None, provider_id: str | None) -> str:
@@ -551,6 +698,15 @@ def read_session_id_from_file(path: Path) -> str | None:
     return match.group(1) if match else None
 
 
+def read_export_format_version_from_file(path: Path) -> int | None:
+    try:
+        content = path.read_text(encoding="utf-8")
+    except Exception:
+        return None
+    match = EXPORT_FORMAT_VERSION_PATTERN.search(content)
+    return int(match.group(1)) if match else None
+
+
 def find_existing_session_paths(output_dir: Path, session_id: str) -> list[Path]:
     matches: list[Path] = []
     for path in output_dir.glob("*.md"):
@@ -624,6 +780,7 @@ def render_markdown(
     lines = [
         "---",
         "trace_type: opencode_session",
+        f"export_format_version: {EXPORT_FORMAT_VERSION}",
         f"session_id: {yaml_quote(session.session_id)}",
         f"session_title: {yaml_quote(display_title)}",
         f"created_at: {yaml_quote(created_at) if created_at else 'null'}",
@@ -799,13 +956,18 @@ def export_sessions(args: argparse.Namespace) -> list[Path]:
                 existing_path = existing_session_index.get(session.session_id)
                 if not entry:
                     if existing_path:
-                        manifest.setdefault("sessions", {})[session.session_id] = {
-                            "path": existing_path,
-                            "time_updated": session.time_updated,
-                            "created_at": session.time_created,
-                            "display_title": item.display_title,
-                        }
-                        continue
+                        existing_version = read_export_format_version_from_file(
+                            output_dir / existing_path
+                        )
+                        if existing_version == EXPORT_FORMAT_VERSION:
+                            manifest.setdefault("sessions", {})[session.session_id] = {
+                                "path": existing_path,
+                                "time_updated": session.time_updated,
+                                "created_at": session.time_created,
+                                "display_title": item.display_title,
+                                "export_format_version": EXPORT_FORMAT_VERSION,
+                            }
+                            continue
                     sessions_to_export.append(item)
                     continue
                 if entry.get("time_updated") != session.time_updated:
@@ -817,13 +979,21 @@ def export_sessions(args: argparse.Namespace) -> list[Path]:
                 if entry.get("path") != relative_path:
                     sessions_to_export.append(item)
                     continue
+                if entry.get("export_format_version") != EXPORT_FORMAT_VERSION:
+                    sessions_to_export.append(item)
+                    continue
                 if not expected_exists:
                     if existing_path and existing_path == relative_path:
                         entry["path"] = existing_path
                         entry["time_updated"] = session.time_updated
                         entry["created_at"] = session.time_created
                         entry["display_title"] = item.display_title
+                        entry["export_format_version"] = EXPORT_FORMAT_VERSION
                         continue
+                    sessions_to_export.append(item)
+                    continue
+                existing_file_version = read_export_format_version_from_file(output_dir / relative_path)
+                if existing_file_version != EXPORT_FORMAT_VERSION:
                     sessions_to_export.append(item)
                     continue
             export_items = sessions_to_export
@@ -871,6 +1041,7 @@ def export_sessions(args: argparse.Namespace) -> list[Path]:
                 "time_updated": session.time_updated,
                 "created_at": session.time_created,
                 "display_title": item.display_title,
+                "export_format_version": EXPORT_FORMAT_VERSION,
             }
 
         manifest["last_exported_at"] = format_timestamp_iso(int(datetime.now(tz).timestamp() * 1000), args.timezone)
