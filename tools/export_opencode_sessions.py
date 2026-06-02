@@ -18,11 +18,21 @@ except ImportError:  # pragma: no cover
 
 DEFAULT_TIMEZONE = "Asia/Shanghai"
 DEFAULT_USER_LABEL = "chaoyuan"
-EXPORT_FORMAT_VERSION = 9
+EXPORT_FORMAT_VERSION = 10
 SESSION_ID_PATTERN = re.compile(r"^session_id:\s*'([^']+)'", re.M)
 EXPORT_FORMAT_VERSION_PATTERN = re.compile(r"^export_format_version:\s*(\d+)\s*$", re.M)
 INTERNAL_INITIATOR_COMMENT_PATTERN = re.compile(
     r"(?m)^\s*<!--\s*OMO_INTERNAL_INITIATOR\s*-->\s*$"
+)
+LEADING_MODE_PREAMBLE_PATTERN = re.compile(
+    r"^\s*(?:"
+    r"\[(?:search|analyze)-mode\]\s*.*?"
+    r"(?:\n\s*\[(?:search|analyze)-mode\]\s*.*?)*"
+    r"\n\s*---\s*"
+    r"(?:\n\s*MANDATORY delegate_task params:.*?(?:\n\s*Example: delegate_task\(.*?\))?)?"
+    r"\n\s*---\s*\n*"
+    r")",
+    re.S | re.I,
 )
 LOW_SIGNAL_TITLE_QUERY_PREFIXES = {
     "增量同步 agent_traces 会话记录": [
@@ -270,6 +280,7 @@ def strip_leading_internal_blocks(text: str) -> str:
         previous = cleaned
         for tag in LEADING_INTERNAL_XML_TAGS:
             cleaned = strip_leading_xml_block(cleaned, tag).strip()
+        cleaned = LEADING_MODE_PREAMBLE_PATTERN.sub("", cleaned, count=1).strip()
         cleaned = remove_internal_initiator_comments(cleaned).strip()
         if cleaned == previous:
             return cleaned
