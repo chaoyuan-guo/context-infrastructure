@@ -18,7 +18,7 @@ except ImportError:  # pragma: no cover
 
 DEFAULT_TIMEZONE = "Asia/Shanghai"
 DEFAULT_USER_LABEL = "chaoyuan"
-EXPORT_FORMAT_VERSION = 11
+EXPORT_FORMAT_VERSION = 12
 SESSION_ID_PATTERN = re.compile(r"^session_id:\s*'([^']+)'", re.M)
 EXPORT_FORMAT_VERSION_PATTERN = re.compile(r"^export_format_version:\s*(\d+)\s*$", re.M)
 INTERNAL_INITIATOR_COMMENT_PATTERN = re.compile(
@@ -896,6 +896,7 @@ def render_markdown(
         *lines,
         "---",
         "",
+        "",
     ]
 
     if not pairs:
@@ -916,15 +917,13 @@ def render_markdown(
             assistant_heading = f"{assistant_heading} ({assistant_timestamp})"
         lines.extend(
             [
-                "---",
+                f"## Round {index:02d}",
                 "",
-                f"# Round {index:02d}",
-                "",
-                f"## {user_heading}",
+                f"**{user_heading}**  ",
                 "",
                 pair.query_text,
                 "",
-                f"## {assistant_heading}",
+                f"**{assistant_heading}**  ",
                 "",
                 assistant_text,
                 "",
