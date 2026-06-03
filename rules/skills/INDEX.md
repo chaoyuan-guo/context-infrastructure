@@ -30,6 +30,7 @@
 - [深度调研工作流](./workflow_deep_research_survey.md) ✅ — 多 Agent 并行 + 交叉验证（Phase 1-3 信息采集）
 - [分析写作工作流](./workflow_analytical_writing.md) ✅ — 将调研素材转化为有判断力的分析文章。包含 Thesis Catalog（核心分析视角 L1-L6）和判断合成步骤。**做深度调研并写 external 文章时，两个 skill 都要读**
 - [认知画像提取工作流](./workflow_cognitive_profile_extraction.md) — 从非结构化对话数据提取可预测的认知公理
+- [自画像](./workflow_self_portrait.md) ✅ — 从自身 AI 会话历史提取多维度认知画像，每月一次。**区别于上面的"认知画像提取"（面向外部非结构化对话→公理），这个是面向自身→画像**
   - 适用：群聊/Slack/Discord/邮件/播客转录等任意对话数据
   - 流程：广泛扫描 → 深度验证 → 压力测试 → 定稿（≥3 轮动态滚动）
   - **要求 Opus 模型**：写作由 Opus 亲自完成，调研全部 delegate + 并行

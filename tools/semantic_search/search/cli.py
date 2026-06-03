@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 
 from .models import Chunk, SearchResult
-from .chunker import MarkdownChunker
+from .chunker import MarkdownChunker, SessionUserChunker
 from .embedding import EmbeddingClient
 from .index import ForwardIndex
 
@@ -74,12 +74,18 @@ def main():
     parser.add_argument("--workers", type=int, default=4, help="Number of parallel workers for embedding")
     parser.add_argument("--endpoint", default="http://10.0.34.60:8034/v1", help="Embedding API endpoint")
     parser.add_argument("--model", default="Qwen3-Embedding-0.6B", help="Embedding model name")
+    parser.add_argument("--user-only", action="store_true", help="Index only user turns from agent_traces sessions (anchored with preceding AI context)")
+    parser.add_argument("--user-cache-dir", default=".knowledge_cache_user_only", help="Cache directory for user-only index (default: .knowledge_cache_user_only)")
+    parser.add_argument("--context-chars", type=int, default=200, help="Preceding AI context chars to anchor user turns (default: 200)")
     
     args = parser.parse_args()
     
-    cache_dir = Path(args.cache_dir)
+    cache_dir = Path(args.cache_dir if not args.user_only else args.user_cache_dir)
     index = ForwardIndex(cache_dir)
-    chunker = MarkdownChunker()
+    if args.user_only:
+        chunker = SessionUserChunker(context_chars=args.context_chars)
+    else:
+        chunker = MarkdownChunker()
     embedder = EmbeddingClient(base_url=args.endpoint, model=args.model)
     
     # 1. 读取待搜索文件列表
