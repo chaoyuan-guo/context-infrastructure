@@ -18,7 +18,7 @@ except ImportError:  # pragma: no cover
 
 DEFAULT_TIMEZONE = "Asia/Shanghai"
 DEFAULT_USER_LABEL = "chaoyuan"
-EXPORT_FORMAT_VERSION = 12
+EXPORT_FORMAT_VERSION = 13
 SESSION_ID_PATTERN = re.compile(r"^session_id:\s*'([^']+)'", re.M)
 EXPORT_FORMAT_VERSION_PATTERN = re.compile(r"^export_format_version:\s*(\d+)\s*$", re.M)
 INTERNAL_INITIATOR_COMMENT_PATTERN = re.compile(
@@ -894,6 +894,7 @@ def render_markdown(
 
     lines = [
         *lines,
+        "",
         "---",
         "",
         "",
