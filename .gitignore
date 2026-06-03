@@ -16,3 +16,4 @@ contexts/memory/*
 !contexts/memory/OBSERVATIONS.md
 .omo/
 .playwright-mcp/
+.knowledge_cache_user_only/
