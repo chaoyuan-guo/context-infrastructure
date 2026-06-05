@@ -17,3 +17,4 @@ contexts/memory/*
 .omo/
 .playwright-mcp/
 .knowledge_cache_user_only/
+.adhoc_jobs/*
