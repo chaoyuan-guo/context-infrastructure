@@ -206,6 +206,116 @@ def _normalize_url(url: str) -> str:
     return url
 
 
+def _escape_markdown_heading_lines(text: str) -> str:
+    if not text:
+        return ""
+    return re.sub(r"(?m)^(\s{0,3})(#{1,6})(\s+)", r"\1\\\2\3", text)
+
+
+def _normalize_preformatted_line(text: str) -> str:
+    if text is None:
+        return ""
+    return html.unescape(text).replace("\xa0", " ").rstrip()
+
+
+def _has_class_fragment(node, fragment: str) -> bool:
+    if Tag is None or not isinstance(node, Tag):
+        return False
+    return any(fragment in cls for cls in (node.get("class") or []))
+
+
+def _is_preformatted_container(node) -> bool:
+    if Tag is None or not isinstance(node, Tag):
+        return False
+    if node.name.lower() == "pre":
+        return True
+    return node.find("pre") is not None and _has_class_fragment(node, "code-snippet")
+
+
+def _extract_preformatted_language(pre) -> str:
+    if Tag is None or not isinstance(pre, Tag):
+        return ""
+
+    candidates = []
+    data_lang = (pre.get("data-lang") or "").strip()
+    if data_lang:
+        candidates.append(data_lang)
+
+    for cls in pre.get("class") or []:
+        if cls.startswith("language-"):
+            candidates.append(cls.removeprefix("language-"))
+        elif cls.startswith("lang-"):
+            candidates.append(cls.removeprefix("lang-"))
+        elif cls.startswith("code-snippet__"):
+            candidates.append(cls.removeprefix("code-snippet__"))
+
+    for candidate in candidates:
+        if re.fullmatch(r"[A-Za-z0-9_+.-]+", candidate):
+            return candidate
+    return ""
+
+
+def _choose_code_fence(body: str) -> str:
+    max_run = 0
+    for match in re.finditer(r"`+", body):
+        max_run = max(max_run, len(match.group(0)))
+    return "`" * max(3, max_run + 1)
+
+
+def _infer_preformatted_language(body: str, extracted: str) -> str:
+    lines = [line.strip() for line in body.splitlines() if line.strip()]
+    if not lines:
+        return extracted
+
+    if all(re.match(r"^[A-Za-z_][A-Za-z0-9_-]*:\s.+$", line) or line == "---" for line in lines):
+        return "yaml"
+
+    markdown_like_count = sum(
+        1
+        for line in lines
+        if re.match(r"^(#{1,6}\s|[-*]\s|\d+\.\s|```|>|---$)", line)
+    )
+    has_codey_syntax = any(
+        token in body for token in ("{", "}", ";", "=>", "::", "SELECT ", "function ", "def ", "class ")
+    )
+    starts_with_markdown_heading = bool(re.match(r"^#{1,6}\s", lines[0]))
+    if not has_codey_syntax and (
+        markdown_like_count >= 2 or (starts_with_markdown_heading and len(lines) >= 2)
+    ):
+        return "markdown"
+
+    return extracted
+
+
+def _render_preformatted_block(node) -> str:
+    if Tag is None or not isinstance(node, Tag):
+        return ""
+
+    pre = node if node.name.lower() == "pre" else node.find("pre")
+    if pre is None:
+        return ""
+
+    code_lines = pre.find_all("code", recursive=False)
+    if code_lines:
+        lines = [_normalize_preformatted_line(code.get_text("", strip=False)) for code in code_lines]
+    else:
+        lines = [_normalize_preformatted_line(line) for line in pre.get_text("\n", strip=False).splitlines()]
+
+    while lines and not lines[0]:
+        lines.pop(0)
+    while lines and not lines[-1]:
+        lines.pop()
+
+    body = "\n".join(lines)
+    if not body:
+        return ""
+
+    fence = _choose_code_fence(body)
+    language = _infer_preformatted_language(body, _extract_preformatted_language(pre))
+    info_string = language if language else ""
+    return f"{fence}{info_string}\n{body}\n{fence}\n\n"
+
+
 def _render_trix_node(node, indent: int = 0) -> str:
     if NavigableString is not None and isinstance(node, NavigableString):
         return _normalize_inline_text(str(node))
@@ -214,6 +324,9 @@ def _render_trix_node(node, indent: int = 0) -> str:
         return ""
 
     name = node.name.lower()
+
+    if _is_preformatted_container(node):
+        return _render_preformatted_block(node)
 
     if name in {"strong", "b"}:
         inner = "".join(_render_trix_node(child, indent) for child in node.children).strip()
@@ -251,6 +364,7 @@ def _render_trix_node(node, indent: int = 0) -> str:
 
     if name == "p":
         inner = "".join(_render_trix_node(child, indent) for child in node.children).strip()
+        inner = _escape_markdown_heading_lines(inner)
         return f"{inner}\n\n" if inner else "\n"
 
     if name == "blockquote":
