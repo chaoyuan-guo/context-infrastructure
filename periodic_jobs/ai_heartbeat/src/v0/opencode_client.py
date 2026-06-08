@@ -22,13 +22,12 @@ class OpenCodeClient:
         self.base_url = os.getenv("OPENCODE_BASE_URL", "http://localhost:4096")
         self.username = os.getenv("OPENCODE_USERNAME", "opencode")
         self.password = os.getenv("OPENCODE_PASSWORD")
-        
-        if not self.password:
-            raise ValueError("OPENCODE_PASSWORD not found in environment variables.")
-            
-        credentials = f"{self.username}:{self.password}"
-        encoded = base64.b64encode(credentials.encode()).decode()
-        self.headers = {"Authorization": f"Basic {encoded}"}
+
+        self.headers = {}
+        if self.password:
+            credentials = f"{self.username}:{self.password}"
+            encoded = base64.b64encode(credentials.encode()).decode()
+            self.headers = {"Authorization": f"Basic {encoded}"}
         
     def list_sessions(self):
         """GET /session - list all sessions."""
