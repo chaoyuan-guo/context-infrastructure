@@ -23,7 +23,7 @@
 - ⚙️ Delayed Execution — 适配你自己的工具路径
 
 ### Tier 3: 独立 public skill repos（按需安装）
-- 🔧 Tavily、Google Docs、Outlook、Resend、OpenCode、Process Launcher、PPTX、Typefully、Stripe 等能力见 [`docs/SKILL_ECOSYSTEM.md`](../../docs/SKILL_ECOSYSTEM.md)
+- 🔧 Tavily、Google Docs、Outlook、Resend、OpenCode、Process Launcher、PPTX、Image Generation、Typefully、Stripe 等能力见 [`docs/SKILL_ECOSYSTEM.md`](../../docs/SKILL_ECOSYSTEM.md)
 
 ### 说明
 ✅ = 最多 15 分钟即可使用
