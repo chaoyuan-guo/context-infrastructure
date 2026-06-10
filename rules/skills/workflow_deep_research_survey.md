@@ -6,7 +6,7 @@
 - **适用场景**: 需要对某个主题进行深度、全面、可验证的第三方调研
 - **输出位置**: `contexts/survey_sessions/`
 - **创建日期**: 2026-02-19
-- **最后更新**: 2026-03-30
+- **最后更新**: 2026-06-10
 
 ## 核心原则
 
@@ -129,20 +129,7 @@ External mode 选定后，还需要回答一个更根本的问题：**这件事�
 
 **启动 Sub-agent**:
 
-同时启动 3-5 个 sub-agent，每个负责一个维度。使用以下类型：
-
-- `librarian` — 外部调研首选，查文档、开源代码、官方资料
-- `deep` category — 自主深度调研，适合复杂多源任务
-
-```
-task(
-  subagent_type="librarian",
-  load_skills=[],
-  description="调研 XX 维度",
-  run_in_background=true,
-  prompt="[具体调研维度的 prompt]"
-)
-```
+同时启动 3-5 个 sub-agent，每个负责一个维度。外部资料调研默认使用当前可用的 `librarian`；代码库内部探索使用 `explore`。具体调用和等待方式见 [并行 Subagent 工作流](./workflow_parallel_subagents.md)。
 
 每个 sub-agent 的 prompt 中明确：
 1. 具体要调研什么主题
@@ -260,7 +247,7 @@ task(
 | 维度划分太干净没有 overlap | 设计维度时故意让边缘模糊 |
 | Sub-agent 返回信息太浅 | prompt 中强调"深度"、"具体"、"原文" |
 | 中间文件堆积 | 集中到 `tmp/<session_slug>/`，只保留关键索引和判断 |
-| 用错 subagent 类型 | 外部调研用 `librarian` 或 `deep`，`explore` 只用于内部 codebase |
+| 用错 subagent 类型 | `subagent_type` 必须是当前工具 schema 暴露的真实 agent 名；外部调研用 `librarian`，代码库探索用 `explore` |
 | 调研结果变成 vendor marketing 汇总 | Phase 1 提取 claim，Phase 2 按证据功能分配维度，Phase 3 核查验证状态 |
 
 写作阶段的常见失败模式（Relevance 不着地、Demo 当证据、时间维度模糊、调研汇总而非作者写作等）见 `workflow_analytical_writing.md` 的失败模式表。

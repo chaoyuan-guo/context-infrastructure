@@ -35,7 +35,7 @@ Opus 的 context window 是稀缺资源，不应被扫描和检索消耗。工�
 | **Write（写作）** | Opus 主 agent | 公理文本、索引、报告——概念一致性和文风统一只能由一个 agent 保证 |
 | **QA（质量把关）** | Opus 主 agent | 交叉验证 sub-agent 结果、发现矛盾、判断收敛 |
 
-Sub-agent 调度遵循 [并行 Subagent 工作流](./workflow_parallel_subagents.md) 的规则：并行度 ≤5，调研 overlap 30-50%，`run_in_background=true`。
+Sub-agent 调度遵循 [并行 Subagent 工作流](./workflow_parallel_subagents.md) 的规则：并行度 ≤5，调研 overlap 30-50%，使用当前可用的 `call_omo_agent` 后台任务机制。
 
 ### 2. 写作不 delegate（硬约束）
 
@@ -106,7 +106,7 @@ Sub-agent 产出的是**原始调研材料**，不是终稿的任何一部分。
 | 语言与表达模式 | 句式偏好、类比习惯、情绪标记 | 高频短语、标点用法 |
 
 2. 为每个 sub-agent 写 prompt，明确：搜索范围、输出格式（时间戳 + 来源 + 原文 + 候选公理）、允许的 overlap 范围
-3. 并行派出 5 个 sub-agent（`run_in_background=true`）
+3. 按 [并行 Subagent 工作流](./workflow_parallel_subagents.md) 并行派出 5 个 sub-agent
 
 **Sub-agent 做的事（Execute）**：
 - 扫描全部数据，按分配维度提取模式
@@ -369,9 +369,8 @@ Sub-agent 产出的是**原始调研材料**，不是终稿的任何一部分。
 ## 参见
 
 - [语义搜索技能](./semantic_search.md) — 超越关键词匹配，用 embedding 相似度发现语义相关的消息
-- [并行 Subagent 工作流](./workflow_parallel_subagents.md) — Sub-agent 调度的执行规则
+- [并行 Subagent 工作流](./workflow_parallel_subagents.md) — Sub-agent 调度、overlap、交叉验证与适用标准
 - [深度调研工作流](./workflow_deep_research_survey.md) — 多 agent 并行 + 交叉验证的基础架构
-- [多 Agent 并行分析](./bestpractice_multi_agent_analysis.md) — 50% overlap、交叉验证方法论
 - 示例观察项目（本 skill 的原始来源）— `contexts/people/magong/`
 
 ---

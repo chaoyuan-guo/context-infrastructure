@@ -106,7 +106,7 @@ cat tmp/sample_paths.txt | xargs ls > /dev/null
 
 为每个维度启动 1 个 explore 子 agent，拿到该维度的采样列表后并行执行。
 
-用 `call_omo_agent(subagent_type="explore", run_in_background=true)` 启动，prompt（`[DIMENSION]` = 维度名，`[PATHS]` = 采样文件绝对路径列表）：
+用 `call_omo_agent(subagent_type="explore", run_in_background=true)` 启动。等待系统通知后再用 `background_output` 取回结果，不要轮询。prompt（`[DIMENSION]` = 维度名，`[PATHS]` = 采样文件绝对路径列表）：
 
 ```
 You are analyzing the cognitive profile of user chaoyuan by reading their AI session logs.

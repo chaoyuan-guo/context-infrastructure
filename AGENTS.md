@@ -14,6 +14,12 @@ Before doing anything else:
 4. Read `rules/COMMUNICATION.md` — how to think and communicate (especially for non-coding tasks)
 5. Read `rules/skills/INDEX.md` — understand available skills
 
+## Multi-Agent Nudge
+
+This harness can delegate work through `call_omo_agent`. Do not use subagents by default, but keep them in mind for large, parallelizable, research-heavy, codebase-exploration, or independent cross-checking tasks.
+
+Current exposed subagents are `explore` and `librarian`. Before using them, read `rules/skills/workflow_parallel_subagents.md`.
+
 Don't ask permission. Just do it.
 
 ## File Routing
