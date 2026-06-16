@@ -17,12 +17,16 @@
 
 另外有一类是更强的定向规则：对少数已经确认属于运维噪声的 session，按 OpenCode 数据库里的 `session.title` 和首轮 query 组合过滤。这里之所以仍然保留数据库 title，是因为导出的条目标题本来就以数据库 session 记录为准；再叠加首轮 query，是为了避免只因标题相同就误删后来演化出有效内容的会话。
 
+还有一类是项目内 agent 执行痕迹：这些 session 是某个项目调用 OpenCode 产生的批量记录，不代表 chaoyuan 本人的交互历史。过滤时优先看 OpenCode 数据库里的 `session.directory`，再用 `session.title` 前缀兜底。
+
 当前明确纳入过滤的例子：
 
 - 数据库 `session.title` 为 `增量同步 agent_traces 会话记录`，且首轮 query 是 `/sync-agent-traces` 自动命令模板
 - 数据库 `session.title` 为 `查看未提交的变更`，且首轮 query 是 `查看未提交的变更` / `现在有哪些未提交的变更`
 - `/sync-agent-traces` 这类自动 slash command 记录，且导出内容里没有 final assistant output
 - `查看未提交的变更` / `现在有哪些未提交的变更` 这类纯工作区状态查询
+- `session.directory` 位于 `adhoc_jobs/tmp_moganshyan_eval/`，或 `session.title` 以 `tmp_moganshyan_eval` 开头的项目内 agent eval 记录
+- `session.title` 以 `historical-` 开头的历史回填流水线内部任务，例如 `historical-l1-trace-observer`、`historical-l2-filter-only`
 
 导出轮次内部，默认还会剔除这些不属于“你的真实输入”的伪 user turns：
 

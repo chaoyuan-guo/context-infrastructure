@@ -89,6 +89,13 @@ LOW_SIGNAL_FIRST_QUERIES = {
     "查看未提交的变更",
     "现在有哪些未提交的变更",
 }
+NON_HUMAN_SESSION_DIRECTORY_PARTS = (
+    "/adhoc_jobs/tmp_moganshyan_eval/",
+)
+NON_HUMAN_SESSION_TITLE_PREFIXES = (
+    "historical-",
+    "tmp_moganshyan_eval",
+)
 LEADING_INTERNAL_XML_TAGS = (
     "system-reminder",
     "auto-slash-command",
@@ -520,6 +527,17 @@ def is_low_signal_session(session: SessionRecord, pairs: list[ConversationPair])
         return True
 
     return False
+
+
+def is_non_human_session(session: SessionRecord) -> bool:
+    directory = f"/{session.directory.strip('/')}" if session.directory else ""
+    if directory:
+        directory = directory + "/"
+        if any(part in directory for part in NON_HUMAN_SESSION_DIRECTORY_PARTS):
+            return True
+
+    title = normalize_session_name(session.title, session.slug or "")
+    return any(title.startswith(prefix) for prefix in NON_HUMAN_SESSION_TITLE_PREFIXES)
 
 
 def summarize_query_as_name(text: str, limit: int = 48) -> str:
@@ -965,9 +983,13 @@ def export_sessions(args: argparse.Namespace) -> list[Path]:
         export_items: list[ExportSession] = []
         filtered_probe_sessions: list[SessionRecord] = []
         filtered_low_signal_sessions: list[SessionRecord] = []
+        filtered_non_human_sessions: list[SessionRecord] = []
         session_records_by_id = {session.session_id: session for session in sessions}
 
         for session in sessions:
+            if is_non_human_session(session):
+                filtered_non_human_sessions.append(session)
+                continue
             pairs = build_conversation_pairs(conn, session.session_id)
             if not args.include_probes and len(pairs) == 1 and is_probe_query(pairs[0].query_text):
                 filtered_probe_sessions.append(session)
@@ -1010,10 +1032,21 @@ def export_sessions(args: argparse.Namespace) -> list[Path]:
                 stale_path.unlink(missing_ok=True)
             manifest.get("sessions", {}).pop(session.session_id, None)
 
+        for session in filtered_non_human_sessions:
+            session_date = datetime.fromtimestamp(session.time_created / 1000, tz=tz).date()
+            month_prefix = session_date.strftime("%y%m")
+            date_prefix = session_date.strftime("%y%m%d")
+            day_dir = output_dir / month_prefix / date_prefix
+            stale_paths = find_existing_session_paths(day_dir, session.session_id)
+            for stale_path in stale_paths:
+                stale_path.unlink(missing_ok=True)
+            manifest.get("sessions", {}).pop(session.session_id, None)
+
         if args.sync:
             valid_session_ids = {item.session.session_id for item in export_items}
             probe_session_ids = {session.session_id for session in filtered_probe_sessions}
             low_signal_session_ids = {session.session_id for session in filtered_low_signal_sessions}
+            non_human_session_ids = {session.session_id for session in filtered_non_human_sessions}
 
             for session_id, paths in existing_session_multimap.items():
                 if session_id in valid_session_ids:
@@ -1021,6 +1054,7 @@ def export_sessions(args: argparse.Namespace) -> list[Path]:
                 if (
                     session_id in probe_session_ids
                     or session_id in low_signal_session_ids
+                    or session_id in non_human_session_ids
                     or session_id not in session_records_by_id
                 ):
                     for path in paths:
@@ -1033,6 +1067,7 @@ def export_sessions(args: argparse.Namespace) -> list[Path]:
                 if (
                     session_id in probe_session_ids
                     or session_id in low_signal_session_ids
+                    or session_id in non_human_session_ids
                     or session_id not in session_records_by_id
                 ):
                     manifest["sessions"].pop(session_id, None)
