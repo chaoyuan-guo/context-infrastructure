@@ -34,7 +34,7 @@ from tiptap import (
 )
 
 DEFAULT_OUTPUT_ROOT = os.path.join(
-    os.path.dirname(__file__), "..", "..", "formal_projects", "curated_reads"
+    os.path.dirname(__file__), "..", "..", "contexts", "curated_reads"
 )
 WECHAT_USER_AGENT = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "

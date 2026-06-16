@@ -13,6 +13,7 @@
 
 ### 知识与记录
 - 通用调研报告：`contexts/survey_sessions/`
+- 收藏与精读文章：`contexts/curated_reads/`
 - 思考 / 复盘 / 方法论：`contexts/thought_review/`
 - 每日日志：`contexts/daily_records/`
 - Agent 对话轨迹与长期行为记录：`contexts/agent_traces/`
@@ -40,7 +41,7 @@
 - `ontology-coding-agent` → `formal_projects/ontology-coding-agent/` (面向本体建模与文档解析的 agent 主项目)
 - `tudou-digitaltwin` → `formal_projects/tudou-digitaltwin/` (土豆数字孪生的本体工程与业务系统)
 - `interview` → `formal_projects/interview/` (近期面试准备材料)
-- `curated_reads` → `formal_projects/curated_reads/` (值得收藏与精读的文章，原名 memo)
+- `curated_reads` → `contexts/curated_reads/` (值得收藏与精读的文章，原名 memo)
 - `leetcode` → `formal_projects/leetcode/` (LeetCode 刷题数据与记录，原名 knowledge_data)
 - `tmp_moganshyan_eval` → `adhoc_jobs/tmp_moganshyan_eval/` (莫干玄衍评测集与显式 skill-index 评测脚手架)
 

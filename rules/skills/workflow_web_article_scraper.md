@@ -11,7 +11,7 @@
 - 微信公众号文章（`https://mp.weixin.qq.com/s/...`）
 - 或其他 JS 动态渲染的社区页面（WebFetch / curl 拿不到正文的）
 
-如果页面是静态 HTML，且只是一次性整理，直接用 WebFetch + 手动整理也可以。若你希望沉淀成可复用 CLI，并统一输出到 `formal_projects/curated_reads/`，优先用此工具。
+如果页面是静态 HTML，且只是一次性整理，直接用 WebFetch + 手动整理也可以。若你希望沉淀成可复用 CLI，并统一输出到 `contexts/curated_reads/`，优先用此工具。
 
 ### 1.2 触发建议
 
@@ -35,8 +35,8 @@ python tools/web_article_scraper/main.py <URL> [--output-dir <dir>] [--verify] [
 - `--verify`：可选。保存后检查输出文件是否存在、标题/来源/分隔线是否完整，失败时返回非 0 退出码。
 - `--json`：可选。将抓取结果以 JSON 输出到 stdout，便于脚本或 agent 直接消费；进度日志会输出到 stderr。
 - 默认输出目录按站点分流：
-  - 微信公众号 → `formal_projects/curated_reads/wechat/`
-  - Superlinear / Circle → `formal_projects/curated_reads/superlinear/`
+  - 微信公众号 → `contexts/curated_reads/wechat/`
+  - Superlinear / Circle → `contexts/curated_reads/superlinear/`
 
 ### 2.3 前置依赖
 
