@@ -18,6 +18,7 @@ import re
 import sys
 from http.client import IncompleteRead
 from datetime import datetime, timedelta, timezone
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 sys.path.append(os.path.dirname(__file__))
@@ -159,8 +160,12 @@ def fetch_space_posts_map(domain: str, space_info: dict, cookies: list[dict] | N
             f"https://{domain}/internal_api/spaces/{space_id}/posts?page={page}&per_page={per_page}",
             headers=headers,
         )
-        with urlopen(req, timeout=60) as resp:
-            data = json.load(resp)
+        try:
+            with urlopen(req, timeout=60) as resp:
+                data = json.load(resp)
+        except (HTTPError, URLError, TimeoutError) as exc:
+            print(f"  ! 无法补全空间帖子链接映射，继续保存正文: {exc}")
+            break
 
         records = data.get("records", []) if isinstance(data, dict) else data
         if not isinstance(records, list) or not records:
