@@ -64,6 +64,10 @@ python3 -m playwright install chromium
    - 如果公众号页面结构变动导致找不到 `#js_content`，需要更新解析规则
    - 如果网络超时，检查 VPN / 代理状态
 
+4. **按需精读**：
+   - 抓取成功只负责保存原文，不自动生成分析
+   - 用户要求理解或精读已保存文章时，切换到 `workflow_curated_article_reading.md`，结果直接回复当前会话
+
 ---
 
 ## 4. Cookie 管理

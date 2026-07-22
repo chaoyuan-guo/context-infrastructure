@@ -51,6 +51,7 @@
 特定任务的完整工作流程。
 
 - [Web Article Scraper](./workflow_web_article_scraper.md) ✅ — Circle.so 等社区帖子与微信公众号文章抓取，保存为 Markdown（含图片/链接/视频，Circle 路径含评论）
+- [收藏文章精读工作流](./workflow_curated_article_reading.md) ✅ — 用 `x → f → f(x)` 精读 `curated_reads/superlinear` 与 `wechat` 中的文章，结果直接回复当前会话，不另存文件
 - [Fetch LeetCode](./workflow_fetch_leetcode.md) ✅ — 从力扣中文站导出或增量同步已通过题目（题目信息、提交记录、最近一次 AC 代码），输出为 Markdown
 - [Agent Trace Sync Hygiene](./workflow_agent_trace_sync.md) — 增量同步 `contexts/agent_traces/` 时的低信息量 session 过滤与 prune 规则
 - [并行 Subagent 工作流](./workflow_parallel_subagents.md) ✅ — 用 `call_omo_agent` 并行执行多个 `explore` / `librarian` subagent
