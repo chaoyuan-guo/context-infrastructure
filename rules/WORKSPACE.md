@@ -44,6 +44,7 @@
 - `curated_reads` → `contexts/curated_reads/` (值得收藏与精读的文章，原名 memo)
 - `leetcode` → `formal_projects/leetcode/` (LeetCode 刷题数据与记录，原名 knowledge_data)
 - `tmp_moganshyan_eval` → `adhoc_jobs/tmp_moganshyan_eval/` (莫干玄衍评测集与显式 skill-index 评测脚手架)
+- `daily-briefing-agent` → `formal_projects/daily-briefing-agent/` (两阶段每日语音简报生成器)
 
 <!-- 归档项目（不再活跃维护） -->
 - `cortex` → `formal_projects/archived/cortex/` (已归档；个人知识库系统，基于 OpenCode fork，AI agent 驱动的知识问答平台)
