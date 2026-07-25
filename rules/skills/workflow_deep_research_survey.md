@@ -129,17 +129,18 @@ External mode 选定后，还需要回答一个更根本的问题：**这件事�
 
 **启动 Sub-agent**:
 
-同时启动 3-5 个 sub-agent，每个负责一个维度。使用 `multi_tool_use.parallel` 包多个 `functions.task` 调用，具体调用方式见 `workflow_parallel_subagents.md`。默认用 `general`；低成本初筛可用 `cheap_glm`；高隐私材料用 `private_ds4`；需要 zero-data-retention 云模型时按任务强度选择 `ollama_kimi` 或 `ollama_deepseek_pro`；复杂判断或最终 QA 用 `reasoning_gpt`。
+同时启动 3-5 个 sub-agent，每个负责一个维度。当前 harness 使用 `call_omo_agent(run_in_background=true)`：外部资料调研用 `librarian`，代码库内部探索用 `explore`。具体调用和等待方式见 `workflow_parallel_subagents.md`。隐私敏感材料不派给外部 sub-agent，由主线程或明确的本地工具处理。
 
-```json
-{
-  "description": "调研 XX 维度",
-  "subagent_type": "general",
-  "prompt": "[具体调研维度的 prompt]",
-  "task_id": "",
-  "command": ""
-}
+```text
+call_omo_agent(
+  description="调研 XX 维度",
+  subagent_type="librarian",
+  run_in_background=true,
+  prompt="[具体调研维度的 prompt]"
+)
 ```
+
+多个任务尽量在同一条 assistant 消息中发出。启动后等待系统通知，不反复轮询 `background_output`。
 
 每个 sub-agent 的 prompt 中明确：
 1. 具体要调研什么主题
@@ -279,7 +280,7 @@ Brainstorm 不是标题润色，也不是多 agent 泛泛复述。它必须转�
 | 维度划分太干净没有 overlap | 设计维度时故意让边缘模糊 |
 | Sub-agent 返回信息太浅 | prompt 中强调"深度"、"具体"、"原文" |
 | 中间文件堆积 | 集中到 `tmp/<session_slug>/`，只保留关键索引和判断 |
-| 用错 subagent 类型 | `subagent_type` 必须是当前已注册 agent 名；外部调研默认 `general`，代码库探索用 `explore`，隐私敏感用 `private_ds4` 或 Ollama Cloud 路线 |
+| 用错 subagent 类型 | 当前 harness 只使用已暴露的 `librarian` 和 `explore`：外部调研用前者，代码库探索用后者 |
 | 调研结果变成 vendor marketing 汇总 | Phase 1 提取 claim，Phase 2 按证据功能分配维度，Phase 3 核查验证状态 |
 
 写作阶段的 reader takeaway、article warrant、source contract 与成稿验收要求见 `workflow_external_writing.md`。
