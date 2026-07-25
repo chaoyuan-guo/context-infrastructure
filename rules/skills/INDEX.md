@@ -62,7 +62,6 @@
   - 判断标准：任务命中信息面宽、独立读任务、独立判断、高价值不确定性、主线程需保留整合能力中的至少 2 条
   - 核心参数：并行度 ≤5，调研 overlap 30-50%，代码 overlap 0-20%
 - [深度调研工作流](./workflow_deep_research_survey.md) ✅ — 多 Agent 并行 + 交叉验证（Phase 1-3 信息采集）
-- [分析写作工作流](./workflow_analytical_writing.md) ✅ — 将调研素材转化为有判断力的分析文章。包含 Thesis Catalog（核心分析视角 L1-L6）和判断合成步骤。**做深度调研并写 external 文章时，两个 skill 都要读**
 - [外部写作工作流](./workflow_external_writing.md) ⚙️ — 将已核实的调研转化为 external-facing 中文分析文章；依赖 Antigravity 候选生成与分离冷读验收
 - [内部写作工作流](./workflow_internal_writing.md) ✅ — 面向共享项目背景的协作者与 AI Agent，按问题、方案、决策建立低认知负担文档
 - [认知画像提取工作流](./workflow_cognitive_profile_extraction.md) — 从非结构化对话数据提取可预测的认知公理
@@ -82,6 +81,7 @@
 通用的最佳实践和经验教训。
 
 - [外部中文 Prose 诊断词汇表](./bestpractice_external_prose.md) ✅ — 供 Main Agent 诊断教材声、认知负担与表演式口语，用于压缩成本题 voice contract
+- [外部文章启发性分析视角（Thesis Catalog）](./reference_writing_thesis_catalog.md) ✅ — L1-L8 启发性分析视角及相关 axiom 映射
 - [内部文档排版与视觉组件](./bestpractice_internal_visuals.md) ✅ — 内部 Memo/RFC/周报的自适应布局、暗色模式和视觉组件规范
 - [AI 编程核心方法论](./bestpractice_ai_programming_mindset.md) ✅ — 70%问题、成功标准、可验证性
 - [Skill 写作指南（Meta-Skill）](./bestpractice_skill_writing.md) ✅ — 创建或重写 skill 时使用，强调结果确定性、验收标准和边界条件
