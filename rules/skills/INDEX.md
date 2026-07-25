@@ -45,6 +45,7 @@
 调用外部系统或工具的操作手册。
 
 - [AI CLI Agent 实用指南](./ai_agent_cli_guide.md) — CLI Agent 设计原则、工具对比（Claude Code / Codex / OpenCode）、文件响应模式、AI 调用 AI
+- [Antigravity CLI 文件式调用](./antigravity_cli.md) ⚙️ — 用 `agy --print` 调用 Gemini agent；覆盖认证、sandbox、timeout、文件式结果与运行日志验收
 
 ### Workflow（工作流）
 
@@ -62,6 +63,8 @@
   - 核心参数：并行度 ≤5，调研 overlap 30-50%，代码 overlap 0-20%
 - [深度调研工作流](./workflow_deep_research_survey.md) ✅ — 多 Agent 并行 + 交叉验证（Phase 1-3 信息采集）
 - [分析写作工作流](./workflow_analytical_writing.md) ✅ — 将调研素材转化为有判断力的分析文章。包含 Thesis Catalog（核心分析视角 L1-L6）和判断合成步骤。**做深度调研并写 external 文章时，两个 skill 都要读**
+- [外部写作工作流](./workflow_external_writing.md) ⚙️ — 将已核实的调研转化为 external-facing 中文分析文章；依赖 Antigravity 候选生成与分离冷读验收
+- [内部写作工作流](./workflow_internal_writing.md) ✅ — 面向共享项目背景的协作者与 AI Agent，按问题、方案、决策建立低认知负担文档
 - [认知画像提取工作流](./workflow_cognitive_profile_extraction.md) — 从非结构化对话数据提取可预测的认知公理
 - [自画像](./workflow_self_portrait.md) ✅ — 从自身 AI 会话历史提取多维度认知画像，每月一次。**区别于上面的"认知画像提取"（面向外部非结构化对话→公理），这个是面向自身→画像**
   - 适用：群聊/Slack/Discord/邮件/播客转录等任意对话数据
@@ -78,6 +81,8 @@
 
 通用的最佳实践和经验教训。
 
+- [外部中文 Prose 诊断词汇表](./bestpractice_external_prose.md) ✅ — 供 Main Agent 诊断教材声、认知负担与表演式口语，用于压缩成本题 voice contract
+- [内部文档排版与视觉组件](./bestpractice_internal_visuals.md) ✅ — 内部 Memo/RFC/周报的自适应布局、暗色模式和视觉组件规范
 - [AI 编程核心方法论](./bestpractice_ai_programming_mindset.md) ✅ — 70%问题、成功标准、可验证性
 - [Skill 写作指南（Meta-Skill）](./bestpractice_skill_writing.md) ✅ — 创建或重写 skill 时使用，强调结果确定性、验收标准和边界条件
 - [API Key 管理与调用](./bestpractice_api_key_management_1password_cli.md) ✅ — 使用 1Password CLI 安全管理密钥
