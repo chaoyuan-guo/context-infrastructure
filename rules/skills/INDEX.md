@@ -14,30 +14,6 @@
 
 ---
 
-## 组件状态
-
-### Tier 1: 核心（clone 后即可开始）
-- ✅ Rules 框架（SOUL/USER/COMMUNICATION/WORKSPACE）— 填写即用
-- ✅ Skills 框架（本目录）— 填写即用
-- ✅ 三层记忆系统 — 需配置 OpenCode + cron
-
-### Tier 2: 扩展（需要额外配置）
-- ⚙️ Semantic Search — 需要 LLM Studio 或 OpenAI API
-- ⚙️ Share Report — 需要 SSH 服务器或 GitHub Pages
-- ⚙️ Google Docs — 需要 Google OAuth
-- ⚙️ Send Email — 需要 Gmail App Password
-- ⚙️ Delayed Execution — starter fallback；durable/AI 延时任务安装 Process Launcher + OpenCode Skill
-
-### Tier 3: 独立 public skill repos（按需安装）
-- 🔧 Tavily、Google Docs、Outlook、Resend、OpenCode、Process Launcher、PPTX、Image Generation、Typefully、Stripe 等能力见 [`docs/SKILL_ECOSYSTEM.md`](../../docs/SKILL_ECOSYSTEM.md)
-
-### 说明
-✅ = 最多 15 分钟即可使用
-⚙️ = 需要额外配置，不配不影响核心功能
-🔧 = 独立 repo，按需安装到你的 workspace
-
----
-
 ## 分类索引
 
 ### API Guide（API 指南）
@@ -45,35 +21,38 @@
 调用外部系统或工具的操作手册。
 
 - [AI CLI Agent 实用指南](./ai_agent_cli_guide.md) — CLI Agent 设计原则、工具对比（Claude Code / Codex / OpenCode）、文件响应模式、AI 调用 AI
-- [Antigravity CLI 文件式调用](./antigravity_cli.md) ⚙️ — 用 `agy --print` 调用 Gemini agent；覆盖认证、sandbox、timeout、文件式结果与运行日志验收
 
 ### Workflow（工作流）
 
 特定任务的完整工作流程。
 
-- [Web Article Scraper](./workflow_web_article_scraper.md) ✅ — Circle.so 等社区帖子与微信公众号文章抓取，保存为 Markdown（含图片/链接/视频，Circle 路径含评论）
-- [收藏文章精读工作流](./workflow_curated_article_reading.md) ✅ — 用 `x → f → f(x)` 精读用户明确指定的本地 Markdown 文章，结果直接回复当前会话，不另存文件
-- [Fetch LeetCode](./workflow_fetch_leetcode.md) ✅ — 从力扣中文站导出或增量同步已通过题目（题目信息、提交记录、最近一次 AC 代码），输出为 Markdown
-- [Agent Trace Sync Hygiene](./workflow_agent_trace_sync.md) — 增量同步 `contexts/agent_traces/` 时的低信息量 session 过滤与 prune 规则
+#### 从 upstream 同步
+
 - [并行 Subagent 工作流](./workflow_parallel_subagents.md) ✅ — 并行执行多个独立 subagent 子任务
   - **必读**：初次使用并行 subagent 前，必须先读此 skill
   - **核心标准**：适合并行读、独立探索、交叉验证和上下文隔离；不适合强顺序依赖或共享状态写入
   - 判断标准：任务命中信息面宽、独立读任务、独立判断、高价值不确定性、主线程需保留整合能力中的至少 2 条
   - 核心参数：并行度 ≤5，调研 overlap 30-50%，代码 overlap 0-20%
+- [Workflow Watchdog](./workflow_watchdog.md) — 派出 workflow/后台 agent 后设 ~30 分钟巡检，区分"真忙 vs 鬼打墙"，卡住就 kill 并用部分结果推进。触发词："watchdog"、"workflow 卡住"、"后台任务巡检"
 - [深度调研工作流](./workflow_deep_research_survey.md) ✅ — 多 Agent 并行 + 交叉验证（Phase 1-3 信息采集）
+- [科研论文调研与写作工作流](./workflow_research_paper_survey_writing.md) — 把科研论文转化为面向技术从业者的分析文章。核心：按读者重要性排序（不按论文章节）、三层分离（paper claim / 外部验证 / 我们的判断）、强制生态位分析（bottleneck / 替代路径 / stack 层级 / 相邻影响）。触发词："分析这篇论文"、"写论文解读"、"paper analysis"
 - [外部写作工作流](./workflow_external_writing.md) ⚙️ — 将已核实的调研转化为 external-facing 中文分析文章；依赖 Antigravity 候选生成与分离冷读验收
 - [内部写作工作流](./workflow_internal_writing.md) ✅ — 面向共享项目背景的协作者与 AI Agent，按问题、方案、决策建立低认知负担文档
 - [认知画像提取工作流](./workflow_cognitive_profile_extraction.md) — 从非结构化对话数据提取可预测的认知公理
-- [自画像](./workflow_self_portrait.md) ✅ — 从自身 AI 会话历史提取多维度认知画像，每月一次。**区别于上面的"认知画像提取"（面向外部非结构化对话→公理），这个是面向自身→画像**
   - 适用：群聊/Slack/Discord/邮件/播客转录等任意对话数据
-  - 流程：广泛扫描 → 深度验证 → 压力测试 → 定稿（≥3 轮动态滚动）
-  - **要求 Opus 模型**：写作由 Opus 亲自完成，调研全部 delegate + 并行
-- [AI 生成 Slide Deck 工作流](./workflow_presentation_slides.md) — Gemini 渲染、Clean Ink 风格、8 进程并行、4K 放大前验证
-- [语义搜索技能](./semantic_search.md) ⚙️ — 利用向量相似度检索深层背景与观点演变
+  - 流程：Round 驱动的迭代引擎（Discover / Verify / Finalize / Restructure），动态滚动
+  - 含口号检测、R01 可信度虚高警告、候选重构等陷阱对策
+- 语义搜索技能 → 见 ecosystem [semantic-search-skill](https://github.com/grapeot/semantic-search-skill)：本地文本 embedding + cosine 相似度检索，支持任意 OpenAI-compatible endpoint
 - [知识飞轮设计模式](./workflow_knowledge_flywheel.md) — 笨数据+笨方法+笨模型=精知识
-- [视频下载与语音识别工作流](./workflow_bilibili_whisper_transcription.md) — Bilibili/YouTube 视频处理
-- [延时执行技能](./delayed_execution.md) ⚙️ — 低风险 `sleep + nohup` fallback；durable/AI 延时任务见 ecosystem 的 Process Launcher + OpenCode Skill
 - [项目脚手架与重整](./project_scaffold.md) ✅ — 把散装目录升级成标准项目结构：`docs/`、`src/`、`scripts/`、`tests/`、`AGENTS.md` 与独立 git
+- [AI Session Search & Archive](./ai_session_search_archive.md) — 在 OpenCode、Claude Code、Codex、Antigravity 与 Second Mind 的统一 Markdown 归档中按来源检索；named entity 先走 lexical search，模糊记忆再走 semantic search
+
+#### 本地自建 / 自用
+
+- [Web Article Scraper](./workflow_web_article_scraper.md) ✅ — Circle.so 等社区帖子与微信公众号文章抓取，保存为 Markdown（含图片/链接/视频，Circle 路径含评论）
+- [收藏文章精读工作流](./workflow_curated_article_reading.md) ✅ — 用 `x → f → f(x)` 精读用户明确指定的本地 Markdown 文章，结果直接回复当前会话，不另存文件
+- [Agent Trace Sync Hygiene](./workflow_agent_trace_sync.md) — 增量同步 `contexts/agent_traces/` 时的低信息量 session 过滤与 prune 规则
+- [自画像](./workflow_self_portrait.md) ✅ — 从自身 AI 会话历史提取多维度认知画像，每月一次。**区别于上面的"认知画像提取"（面向外部非结构化对话→公理），这个是面向自身→画像**
 
 ### BestPractice（最佳实践）
 
@@ -94,6 +73,7 @@
 - [AI 辅助调试诊断](./bestpractice_ai_debugging_diagnosis.md) ✅ — "代码改不好"的根因诊断决策树
 - [AI 产品设计原则](./bestpractice_ai_product_design.md) ✅ — 线性聊天 vs 知识工作、感知规则解耦
 - [产品/技术决策逆向工程](./bestpractice_product_decision_analysis.md) ✅ — 从设计空间、约束和 trade-off 分析产品或技术决策
+- [Playwright E2E 测试方法论](https://github.com/grapeot/playwright-test-skill) 🔗 — CDP step-by-step debugging CLI + E2E methodology。独立 public repo，CLI: `pw-test`。触发词："Playwright E2E"、"CDP debugging"、"SSO login test"、"browser step debugging"
 
 ---
 
