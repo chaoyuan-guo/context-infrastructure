@@ -59,9 +59,12 @@ trap 'rm -f "$FILELIST"' EXIT
 rg --files contexts/ai_sessions/{opencode,claude_code,codex,antigravity,second_mind}/ \
   -g '*.md' > "$FILELIST"
 
-semantic-search query \
+OPENAI_API_KEY=unused tools/semantic_search/.venv/bin/semantic-search \
+  --base-url http://10.0.34.60:8034/v1 \
+  --model Qwen3-Embedding-0.6B \
+  query \
   --file-list "$FILELIST" \
-  --cache-dir .knowledge_cache \
+  --cache-dir .knowledge_cache_v2 \
   --query 'the remembered concept' \
   --top-k 10 \
   --no-refresh

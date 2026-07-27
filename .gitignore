@@ -9,6 +9,8 @@ formal_projects/*
 tools/fetch-leetcode/cache/
 __pycache__/
 .knowledge_cache/
+.knowledge_cache_v2/
+tools/semantic_search/.python/
 tmp/
 contexts/*
 !contexts/memory/

@@ -73,18 +73,16 @@ PYEOF
 
 1. 读取全部 display_title，归纳为 5~8 个话题类别
 2. 从话题中提炼 3~5 个认知维度，每个维度命名并划定范围
-3. 为每个维度生成 full-round 和 user-only 查询词，从该维度下实际话题的标题和关键词中提炼
+3. 为每个维度生成查询词，从该维度下实际话题的标题和关键词中提炼
 
 对每个维度跑语义检索，用命中结果补充聚类、形成该维度的采样列表：
 
 ```bash
-# Full-round
-python tools/semantic_search/main.py --file-list tmp/session_files.txt \
-    --query "<查询词>" --top-k 15 --cache-dir .knowledge_cache
-
-# User-only
-python tools/semantic_search/main.py --file-list tmp/session_files.txt \
-    --query "<查询词>" --top-k 15 --user-only --cache-dir .knowledge_cache_user_only
+OPENAI_API_KEY=unused tools/semantic_search/.venv/bin/semantic-search \
+    --base-url http://10.0.34.60:8034/v1 \
+    --model Qwen3-Embedding-0.6B \
+    query --file-list tmp/session_files.txt \
+    --query "<查询词>" --top-k 15 --cache-dir .knowledge_cache_v2
 ```
 
 合并规则：

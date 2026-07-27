@@ -42,7 +42,7 @@
   - 适用：群聊/Slack/Discord/邮件/播客转录等任意对话数据
   - 流程：Round 驱动的迭代引擎（Discover / Verify / Finalize / Restructure），动态滚动
   - 含口号检测、R01 可信度虚高警告、候选重构等陷阱对策
-- 语义搜索技能 → 见 ecosystem [semantic-search-skill](https://github.com/grapeot/semantic-search-skill)：本地文本 embedding + cosine 相似度检索，支持任意 OpenAI-compatible endpoint
+- [语义搜索技能](./semantic_search.md) — 本地文本 embedding + cosine 相似度检索；通用实现同步自 [semantic-search-skill](https://github.com/grapeot/semantic-search-skill)，本地 overlay 保留 endpoint、模型和搜索路径
 - [知识飞轮设计模式](./workflow_knowledge_flywheel.md) — 笨数据+笨方法+笨模型=精知识
 - [项目脚手架与重整](./project_scaffold.md) ✅ — 把散装目录升级成标准项目结构：`docs/`、`src/`、`scripts/`、`tests/`、`AGENTS.md` 与独立 git
 - [AI Session Search & Archive](./ai_session_search_archive.md) — 在 OpenCode、Claude Code、Codex、Antigravity 与 Second Mind 的统一 Markdown 归档中按来源检索；named entity 先走 lexical search，模糊记忆再走 semantic search
