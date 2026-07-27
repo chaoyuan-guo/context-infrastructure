@@ -16,7 +16,8 @@
 - 收藏与精读文章：`contexts/curated_reads/`
 - 思考 / 复盘 / 方法论：`contexts/thought_review/`
 - 每日日志：`contexts/daily_records/`
-- Agent 对话轨迹与长期行为记录：`contexts/agent_traces/`
+- 多平台 AI 会话统一原始归档：`contexts/ai_sessions/`
+- 经过本地 Hygiene 过滤的 OpenCode 对话轨迹：`contexts/agent_traces/`
 
 ### 系统与规则
 - 可复用技术方案 / Skill：`rules/skills/`

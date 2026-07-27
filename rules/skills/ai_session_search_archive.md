@@ -7,7 +7,7 @@ single vendor's history UI. Use lexical search for names and identifiers, then
 semantic search when the remembered wording is approximate.
 
 This workflow assumes an archive produced by a multi-source exporter such as
-[ai_session_export](https://github.com/grapeot/ai_session_export). Keep the
+the locally installed [AI Session Export](./ai_session_export.md). Keep the
 archive private: session titles, transcripts, project paths, and identifiers
 may all contain sensitive information.
 
@@ -20,8 +20,6 @@ contexts/ai_sessions/
   opencode/
   claude_code/
   codex/
-  antigravity/
-  second_mind/
 ```
 
 - When the user names a source, search only that directory.
@@ -40,7 +38,7 @@ assuming the user's wording exactly matches the archived title.
 ```bash
 rg -i -n --glob '*.md' \
   'Claude Teacher|Claude for Teachers|Anthropic for Teachers' \
-  contexts/ai_sessions/{opencode,claude_code,codex,antigravity,second_mind}/
+  contexts/ai_sessions/
 ```
 
 Glob searches filenames, not file contents. A truncated glob result is not
@@ -56,8 +54,18 @@ the cache.
 ```bash
 FILELIST="$(mktemp)"
 trap 'rm -f "$FILELIST"' EXIT
-rg --files contexts/ai_sessions/{opencode,claude_code,codex,antigravity,second_mind}/ \
-  -g '*.md' > "$FILELIST"
+rg --files contexts/ai_sessions/ \
+  -g '*.md' \
+  -g '!**/*The_following_is_the_Codex_agent_history*' \
+  > "$FILELIST"
+
+# Run once after an export; skip during ordinary read-only lookup.
+OPENAI_API_KEY=unused tools/semantic_search/.venv/bin/semantic-search \
+  --base-url http://10.0.34.60:8034/v1 \
+  --model Qwen3-Embedding-0.6B \
+  rebuild \
+  --file-list "$FILELIST" \
+  --cache-dir .knowledge_cache_v2
 
 OPENAI_API_KEY=unused tools/semantic_search/.venv/bin/semantic-search \
   --base-url http://10.0.34.60:8034/v1 \
@@ -70,13 +78,14 @@ OPENAI_API_KEY=unused tools/semantic_search/.venv/bin/semantic-search \
   --no-refresh
 ```
 
-Use the installed semantic-search skill's provider and model configuration.
-Index refresh is a separate maintenance action; a read-only lookup should not
-silently rebuild a large shared cache.
+Use the installed semantic-search skill's provider and model configuration. After
+an export, refresh the new files with `semantic-search rebuild` as a separate
+maintenance action. A read-only lookup should use `--no-refresh` rather than
+silently rebuilding a large shared cache.
 
 ## Freshness Fallback
 
-Check the exporter's state or sync log before reading native stores. If the
+Check `contexts/ai_sessions/.export_state.json` before reading native stores. If the
 target session predates the latest successful source export, search the
 archive directly. Only perform a source-specific temporary export when the
 session is newer than the archive. Delete temporary exports after lookup.

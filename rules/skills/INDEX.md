@@ -45,7 +45,8 @@
 - [语义搜索技能](./semantic_search.md) — 本地文本 embedding + cosine 相似度检索；通用实现同步自 [semantic-search-skill](https://github.com/grapeot/semantic-search-skill)，本地 overlay 保留 endpoint、模型和搜索路径
 - [知识飞轮设计模式](./workflow_knowledge_flywheel.md) — 笨数据+笨方法+笨模型=精知识
 - [项目脚手架与重整](./project_scaffold.md) ✅ — 把散装目录升级成标准项目结构：`docs/`、`src/`、`scripts/`、`tests/`、`AGENTS.md` 与独立 git
-- [AI Session Search & Archive](./ai_session_search_archive.md) — 在 OpenCode、Claude Code、Codex、Antigravity 与 Second Mind 的统一 Markdown 归档中按来源检索；named entity 先走 lexical search，模糊记忆再走 semantic search
+- [AI Session Export](./ai_session_export.md) — 将 Codex、OpenCode 与 Claude Code 会话统一导出为私有 Markdown 归档
+- [AI Session Search & Archive](./ai_session_search_archive.md) — 检索统一会话归档；named entity 先走 lexical search，模糊记忆再走 semantic search
 
 #### 本地自建 / 自用
 
