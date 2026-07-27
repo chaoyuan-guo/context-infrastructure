@@ -8,7 +8,7 @@
 
 ## Multi-Agent 能力提示
 
-当前 harness 支持通过 `call_omo_agent` 派发后台 subagent。不要默认使用，但遇到大型、可并行、调研重、代码库探索重、需要独立交叉验证的任务时，应先读 [并行 Subagent 工作流](./workflow_parallel_subagents.md)。
+当前环境支持后台 subagent。不要默认使用，但遇到大型、可并行、调研重、代码库探索重、需要独立交叉验证的任务时，应先读 [并行 Subagent 工作流](./workflow_parallel_subagents.md)。
 
 快速判断：subagent 适合并行读、独立探索、反方审稿、事实核查和上下文窗口隔离；不适合单点小任务、强顺序依赖任务，以及多个 agent 同时写同一份状态或同一批文件。
 
@@ -55,10 +55,9 @@
 - [收藏文章精读工作流](./workflow_curated_article_reading.md) ✅ — 用 `x → f → f(x)` 精读用户明确指定的本地 Markdown 文章，结果直接回复当前会话，不另存文件
 - [Fetch LeetCode](./workflow_fetch_leetcode.md) ✅ — 从力扣中文站导出或增量同步已通过题目（题目信息、提交记录、最近一次 AC 代码），输出为 Markdown
 - [Agent Trace Sync Hygiene](./workflow_agent_trace_sync.md) — 增量同步 `contexts/agent_traces/` 时的低信息量 session 过滤与 prune 规则
-- [并行 Subagent 工作流](./workflow_parallel_subagents.md) ✅ — 用 `call_omo_agent` 并行执行多个 `explore` / `librarian` subagent
+- [并行 Subagent 工作流](./workflow_parallel_subagents.md) ✅ — 并行执行多个独立 subagent 子任务
   - **必读**：初次使用并行 subagent 前，必须先读此 skill
   - **核心标准**：适合并行读、独立探索、交叉验证和上下文隔离；不适合强顺序依赖或共享状态写入
-  - **禁止轮询**：后台 agent 运行期间不要反复调用 `background_output`，系统会自动通知
   - 判断标准：任务命中信息面宽、独立读任务、独立判断、高价值不确定性、主线程需保留整合能力中的至少 2 条
   - 核心参数：并行度 ≤5，调研 overlap 30-50%，代码 overlap 0-20%
 - [深度调研工作流](./workflow_deep_research_survey.md) ✅ — 多 Agent 并行 + 交叉验证（Phase 1-3 信息采集）

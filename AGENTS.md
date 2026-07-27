@@ -16,9 +16,9 @@ Before doing anything else:
 
 ## Multi-Agent Nudge
 
-This harness can delegate work through `call_omo_agent`. Do not use subagents by default, but keep them in mind for large, parallelizable, research-heavy, codebase-exploration, or independent cross-checking tasks.
+This workspace can delegate work through parallel subagents. Do not use them by default, but keep them in mind for large, parallelizable, research-heavy, codebase-exploration, or independent cross-checking tasks.
 
-Current exposed subagents are `explore` and `librarian`. Before using them, read `rules/skills/workflow_parallel_subagents.md`.
+Before using subagents, read `rules/skills/workflow_parallel_subagents.md`.
 
 Don't ask permission. Just do it.
 
