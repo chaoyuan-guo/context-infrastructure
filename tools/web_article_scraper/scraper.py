@@ -65,7 +65,9 @@ def _expand_all_comments(page) -> None:
         # 逐步滚动页面，触发可能的懒加载
         page.evaluate("""() => {
             const step = window.innerHeight;
-            const max = document.body.scrollHeight;
+            const root = document.body || document.documentElement;
+            if (!root) return;
+            const max = root.scrollHeight || 0;
             for (let y = 0; y <= max; y += step) {
                 window.scrollTo(0, y);
             }
