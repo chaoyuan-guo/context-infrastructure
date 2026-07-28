@@ -39,14 +39,16 @@
 
 <!-- 随着你的项目增长，在这里添加活跃项目的快捷路由 -->
 <!-- 格式参考：- `project-name` → `adhoc_jobs/project_name/` (说明) -->
-- `ontology-coding-agent` → `formal_projects/ontology-coding-agent/` (面向本体建模与文档解析的 agent 主项目)
-- `tudou-digitaltwin` → `formal_projects/tudou-digitaltwin/` (土豆数字孪生的本体工程与业务系统)
+- `career-dev` → `formal_projects/career-dev/` (职业发展学习材料)
+- `colaos` → `formal_projects/colaos/` (ColaOS 调研、产品反馈、评测与面试材料)
 - `interview` → `formal_projects/interview/` (近期面试准备材料)
 - `curated_reads` → `contexts/curated_reads/` (值得收藏与精读的文章，原名 memo)
-- `leetcode` → `formal_projects/leetcode/` (LeetCode 刷题数据与记录，原名 knowledge_data)
 - `tmp_moganshyan_eval` → `adhoc_jobs/tmp_moganshyan_eval/` (莫干玄衍评测集与显式 skill-index 评测脚手架)
 - `daily-briefing-agent` → `formal_projects/daily-briefing-agent/` (两阶段每日语音简报生成器)
 
 <!-- 归档项目（不再活跃维护） -->
+- `ontology-coding-agent` → `formal_projects/archived/ontology-coding-agent/` (已归档；面向本体建模与文档解析的 agent 项目)
+- `tudou-digitaltwin` → `formal_projects/archived/tudou-digitaltwin/` (已归档；土豆数字孪生的本体工程与业务系统)
+- `leetcode` → `formal_projects/archived/leetcode/` (已归档；LeetCode 刷题数据与记录，原名 knowledge_data)
 - `cortex` → `formal_projects/archived/cortex/` (已归档；个人知识库系统，基于 OpenCode fork，AI agent 驱动的知识问答平台)
 - `second_brain` → `formal_projects/archived/second_brain/` (已归档；第二大脑系统，FastAPI + Next.js)
