@@ -45,6 +45,7 @@
 - `curated_reads` → `contexts/curated_reads/` (值得收藏与精读的文章，原名 memo)
 - `tmp_moganshyan_eval` → `adhoc_jobs/tmp_moganshyan_eval/` (莫干玄衍评测集与显式 skill-index 评测脚手架)
 - `daily-briefing-agent` → `formal_projects/daily-briefing-agent/` (两阶段每日语音简报生成器)
+- `openviking` → `formal_projects/openviking/` (OpenViking 开源贡献与研发)
 
 <!-- 归档项目（不再活跃维护） -->
 - `ontology-coding-agent` → `formal_projects/archived/ontology-coding-agent/` (已归档；面向本体建模与文档解析的 agent 项目)
