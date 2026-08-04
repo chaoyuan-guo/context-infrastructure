@@ -48,6 +48,9 @@
 - `openviking` → `formal_projects/openviking/` (OpenViking 开源贡献与研发)
 - `mem0` → `formal_projects/mem0/` (面向 AI Agent 与助手的持久化记忆层)
 - `memu` → `formal_projects/memu/` (面向 AI Agent 的 embedding-only 记忆框架)
+- `memos` → `formal_projects/memos/` (面向 LLM Agent 的记忆操作系统)
+- `letta-code` → `formal_projects/letta-code/` (Letta 的有状态自主编程 agent)
+- `hermes-agent` → `formal_projects/hermes-agent/` (具备跨会话记忆与技能学习闭环的个人 AI agent)
 
 <!-- 归档项目（不再活跃维护） -->
 - `ontology-coding-agent` → `formal_projects/archived/ontology-coding-agent/` (已归档；面向本体建模与文档解析的 agent 项目)
