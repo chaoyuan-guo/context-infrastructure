@@ -51,6 +51,7 @@
 - `memos` → `formal_projects/memos/` (面向 LLM Agent 的记忆操作系统)
 - `letta-code` → `formal_projects/letta-code/` (Letta 的有状态自主编程 agent)
 - `hermes-agent` → `formal_projects/hermes-agent/` (具备跨会话记忆与技能学习闭环的个人 AI agent)
+- `hindsight` → `formal_projects/hindsight/` (具备 retain、recall 与 reflect 的 AI Agent 长期记忆系统)
 
 <!-- 归档项目（不再活跃维护） -->
 - `ontology-coding-agent` → `formal_projects/archived/ontology-coding-agent/` (已归档；面向本体建模与文档解析的 agent 项目)
