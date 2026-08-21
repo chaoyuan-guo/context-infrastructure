@@ -38,23 +38,24 @@
 正式项目路由补充：进入 `formal_projects/<project>/` 下的具体项目之前，先读该项目根 `AGENTS.md`。
 
 <!-- 随着你的项目增长，在这里添加活跃项目的快捷路由 -->
-<!-- 格式参考：- `project-name` → `adhoc_jobs/project_name/` (说明) -->
+<!-- 格式参考：- `project-name` → `formal_projects/project_name/` (说明) -->
 - `career-dev` → `formal_projects/career-dev/` (职业发展学习材料)
 - `colaos` → `formal_projects/colaos/` (ColaOS 调研、产品反馈、评测与面试材料)
 - `interview` → `formal_projects/interview/` (近期面试准备材料)
-- `curated_reads` → `contexts/curated_reads/` (值得收藏与精读的文章，原名 memo)
-- `tmp_moganshyan_eval` → `adhoc_jobs/tmp_moganshyan_eval/` (莫干玄衍评测集与显式 skill-index 评测脚手架)
-- `daily-briefing-agent` → `formal_projects/daily-briefing-agent/` (两阶段每日语音简报生成器)
-- `openviking` → `formal_projects/openviking/` (OpenViking 开源贡献与研发)
 - `mem0` → `formal_projects/mem0/` (面向 AI Agent 与助手的持久化记忆层)
-- `memu` → `formal_projects/memu/` (面向 AI Agent 的 embedding-only 记忆框架)
 - `memos` → `formal_projects/memos/` (面向 LLM Agent 的记忆操作系统)
-- `letta-code` → `formal_projects/letta-code/` (Letta 的有状态自主编程 agent)
-- `hermes-agent` → `formal_projects/hermes-agent/` (具备跨会话记忆与技能学习闭环的个人 AI agent)
 - `hindsight` → `formal_projects/hindsight/` (具备 retain、recall 与 reflect 的 AI Agent 长期记忆系统)
 
 <!-- 归档项目（不再活跃维护） -->
+- `daily-briefing-agent` → `formal_projects/archived/daily-briefing-agent/` (已归档；两阶段每日语音简报生成器)
+- `deputy-agent` → `formal_projects/archived/deputy-agent/` (已归档；自监督 master-worker agent 框架)
+- `hermes-agent` → `formal_projects/archived/hermes-agent/` (已归档；具备跨会话记忆与技能学习闭环的个人 AI agent)
+- `letta-code` → `formal_projects/archived/letta-code/` (已归档；Letta 的有状态自主编程 agent)
+- `memu` → `formal_projects/archived/memu/` (已归档；面向 AI Agent 的 embedding-only 记忆框架)
 - `ontology-coding-agent` → `formal_projects/archived/ontology-coding-agent/` (已归档；面向本体建模与文档解析的 agent 项目)
+- `openviking` → `formal_projects/archived/openviking/` (已归档；OpenViking 开源贡献与研发)
+- `podinsight_mvp` → `formal_projects/archived/podinsight_mvp/` (已归档；播客观点抽取与证据浏览 demo)
+- `promotion` → `formal_projects/archived/promotion/` (已归档；晋升与职级申报材料)
 - `tudou-digitaltwin` → `formal_projects/archived/tudou-digitaltwin/` (已归档；土豆数字孪生的本体工程与业务系统)
 - `leetcode` → `formal_projects/archived/leetcode/` (已归档；LeetCode 刷题数据与记录，原名 knowledge_data)
 - `cortex` → `formal_projects/archived/cortex/` (已归档；个人知识库系统，基于 OpenCode fork，AI agent 驱动的知识问答平台)
